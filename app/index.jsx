@@ -5,10 +5,11 @@ export default function Page() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Text className="text-red-500 text-5xl">Hello World</Text>
+        <Text className="text-red-500 text-5xl">Hello World3</Text>
         <Text style={styles.subtitle}>This is the first page of your app.</Text>
       </View>
       <Link href="/login">Login</Link>
+      <Link href="/home">Home</Link>
     </View>
   );
 }
