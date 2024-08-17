@@ -3,15 +3,28 @@ import { Link, } from 'expo-router';
 import { Button } from "react-native-paper";
 import { useState,useEffect } from "react";
 import InputSignUp from "../../components/input_sign_up";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 
 export default function Page() {
 
-    const [text, setText] = useState('');
-    useEffect(() => {
-        console.log("Text: ", text);
-    }
-    , [text]);
+    const formik = useFormik({
+        initialValues:{
+            nombres:"",
+            apellidos:"",
+            correo:"",
+            contrasena:"",
+            confirmar_contrasena:"",
+            telefono:"",
+            tipo_documento:"",
+            numero_documento:""
+        },
+        onSubmit: (values) => {
+            console.log(values);
+        }
+    });
+
   return (
         <View className="flex-1 gap-0 bg-[#F3F7FD]">
             {/* Arriba */}
@@ -32,20 +45,100 @@ export default function Page() {
             {/* Formulario */}
             <ScrollView contentContainerStyle={styles.scrollViewContent} className=" flex max-h-[70vh] mb-[calc(1.5vh)]">
                 <View className=" flex w-[calc(85.380vw)]">
-                    <InputSignUp separation={0.028} label={"Nombres"} text={text} setText={setText} placeholder={"Ingresa tus nombres aquí"}></InputSignUp>
-                    <InputSignUp separation={0.028} label={"Apellidos"} text={text} setText={setText} placeholder={"Ingresa tus apellidos aquí"}></InputSignUp>
-                    <InputSignUp separation={0.028} label={"Correo Electrónico"} text={text} setText={setText} placeholder={"Ingresa tu correo aquí"}></InputSignUp>
-                    <InputSignUp separation={0.028} label={"Contraseña"} text={text} setText={setText} placeholder={"Ingresa tu contraseña aquí"}></InputSignUp>
-                    <InputSignUp separation={0.028} label={"Confirmar Contraseña"} text={text} setText={setText} placeholder={"Confirma tu contraseña aquí"}></InputSignUp>
-                    <InputSignUp separation={0.028} label={"Número de Teléfono"} text={text} setText={setText} placeholder={"Ingresa tu número aquí"}></InputSignUp>
-                    <InputSignUp separation={0.028} label={"Tipo de Documento de Identidad"} text={text} setText={setText} placeholder={"Ingresa tu documento de identidad"}></InputSignUp>
-                    <InputSignUp separation={0.028} label={"Número de Documento de Identidad"} text={text} setText={setText} placeholder={"Ingresa tu número de documento de identidad"}></InputSignUp>
+                    {/* Input Nombre */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Nombres"} 
+                        text={formik.values.nombres} 
+                        placeholder={"Ingresa tus nombres aquí"} 
+                        id_name={"nombres"}
+                        handleChange={formik.handleChange("nombres")}
+                    />
+
+                    {/* Input Apellidos */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Apellidos"} 
+                        text={formik.values.apellidos} 
+                        placeholder={"Ingresa tus apellidos aquí"} 
+                        id_name={"apellidos"}
+                        handleChange={formik.handleChange("apellidos")}
+                    />
+
+                    {/* Input Correo */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Correo Electrónico"} 
+                        text={formik.values.correo} 
+                        placeholder={"Ingresa tu correo aquí"} 
+                        id_name={"correo"}
+                        handleChange={formik.handleChange("correo")}
+                    />
+
+                    {/* Input Contraseña */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Contraseña"} 
+                        text={formik.values.contrasena} 
+                        placeholder={"Ingresa tu contraseña aquí"} 
+                        id_name={"contrasena"}
+                        handleChange={formik.handleChange("contrasena")}
+                        tipo_contrasena={true}
+                    />
+
+                    {/* Input Confirmar Contraseña */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Confirmar Contraseña"} 
+                        text={formik.values.confirmar_contrasena} 
+                        placeholder={"Confirma tu contraseña aquí"} 
+                        id_name={"confirmar_contrasena"}
+                        handleChange={formik.handleChange("confirmar_contrasena")}
+                        tipo_contrasena={true}
+                    />
+
+                    {/* Input Teléfono */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Número de Teléfono"} 
+                        text={formik.values.telefono} 
+                        placeholder={"Ingresa tu número aquí"}
+                        id_name={"telefono"}
+                        handleChange={formik.handleChange("telefono")}
+                    />
+
+                    {/* Input Tipo de Documento */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Tipo de Documento de Identidad"} 
+                        text={formik.values.tipo_documento} 
+                        placeholder={"Ingresa tu documento de identidad"}
+                        id_name={"tipo_documento"}
+                        handleChange={formik.handleChange("tipo_documento")}
+                    />
+
+                    {/* Input Número de Documento */}
+                    <InputSignUp 
+                        separation={0.028} 
+                        label={"Número de Documento de Identidad"} 
+                        text={formik.values.numero_documento} 
+                        placeholder={"Ingresa tu número de documento de identidad"}
+                        id_name={"numero_documento"}
+                        handleChange={formik.handleChange("numero_documento")}
+                    />
+
                 </View>
             </ScrollView>
 
             <View className="flex flex-col w-full">
-                <TouchableOpacity activeOpacity={0.7} className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center  align-middle"   onPress={() => console.log('Pressed')}>
-                    <Text className="flex w-full text-center text-2xl font-bold text-[#F3F7FD]">Empezar</Text>
+                <TouchableOpacity 
+                    activeOpacity={0.7} 
+                    className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center  align-middle"   
+                    onPress={formik.handleSubmit}
+                >
+                        <Text className="flex w-full text-center text-2xl font-bold text-[#F3F7FD]">
+                            Crear Cuenta
+                        </Text>
                 </TouchableOpacity>
 
                 <View className="flex mx-auto mt-[1vh]">
