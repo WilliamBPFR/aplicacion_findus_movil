@@ -4,6 +4,7 @@ module.exports = {
   content: ["./App.{js,jsx,ts,tsx}", "./app/**/*.{js,jsx,ts,tsx}","./components/**/*.{js,jsx,ts,tsx}"],
     theme: {
       extend: {
+        
         width: {
           'screen-52': '52vw',  // 52% del ancho de la pantalla
           "circulo_arriba_izquierdo":"41vw",
