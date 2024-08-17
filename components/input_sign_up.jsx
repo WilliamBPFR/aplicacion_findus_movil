@@ -9,7 +9,7 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
     const [showPassword, setShowPassword] = useState(tipo_contrasena ? true : false);
     return(
         <View className="flex flex-col">
-            <Text className=" mb-[calc(1.4vh)] text-[#233E58] text-[14px] font-bold">
+            <Text className=" mb-[calc(1.4vh)] text-[#233E58] text-[14px] font-medium">
                 {label}
             </Text>
             
@@ -18,7 +18,7 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
                 onChangeText={handleChange}
                 id={id_name}
                 mode="outlined"
-                className={``}
+                className={"font-medium"}
                 placeholder={placeholder}
                 placeholderTextColor="#B7CBDB"
                 outlineStyle={{borderColor: "#C6DAEB", borderWidth: 1, borderRadius: 6}}
