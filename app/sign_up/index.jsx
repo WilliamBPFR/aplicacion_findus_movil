@@ -89,8 +89,8 @@ export default function Page() {
                     />
                 <View className="mb-6">
                     <Text className="text-[#233E58] text-[14px] font-extrabold">Tu contraseña debe:</Text>
-                    <View className="flex flex-row ml-4 mt-[calc(0.5vh)]">
-                        <Icon size={30} color="#4ECCAF" source={"check-circle"} className="h-[100%]"/>
+                    <View className="flex flex-row ml-4 mt-[calc(0.5vh)] bg-black">
+                        <Icon size={14} color="#4ECCAF" source={"check-circle"} className="flex"/>
                         <Text className="text-[#233E58] text-[14px] ml-3">Tu contraseña debe:</Text>
                     </View>
                 </View>
