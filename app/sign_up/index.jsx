@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView } from "react-native";
+import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,Dimensions } from "react-native";
 import { Link, } from 'expo-router';
-import { Button } from "react-native-paper";
+import { Button,Icon } from "react-native-paper";
 import { useState,useEffect } from "react";
 import InputSignUp from "../../components/input_sign_up";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+
+const { width, height } = Dimensions.get("window");
 
 
 export default function Page() {
@@ -85,6 +87,13 @@ export default function Page() {
                         handleChange={formik.handleChange("contrasena")}
                         tipo_contrasena={true}
                     />
+                <View className="mb-6">
+                    <Text className="text-[#233E58] text-[14px] font-extrabold">Tu contraseña debe:</Text>
+                    <View className="flex flex-row ml-4 mt-[calc(0.5vh)]">
+                        <Icon size={30} color="#4ECCAF" source={"check-circle"} className="h-[100%]"/>
+                        <Text className="text-[#233E58] text-[14px] ml-3">Tu contraseña debe:</Text>
+                    </View>
+                </View>
 
                     {/* Input Confirmar Contraseña */}
                     <InputSignUp 
@@ -136,7 +145,7 @@ export default function Page() {
                     className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center  align-middle"   
                     onPress={formik.handleSubmit}
                 >
-                        <Text className="flex w-full text-center text-2xl font-bold text-[#F3F7FD]">
+                        <Text className="flex w-full text-center text-xl font-bold text-[#F3F7FD]">
                             Crear Cuenta
                         </Text>
                 </TouchableOpacity>

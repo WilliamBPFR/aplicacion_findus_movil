@@ -24,7 +24,7 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
                 
                 outlineStyle={{borderColor: "#C6DAEB", borderWidth: 1, borderRadius: 6}}
                 style={{fontSize: 14, borderColor: "transparent", borderWidth: 0, borderRadius: 0, marginBottom: separation*height}}
-                right={ tipo_contrasena ? <TextInput.Icon icon="eye" forceTextInputFocus={false} onPress={()=> setShowPassword(!showPassword)}/> : <></>}
+                right={ tipo_contrasena ? <TextInput.Icon icon={showPassword ? "eye" : "eye-off"} forceTextInputFocus={false} onPress={()=> setShowPassword(!showPassword)}/> : <></>}
                 secureTextEntry={showPassword}
             />
         </View>
