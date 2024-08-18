@@ -10,7 +10,7 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
     const borderColor = (pressed && error) ? "#F26D6F" : "#C6DAEB";
     return(
         <View className="flex flex-col">
-            <Text className=" mb-[calc(1.4vh)] text-[#233E58] text-[14px] font-bold">
+            <Text className=" mb-[calc(1.4vh)] text-[#233E58] text-[14px] font-medium">
                 {label}
             </Text>
             
@@ -21,7 +21,7 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
                 onPress={pressed == false ? handlePressed : null}
                 id={id_name}
                 mode="outlined"
-                className={``}
+                className={"font-medium"}
                 placeholder={placeholder}
                 placeholderTextColor="#B7CBDB"
                 outlineStyle={{borderColor: borderColor, borderWidth: 1, borderRadius: 6}}
