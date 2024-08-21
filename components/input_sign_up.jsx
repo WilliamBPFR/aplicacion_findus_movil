@@ -5,8 +5,9 @@ import { useState } from "react";
 const { width, height } = Dimensions.get("window");
 
 
-export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena}) {
+export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena, pressed, handlePressed, error}) {
     const [showPassword, setShowPassword] = useState(tipo_contrasena ? true : false);
+    const borderColor = (pressed && error) ? "#F26D6F" : "#C6DAEB";
     return(
         <View className="flex flex-col">
             <Text className=" mb-[calc(1.4vh)] text-[#233E58] text-[14px] font-medium">
@@ -14,14 +15,16 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
             </Text>
             
             <TextInput
+                name={id_name}
                 value={text}
                 onChangeText={handleChange}
+                onPress={pressed == false ? handlePressed : null}
                 id={id_name}
                 mode="outlined"
                 className={"font-medium"}
                 placeholder={placeholder}
                 placeholderTextColor="#B7CBDB"
-                outlineStyle={{borderColor: "#C6DAEB", borderWidth: 1, borderRadius: 6}}
+                outlineStyle={{borderColor: borderColor, borderWidth: 1, borderRadius: 6}}
                 style={{fontSize: 14, borderColor: "transparent", borderWidth: 0, borderRadius: 0, marginBottom: separation*height}}
                 right={ tipo_contrasena ? <TextInput.Icon icon={showPassword ? "eye" : "eye-off"} forceTextInputFocus={false} onPress={()=> setShowPassword(!showPassword)}/> : <></>}
                 secureTextEntry={showPassword}
