@@ -1,24 +1,27 @@
-import {Text, View,Dimensions, } from "react-native";
+import {Text, View,Dimensions } from "react-native";
 import { TextInput } from "react-native-paper" 
 import { useState } from "react";
 
 const { width, height } = Dimensions.get("window");
 
 
-export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena, pressed, handlePressed, error}) {
-    const [showPassword, setShowPassword] = useState(tipo_contrasena ? true : false);
+export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena, pressed, handlePressed, error, showLabel=true}) {
+    const [showPassword, setShowPassword] = useState(tipo_contrasena);
     const borderColor = (pressed && error) ? "#F26D6F" : "#C6DAEB";
     return(
+        
         <View className="flex flex-col">
+            {showLabel ? 
             <Text className=" mb-[calc(1.4vh)] text-[#233E58] text-[14px] font-medium">
                 {label}
             </Text>
+            : <></>}
             
             <TextInput
                 name={id_name}
                 value={text}
                 onChangeText={handleChange}
-                onPress={pressed == false ? handlePressed : null}
+                onPress={pressed ? handlePressed : null}
                 id={id_name}
                 mode="outlined"
                 className={"font-medium"}

@@ -1,12 +1,22 @@
 import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar } from "react-native";
-import { Link, } from 'expo-router';
-import { Button,Icon } from "react-native-paper";
+import { Link, useRouter} from 'expo-router';
+import { Button,Icon,Modal,Portal,PaperProvider, TextInput  } from "react-native-paper";
 import { useState,useEffect } from "react";
 import InputSignUp from "../../components/input_sign_up";
+import InputFecha from "../../components/input_fecha";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import LottieView from "lottie-react-native";
 
 export default function Page() {
+
+    const [visible, setVisible] = useState(false);
+    const [showDateModal, setShowDateModal] = useState(false);
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const router = useRouter();
+    const [apiRessponse, setApiResponse] = useState({status:200});
+
 
     const validationSchema = Yup.object({
         nombres: Yup.string().required("Este campo es obligatorio"),
@@ -24,32 +34,36 @@ export default function Page() {
     const [pressed, setPressed] = useState({
         nombres: false,
         apellidos: false,
-        correo: false,
+        email: false,
         contrasena: false,
         confirmar_contrasena: false,
         telefono: false,
         tipo_documento: false,
         numero_documento: false,
+        fechaNacimiento: false,
     });
 
     const formik = useFormik({
         initialValues:{
-            nombres:"",
-            apellidos:"",
-            correo:"",
+            nombre:"",
+            apellido:"",
+            email:"",
             contrasena:"",
             confirmar_contrasena:"",
-            telefono:"",
+            numeroTelefono:"",
             tipo_documento:"",
-            numero_documento:""
+            numero_documento:"",
+            fechaNacimiento: new Date(),
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
             console.log(values);
+            // showModal();
         }
     });
 
   return (
+    <PaperProvider>
         <View className="flex-1 gap-0 bg-[#F3F7FD]">
             <StatusBar hidden={false} backgroundColor={"#F3F7FD"} barStyle={"light-content"} />
             {/* Arriba */}
@@ -68,7 +82,7 @@ export default function Page() {
             </View>
 
             {/* Formulario */}
-            <ScrollView contentContainerStyle={styles.scrollViewContent} className=" flex  mb-[calc(1.5vh)]">
+            <ScrollView contentContainerStyle={styles.scrollViewContent} className=" flex mb-[calc(1.5vh)]">
                 <View className=" flex w-[calc(85.380vw)]">
                     {/* Input Nombre */}
                     <InputSignUp 
@@ -96,18 +110,36 @@ export default function Page() {
                         error={formik.errors.apellidos}
                     />
 
+                    {/* Input Fecha de Nacimiento */}
+                    <InputFecha
+                        label={"Fecha de Nacimiento"}
+                        separation={0.028} 
+                        value={formik.values.fechaNacimiento} 
+                        placeholder={"Seleccione su fecha de Nacimiento"}
+                        id_name={"fecha_nacimiento"}
+                        setFieldValue={formik.setFieldValue}
+                        fiedName={"fechaNacimiento"}
+                        pressed={pressed.fechaNacimiento}
+                        handlePressed={()=> setPressed({...pressed, fechaNacimiento: true})}
+                        error={formik.errors.fechaNacimiento}
+                        showDateModal={showDateModal}
+                        setShowDateModal={setShowDateModal}
+                    />
+
                     {/* Input Correo */}
                     <InputSignUp 
                         separation={0.028} 
                         label={"Correo Electrónico"} 
-                        text={formik.values.correo} 
+                        text={formik.values.email} 
                         placeholder={"Ingresa tu correo aquí"} 
                         id_name={"correo"}
                         handleChange={formik.handleChange("correo")}
                         pressed={pressed.correo}
-                        handlePressed={()=> setPressed({...pressed, correo: true})}
-                        error={formik.errors.correo}
+                        handlePressed={()=> setPressed({...pressed, email: true})}
+                        error={formik.errors.email}
                     />
+
+
 
                     {/* Input Contraseña */}
                     <InputSignUp 
@@ -203,10 +235,11 @@ export default function Page() {
 
                 </View>
 
+                {/* Boton Crear Cuenta */}
                 <View className="flex flex-col w-full">
                 <TouchableOpacity 
                     activeOpacity={0.7} 
-                    className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center  align-middle"   
+                    className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center align-middle"   
                     onPress={formik.handleSubmit}
                 >
                         <Text className="flex w-full text-center text-xl font-bold text-[#F3F7FD]">
@@ -219,7 +252,80 @@ export default function Page() {
                 </View>
             </View>
             </ScrollView>
-        </View>
+            
+            {/* Modal de registro exitoso */}
+            <Portal>
+                <Modal className="w-full h-full mt-0" visible={false} onDismiss={hideModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: "40%",justifyContent: "center", alignItems:"center"}}>
+                    <LottieView 
+                        className="flex h-[45%] w-[80%]" 
+                        source={apiRessponse.status == 200 ? require(`../../assets/sign_up/check.json`) : require(`../../assets/sign_up/wrong.json`)} 
+                        autoPlay 
+                        loop={false} 
+                    />
+
+                    <Text className="text-center text-2xl font-bold text-[#233E58]">
+                        {apiRessponse.status == 200 ? "¡Registro exitoso!" : "¡Registro fallido!"} 
+                    </Text>
+                    <Text className="text-center text-lg text-[#233E58] mt-[calc(1vh)]">
+                        {apiRessponse.status == 200 ? "Tu cuenta ha sido creada exitosamente." : "Ha ocurrido un error al intentar crear tu cuenta."}
+                    </Text>
+                    
+                    <TouchableOpacity 
+                        activeOpacity={0.7}  
+                        className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[13%] rounded-md justify-center mb-[calc(1vh)]" 
+                        onPress={apiRessponse.status == 200 ? () => router.push("../login"): hideModal}
+                    >
+                        <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
+                            {apiRessponse.status == 200 ? "Iniciar Sesión" : "Cerrar"}
+                        </Text>
+                    </TouchableOpacity>   
+                </Modal>
+            </Portal>
+
+            {/* Modal de Verificacion Correo */}
+            <Portal>
+                <Modal className="w-full h-full mt-0" visible={true} onDismiss={hideModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: "60%",justifyContent: "center", alignItems:"center"}}>
+                    <LottieView 
+                        className="flex h-[25%] w-[80%]" 
+                        source={apiRessponse.status == 200 ? require(`../../assets/sign_up/email_sended.json`) : require(`../../assets/sign_up/wrong.json`)} 
+                        autoPlay 
+                        loop={true} 
+                    />
+
+                    <Text className="text-center text-2xl font-bold text-[#233E58]">
+                        Correo Electrónico Enviado 
+                    </Text>
+                    <Text className="text-center text-lg text-[#233E58] mt-[calc(1vh)]">
+                        Revisa tu correo electrónico e introduce el código de verificación aquí debajo.
+                    </Text>
+                    <View className="h-[10%] w-[80vw] mt-[calc(1.5vh)]">
+                        <InputSignUp
+                            separation={0.028} 
+                            label={"Número de Documento de Identidad"} 
+                            text={formik.values.numero_documento} 
+                            placeholder={"Ingresa tu número de documento de identidad"}
+                            id_name={"numero_documento"}
+                            handleChange={formik.handleChange("numero_documento")}
+                            pressed={pressed.numero_documento}
+                            handlePressed={()=> setPressed({...pressed, numero_documento: true})}
+                            error={formik.errors.numero_documento}
+                            showLabel={false}
+                        />
+                    </View>
+                    
+                    <TouchableOpacity 
+                        activeOpacity={0.7}  
+                        className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[13%] rounded-md justify-center mb-[calc(1vh)]" 
+                        onPress={apiRessponse.status == 200 ? () => router.push("../login"): hideModal}
+                    >
+                        <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
+                            {apiRessponse.status == 200 ? "Iniciar Sesión" : "Cerrar"}
+                        </Text>
+                    </TouchableOpacity>   
+                </Modal>
+            </Portal>
+            </View>
+        </PaperProvider>
   );
 }
 
