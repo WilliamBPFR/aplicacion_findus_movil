@@ -15,6 +15,7 @@ export default function Page() {
         <Link href="/login">Login</Link>
         <Link href="/home">Home</Link>
         <Link href="/sign_up">Sign Up</Link>
+        <Link href="/FormPublicacion">Form Publicacion</Link>
       </View>
   );
 }
