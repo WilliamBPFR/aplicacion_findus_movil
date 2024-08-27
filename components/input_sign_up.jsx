@@ -5,7 +5,7 @@ import { useState } from "react";
 const { width, height } = Dimensions.get("window");
 
 
-export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena, pressed, handlePressed, error, showLabel=true}) {
+export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena, pressed, handlePressed, error, showLabel=true,keyboardType="default"}) {
     const [showPassword, setShowPassword] = useState(tipo_contrasena);
     const borderColor = (pressed && error) ? "#F26D6F" : "#C6DAEB";
     return(
@@ -31,6 +31,7 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
                 style={{fontSize: 14, borderColor: "transparent", borderWidth: 0, borderRadius: 0, marginBottom: separation*height}}
                 right={ tipo_contrasena ? <TextInput.Icon icon={showPassword ? "eye" : "eye-off"} forceTextInputFocus={false} onPress={()=> setShowPassword(!showPassword)}/> : <></>}
                 secureTextEntry={showPassword}
+                keyboardType={keyboardType}
             />
         </View>
     )

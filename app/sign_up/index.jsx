@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar } from "react-native";
+import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar,Dimensions } from "react-native";
 import { Link, useRouter} from 'expo-router';
 import { Button,Icon,Modal,Portal,PaperProvider, TextInput  } from "react-native-paper";
 import { useState,useEffect } from "react";
@@ -8,12 +8,17 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import LottieView from "lottie-react-native";
 
+const { width, height } = Dimensions.get("window");
+
 export default function Page() {
 
-    const [visible, setVisible] = useState(false);
+    const [visibleRegisteredModal, setVisibleRegisteredModal] = useState(false);
+    const [visibleConfirmationModal, setVisibleConfirmationModal] = useState(false);
     const [showDateModal, setShowDateModal] = useState(false);
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
+    const showRegisteredModal = () => setVisibleRegisteredModal(true);
+    const hideRegisteredModal = () => setVisibleRegisteredModal(false);
+    const showConfirmationModal = () => setVisibleConfirmationModal(true);
+    const hideConfirmationModal = () => setVisibleConfirmationModal(false);
     const router = useRouter();
     const [apiRessponse, setApiResponse] = useState({status:200});
 
@@ -255,7 +260,7 @@ export default function Page() {
             
             {/* Modal de registro exitoso */}
             <Portal>
-                <Modal className="w-full h-full mt-0" visible={false} onDismiss={hideModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: "40%",justifyContent: "center", alignItems:"center"}}>
+                <Modal className="w-full h-full mt-0" visible={visibleConfirmationModal} onDismiss={hideRegisteredModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: "40%",justifyContent: "center", alignItems:"center"}}>
                     <LottieView 
                         className="flex h-[45%] w-[80%]" 
                         source={apiRessponse.status == 200 ? require(`../../assets/sign_up/check.json`) : require(`../../assets/sign_up/wrong.json`)} 
@@ -273,7 +278,7 @@ export default function Page() {
                     <TouchableOpacity 
                         activeOpacity={0.7}  
                         className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[13%] rounded-md justify-center mb-[calc(1vh)]" 
-                        onPress={apiRessponse.status == 200 ? () => router.push("../login"): hideModal}
+                        onPress={apiRessponse.status == 200 ? () => router.push("../login"): hideRegisteredModal}
                     >
                         <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
                             {apiRessponse.status == 200 ? "Iniciar Sesión" : "Cerrar"}
@@ -284,7 +289,7 @@ export default function Page() {
 
             {/* Modal de Verificacion Correo */}
             <Portal>
-                <Modal className="w-full h-full mt-0" visible={true} onDismiss={hideModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: "60%",justifyContent: "center", alignItems:"center"}}>
+                <Modal className="w-full h-full mt-0" visible={visibleRegisteredModal} onDismiss={hideConfirmationModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: height*0.45,justifyContent: "center", alignItems:"center"}}>
                     <LottieView 
                         className="flex h-[25%] w-[80%]" 
                         source={apiRessponse.status == 200 ? require(`../../assets/sign_up/email_sended.json`) : require(`../../assets/sign_up/wrong.json`)} 
@@ -295,31 +300,32 @@ export default function Page() {
                     <Text className="text-center text-2xl font-bold text-[#233E58]">
                         Correo Electrónico Enviado 
                     </Text>
-                    <Text className="text-center text-lg text-[#233E58] mt-[calc(1vh)]">
+                    <Text className="text-center text-[2vh] p-[2vw] text-[#233E58] mt-[calc(1vh)]">
                         Revisa tu correo electrónico e introduce el código de verificación aquí debajo.
                     </Text>
-                    <View className="h-[10%] w-[80vw] mt-[calc(1.5vh)]">
+                    <View className="h-[10%] w-[80vw] mt-[calc(1.5vh)] mb-[2vh]">
                         <InputSignUp
                             separation={0.028} 
-                            label={"Número de Documento de Identidad"} 
+                            label={"Número de Confirmación"} 
                             text={formik.values.numero_documento} 
-                            placeholder={"Ingresa tu número de documento de identidad"}
-                            id_name={"numero_documento"}
+                            placeholder={"Ingrese el numero de confirmacion"}
+                            id_name={"numero_confirmacion"}
                             handleChange={formik.handleChange("numero_documento")}
                             pressed={pressed.numero_documento}
                             handlePressed={()=> setPressed({...pressed, numero_documento: true})}
                             error={formik.errors.numero_documento}
                             showLabel={false}
+                            keyboardType="number-pad"
                         />
                     </View>
                     
                     <TouchableOpacity 
-                        activeOpacity={0.7}  
+                        activeOpacity={0.7}
                         className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[13%] rounded-md justify-center mb-[calc(1vh)]" 
-                        onPress={apiRessponse.status == 200 ? () => router.push("../login"): hideModal}
+                        onPress={apiRessponse.status == 200 ? () => router.push("../login"): hideConfirmationModal}
                     >
                         <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
-                            {apiRessponse.status == 200 ? "Iniciar Sesión" : "Cerrar"}
+                            Confirmar Correo
                         </Text>
                     </TouchableOpacity>   
                 </Modal>
