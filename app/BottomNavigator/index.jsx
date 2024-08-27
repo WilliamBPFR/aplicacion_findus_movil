@@ -63,7 +63,6 @@ const BaseNavigator = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#F3F7FD" }}>
     <View style={{ flex: 1}}>
       <CurvedBottomBarExpo.Navigator
         style={styles.bottomBar}
@@ -115,7 +114,6 @@ const BaseNavigator = () => {
         />
       </CurvedBottomBarExpo.Navigator>
     </View>
-    </SafeAreaView>
   );
 };
 export default BaseNavigator;
@@ -130,11 +128,11 @@ export const styles = StyleSheet.create({
   bottomBar: {
     position: "absolute",
     borderRadius: 20,
-    elevation: 15,
+    elevation: 20,
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
-      height: -10,
+      height: 0.5,
     },
     shadowOpacity: 1,
     shadowRadius: 10,

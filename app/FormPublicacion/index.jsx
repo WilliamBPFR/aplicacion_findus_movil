@@ -1,4 +1,6 @@
-import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar } from "react-native";
+import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView } from "react-native";
+import { StatusBar } from "expo-status-bar";
+
 import { Link, useRouter} from 'expo-router';
 import { Button,Icon } from "react-native-paper";
 import { useState,useEffect } from "react";
@@ -79,12 +81,12 @@ export default function Page() {
   };
 
   return (
-    <View className="flex-1  bg-[#F3F7FD]">
+    <SafeAreaView className="flex-1 bg-[#F3F7FD]">
       
       <StatusBar
         hidden={false}
         backgroundColor={"#F3F7FD"}
-        barStyle={"dark-content"}
+        barStyle={"dark"}
       />
       {/* Boton back */}
       <View className="flex">
@@ -259,7 +261,7 @@ export default function Page() {
         
       </ScrollView>
       <BottomNavigator />
-    </View>
+    </SafeAreaView>
   );
 }
 
