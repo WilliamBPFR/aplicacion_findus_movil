@@ -5,6 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import HomeScreen from "../home";
 import SearchScreen from "../login";
 import MapScreen from "../sign_up";
@@ -14,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const BaseNavigator = () => {
   const navigation = useNavigation();
+  const router = useRouter();
   const _renderIcon = (routeName, selectedTab) => {
     let IconComponent = Feather;
     let iconName = ""
@@ -69,13 +71,13 @@ const BaseNavigator = () => {
         height={60}
         circleWidth={55}
         bgColor="#F3F7FD"
-        initialRouteName="Home"
+        initialRouteName="Search"
         borderTopLeftRight={true}
         renderCircle={({ selectedTab, navigate }) => (
           <Animated.View>
             <TouchableOpacity
               style={styles.btnCircle}
-              onPress={() => navigation.navigate("PostScreen")}
+              onPress={() => router.push("/FormPublicacion")}
             >
               <AntDesign name="plus" size={32} color="#F3F7FD" />
             </TouchableOpacity>
@@ -87,7 +89,7 @@ const BaseNavigator = () => {
           name="Home"
           position="LEFT"
           options={{ headerShown: false }}
-          component={HomeScreen}
+          component={() => router.push("/home")}
           
         />
         <CurvedBottomBarExpo.Screen
