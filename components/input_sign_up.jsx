@@ -21,7 +21,7 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
                 name={id_name}
                 value={text}
                 onChangeText={handleChange}
-                onPress={pressed ? handlePressed : null}
+                onPress={!pressed ? handlePressed : null}
                 id={id_name}
                 mode="outlined"
                 className={"font-medium"}

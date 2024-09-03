@@ -13,9 +13,12 @@ export default function Page() {
           <Text style={styles.subtitle}>This is the first page of your app.</Text>
         </View>
         <Link href="/login">Login</Link>
-        <Link href="/home">Home</Link>
+        <Link href="/bienvenida">Bienvenida</Link>
         <Link href="/sign_up">Sign Up</Link>
         <Link href="/FormPublicacion">Form Publicacion</Link>
+        <Link href="/recuperarContrasena">Recuperar Contraseña</Link>
+        <Link href="/home">Pantalla Home</Link>
+        <Link href="/BottomNavigator">Barra Abajo</Link>
       </View>
   );
 }
