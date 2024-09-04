@@ -3,11 +3,11 @@ import { StatusBar } from "expo-status-bar";
 import { Link, useRouter} from 'expo-router';
 import { Button,Icon } from "react-native-paper";
 import { useState,useEffect } from "react";
-import InputSignUp from "../../components/input_sign_up";
+import InputSignUp from "../../../components/input_sign_up";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import InputFecha from "../../components/input_fecha";
-import DropdownComponent from "../../components/dropdown";
+import InputFecha from "../../../components/input_fecha";
+import DropdownComponent from "../../../components/dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Page() {
 
@@ -91,7 +91,7 @@ export default function Page() {
         <View className="flex mx-[4.5vw] my-[1vh]">
           <TouchableOpacity onPress={() => router.push("../bienvenida")}>
             <Image
-              source={require("../../assets/sign_up/flecha-izquierda.png")}
+              source={require("../../../assets/sign_up/flecha-izquierda.png")}
               className="w-[10vw] h-[calc(4.5vh)]"
             ></Image>
           </TouchableOpacity>
