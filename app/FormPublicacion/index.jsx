@@ -9,7 +9,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import InputFecha from "../../components/input_fecha";
 import DropdownComponent from "../../components/dropdown";
-import BottomNavigator from "../BottomNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Page() {
 
@@ -86,12 +85,12 @@ export default function Page() {
       <StatusBar
         hidden={false}
         backgroundColor={"#F3F7FD"}
-        barStyle={"dark"}
+        barStyle={"dark-content"}
       />
       {/* Boton back */}
       <View className="flex">
         <View className="flex mx-[4.5vw] my-[1vh]">
-          <TouchableOpacity onPress={() => router.push("../home")}>
+          <TouchableOpacity onPress={() => router.back()}>
             <Image
               source={require("../../assets/sign_up/flecha-izquierda.png")}
               className="w-[10vw] h-[calc(4.5vh)]"
@@ -260,7 +259,7 @@ export default function Page() {
         </View>
         
       </ScrollView>
-      <BottomNavigator />
+      {/* <BottomNavigator /> */}
     </SafeAreaView>
   );
 }

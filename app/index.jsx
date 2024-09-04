@@ -12,10 +12,13 @@ export default function Page() {
           <Text className="text-red-500 text-5xl">Hello World3</Text>
           <Text style={styles.subtitle}>This is the first page of your app.</Text>
         </View>
+        <View>
         <Link href="/login">Login</Link>
         <Link href="/home">Home</Link>
         <Link href="/sign_up">Sign Up</Link>
         <Link href="/FormPublicacion">Form Publicacion</Link>
+        </View>
+        
       </View>
   );
 }

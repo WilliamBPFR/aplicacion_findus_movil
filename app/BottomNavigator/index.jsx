@@ -1,61 +1,58 @@
 import React from "react";
-import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
+import HomeScreen from "../home/index";
+import SearchScreen from "../search/index";
+import MapScreen from "../material/index";
+import ProfileScreen from "../profile/index";
+import FormPublicacion from "../FormPublicacion/index";
 import { useNavigation } from "@react-navigation/native";
-import HomeScreen from "../home";
-import SearchScreen from "../login";
-import MapScreen from "../sign_up";
-import ProfileScreen from "../FormPublicacion";
-import { BlurView } from '@react-native-community/blur'; // Importa BlurView
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 const BaseNavigator = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
   const _renderIcon = (routeName, selectedTab) => {
     let IconComponent = Feather;
-    let iconName = ""
+    let iconName = "";
 
     switch (routeName) {
-        case "Home":
-            IconComponent = AntDesign;
-            iconName = "home";
-            break;
-        case "Search":
-            IconComponent = AntDesign;
-            iconName = "search1";
-            break;
-        case "Map":
-            IconComponent = Feather;
-            iconName = "book-open";
-            break;
-        case "profile":
-            IconComponent = Octicons;
-            iconName = "person";
-            break;
-        default:
-            break;
+      case "home/index":
+        IconComponent = AntDesign;
+        iconName = "home";
+        break;
+      case "search/index":
+        IconComponent = AntDesign;
+        iconName = "search1";
+        break;
+      case "material/index":
+        IconComponent = Feather;
+        iconName = "book-open";
+        break;
+      case "profile/index":
+        IconComponent = Octicons;
+        iconName = "person";
+        break;
+      default:
+        break;
     }
 
     return (
-        <IconComponent
-            name={iconName}
-            size={32}
-            color={routeName === selectedTab ? "#3E86B9" : "#556871"}
-        />
+      <IconComponent
+        name={iconName}
+        size={32}
+        color={routeName === selectedTab ? "#3E86B9" : "#556871"}
+      />
     );
   };
+
   const renderTabBar = ({ routeName, selectedTab, navigate }) => {
     return (
       <TouchableOpacity
         onPress={() => navigate(routeName)}
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        style={styles.tabButton}
       >
         {_renderIcon(routeName, selectedTab)}
       </TouchableOpacity>
@@ -63,72 +60,74 @@ const BaseNavigator = () => {
   };
 
   return (
-    <View style={{ flex: 1}}>
-      <CurvedBottomBarExpo.Navigator
-        style={styles.bottomBar}
-        height={60}
-        circleWidth={55}
-        bgColor="#F3F7FD"
-        initialRouteName="Home"
-        borderTopLeftRight={true}
-        renderCircle={({ selectedTab, navigate }) => (
-          <Animated.View>
+    <View style={styles.outerContainer}>
+      <View style={styles.contentContainer}>
+        <CurvedBottomBarExpo.Navigator
+          style={styles.bottomBar}
+          height={60}
+          circleWidth={55}
+          bgColor="#F3F7FD"
+          initialRouteName="home"
+          borderTopLeftRight={true}
+          renderCircle={({ selectedTab, navigate }) => (
             <TouchableOpacity
               style={styles.btnCircle}
-              onPress={() => navigation.navigate("PostScreen")}
+              onPress={() => router.push("/FormPublicacion")}
             >
               <AntDesign name="plus" size={32} color="#F3F7FD" />
             </TouchableOpacity>
-          </Animated.View>
-        )}
-        tabBar={renderTabBar}
-      >
-        <CurvedBottomBarExpo.Screen
-          name="Home"
-          position="LEFT"
-          options={{ headerShown: false }}
-          component={HomeScreen}
+          )}
+          tabBar={renderTabBar}
+        >
           
-        />
-        <CurvedBottomBarExpo.Screen
-          name="Search"
-          position="LEFT"
-          options={{
-            headerShown: false,
-          }}
-          component={SearchScreen}
-        />
-        <CurvedBottomBarExpo.Screen
-          name="Map"
-          position="RIGHT"
-          options={{
-            headerShown: false,
-          }}
-          component={MapScreen}
-        />
-        <CurvedBottomBarExpo.Screen
-          name="profile"
-          component={ProfileScreen}
-          position="RIGHT"
-          options={{ headerShown: false }}
-        />
-      </CurvedBottomBarExpo.Navigator>
+          <CurvedBottomBarExpo.Screen
+            name="home/index"
+            position="LEFT"
+            options={{ headerShown: false }}
+            component={HomeScreen}
+          />
+          <CurvedBottomBarExpo.Screen
+            name="search/index"
+            position="LEFT"
+            options={{ headerShown: false }}
+            component={SearchScreen}
+          />
+          <CurvedBottomBarExpo.Screen
+            name="material/index"
+            position="RIGHT"
+            options={{ headerShown: false }}
+            component={MapScreen}
+          />
+          <CurvedBottomBarExpo.Screen
+            name="profile/index"
+            position="RIGHT"
+            options={{ headerShown: false }}
+            component={ProfileScreen}
+          />
+        </CurvedBottomBarExpo.Navigator>
+      </View>
     </View>
   );
 };
+
 export default BaseNavigator;
-export const styles = StyleSheet.create({
-  container: {
+
+const styles = StyleSheet.create({
+  outerContainer: {
     flex: 1,
-    padding: 20,
+    justifyContent: 'space-between', // Asegura que el contenido esté limitado
+    backgroundColor: '#FFFFFF', // Asegura un fondo consistente
   },
-  button: {
-    marginVertical: 5,
+  contentContainer: {
+    flex: 1,
   },
   bottomBar: {
     position: "absolute",
-    borderRadius: 20,
-    elevation: 20,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 2,  // Asegura que el BottomBar esté por encima
+    elevation: 10,
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
@@ -155,13 +154,9 @@ export const styles = StyleSheet.create({
     elevation: 20,
     bottom: 30,
   },
-  imgCircle: {
-    width: 30,
-    height: 30,
-    tintColor: "gray",
-  },
-  img: {
-    width: 30,
-    height: 30,
+  tabButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
