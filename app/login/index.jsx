@@ -21,6 +21,7 @@ export default function Page() {
         },
         onSubmit: (values) => {
             console.log(values);
+            router.push('../home');
         }
     });
 

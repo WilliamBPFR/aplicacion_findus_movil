@@ -7,11 +7,12 @@ import { Link } from 'expo-router';
 
 export default function Page() {
   return (
-      <View style={styles.container}>
-        <View style={styles.main}>
-          <Text className="text-red-500 text-5xl">Hello World3</Text>
-          <Text style={styles.subtitle}>This is the first page of your app.</Text>
-        </View>
+    <View style={styles.container}>
+      <View style={styles.main}>
+        <Text className="text-red-500 text-5xl">Hello World3</Text>
+        <Text style={styles.subtitle}>This is the first page of your app.</Text>
+      </View>
+      <View>
         <Link href="/login">Login</Link>
         <Link href="/bienvenida">Bienvenida</Link>
         <Link href="/sign_up">Sign Up</Link>
@@ -20,6 +21,7 @@ export default function Page() {
         <Link href="/home">Pantalla Home</Link>
         <Link href="/BottomNavigator">Barra Abajo</Link>
       </View>
+    </View>
   );
 }
 

@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView } from "react-native";
 import { StatusBar } from "expo-status-bar";
-
 import { Link, useRouter} from 'expo-router';
 import { Button,Icon } from "react-native-paper";
 import { useState,useEffect } from "react";
@@ -9,7 +8,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import InputFecha from "../../components/input_fecha";
 import DropdownComponent from "../../components/dropdown";
-import BottomNavigator from "../BottomNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Page() {
 
@@ -86,7 +84,7 @@ export default function Page() {
       <StatusBar
         hidden={false}
         backgroundColor={"#F3F7FD"}
-        barStyle={"dark"}
+        barStyle={"dark-content"}
       />
       {/* Boton back */}
       <View className="flex">
@@ -260,7 +258,7 @@ export default function Page() {
         </View>
         
       </ScrollView>
-      <BottomNavigator />
+      {/* <BottomNavigator /> */}
     </SafeAreaView>
   );
 }
