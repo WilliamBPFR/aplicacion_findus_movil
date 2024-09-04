@@ -1,25 +1,13 @@
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { Link, useRouter } from "expo-router";
-
+import { Text, View, Image, Dimensions, StatusBar} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+const { width, height } = Dimensions.get("window");
 export default function Page() {
 
   const router = useRouter();  
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-    >
-      <View style={styles.main}>
-        <Text style={styles.title}>Hello World3</Text>
-        <Text style={styles.subtitle}>This is the first page of your app.</Text>
-      </View>
-        <View>
-            <Link href="../login">Login</Link>
-            <Link href="../home">Home</Link>
-            <Link href="../sign_up">Sign Up</Link>
-            <Link href="../FormPublicacion">Form Publicacion</Link>
-            <Link href="/BottomNavigator">Bottom Navigator</Link>
-        </View>
-    </ScrollView>
+    <SafeAreaView className="flex-1 bg-[#1B434D]">
+      <StatusBar hidden={false} backgroundColor={"#1B434D"} barStyle={"light-content"} />
+    </SafeAreaView>
   );
 }
 

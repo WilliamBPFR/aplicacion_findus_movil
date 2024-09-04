@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView } from "react-native";
 import { StatusBar } from "expo-status-bar";
-
 import { Link, useRouter} from 'expo-router';
 import { Button,Icon } from "react-native-paper";
 import { useState,useEffect } from "react";
@@ -90,7 +89,7 @@ export default function Page() {
       {/* Boton back */}
       <View className="flex">
         <View className="flex mx-[4.5vw] my-[1vh]">
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.push("../bienvenida")}>
             <Image
               source={require("../../assets/sign_up/flecha-izquierda.png")}
               className="w-[10vw] h-[calc(4.5vh)]"

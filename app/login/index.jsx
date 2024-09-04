@@ -32,7 +32,7 @@ export default function Page() {
           {/* Boton back */}  
           <View className="flex ">
             <View className="flex mx-[4.5vw] my-[1vh]">
-              <TouchableOpacity onPress={() => router.push('../home')}>
+              <TouchableOpacity onPress={() => router.push('../bienvenida')}>
                 <Image source={require("../../assets/sign_up/flecha-izquierda.png")} className="w-[10vw] h-[calc(4.5vh)]"></Image>
               </TouchableOpacity>
             </View>

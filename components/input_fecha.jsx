@@ -1,27 +1,21 @@
-import {Text, View,Dimensions, Date } from "react-native";
+import {Text, View,Dimensions } from "react-native";
 import { TextInput } from "react-native-paper" 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import React,{ useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 
-
 const { width, height } = Dimensions.get("window");
 
-
-export default function InputFecha({value, label, placeholder, fiedName, separation,id_name,setFieldValue, showDateModal, setShowDateModal, pressed, handlePressed, error}) {
+export default function InputFecha({value, label, placeholder, fiedName, separation,id_name,setFieldValue, maxDate,showDateModal, setShowDateModal, pressed, handlePressed, error}) {
 
     const borderColor = (pressed && error) ? "#F26D6F" : "#C6DAEB";
     const hideDatePicker = () => {
         setShowDateModal(false);
     };
 
-    // useEffect(() => {
-    //     console.log("BOOOLLL: ", showDateModal);
-    // }, [showDateModal])
-
     const handleConfirm = (date) => {
-        console.log("AQUI")
-        setFieldValue(fiedName, date);
+        const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        setFieldValue(fiedName, localDate);
         hideDatePicker();
       };
     return(
@@ -52,6 +46,7 @@ export default function InputFecha({value, label, placeholder, fiedName, separat
                 isVisible={showDateModal}
                 mode="date"
                 date={value}
+                maximumDate={maxDate}
                 onConfirm={handleConfirm}
                 onCancel={hideDatePicker}
             >  
