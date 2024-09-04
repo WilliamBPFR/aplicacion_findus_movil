@@ -19,7 +19,6 @@ export default function Page() {
         <Link href="/FormPublicacion">Form Publicacion</Link>
         <Link href="/recuperarContrasena">Recuperar Contraseña</Link>
         <Link href="/home">Pantalla Home</Link>
-        <Link href="/BottomNavigator">Barra Abajo</Link>
       </View>
     </View>
   );

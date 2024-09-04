@@ -65,3 +65,4 @@
 //   // Ejemplo: obtener el estado desde almacenamiento local o una llamada a API
 //   return true;  // Cambia esto según tu lógica real
 // };
+
