@@ -8,16 +8,19 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import InputFecha from "../../../components/input_fecha";
 import DropdownComponent from "../../../components/dropdown";
+import ImagePickerComponent from "../../../components/imagePicker";
+import DocumentPickerComponent from "../../../components/filePicker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import MapInput from "../../../components/map";
 export default function Page() {
 
   const [showDateModal, setShowDateModal] = useState(false);
+  
   const router = useRouter();
-
   // Estado para el valor seleccionado del dropdown
   const [selectedValue, setSelectedValue] = useState('');
-
   const [error, setError] = useState(false);
+
 
   // Manejo del evento de selección
   const handleSelect = (value) => {
@@ -191,6 +194,34 @@ export default function Page() {
             setShowDateModal={setShowDateModal}
           />
 
+          {/* Subir imagen */}
+          <ImagePickerComponent
+            separation={0.028}
+            buttonTitle="Subir foto"
+            label="Foto del desaparecido"
+            onImagePicked={(image) => console.log(image)}
+            containerStyle={{ marginVertical: 24 }}
+            imageStyle={{ width: 200, height: 200 }}
+          />
+
+          {/* Subir documento */}
+          <DocumentPickerComponent
+            separation={0.028}
+            label="Reporte de la policia"
+            onDocumentPicked={(document) => console.log(document)}
+          />
+
+          {/* Input Ubicación con MapInput */}
+          <MapInput
+            separation={0.028}
+            onLocationSelect={(location) =>
+              formik.setFieldValue("ubicacion", `Lat: ${location.latitude}, Lng: ${location.longitude}`)
+            }
+          />
+          {pressed.ubicacion && formik.errors.ubicacion && (
+            <Text style={{ color: 'red' }}>{formik.errors.ubicacion}</Text>
+          )}
+
           {/* Input Relación con el desaparecido */}
           <InputSignUp
             separation={0.028}
@@ -217,7 +248,7 @@ export default function Page() {
           />
 
           {/* Input Ubicación */}
-          <InputSignUp
+          {/* <InputSignUp
             separation={0.028}
             label="Ubicación"
             placeholder="Ubicación"
@@ -225,7 +256,7 @@ export default function Page() {
             onChangeText={formik.handleChange("ubicacion")}
             onBlur={() => handlePress("ubicacion")}
             error={pressed.ubicacion && formik.errors.ubicacion}
-          />
+          /> */}
 
           {/* Input Descripción del desaparecido */}
           <InputSignUp

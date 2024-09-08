@@ -2,13 +2,16 @@ import { Text, View, Image, Dimensions, StatusBar} from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Link } from 'expo-router';
 import { Button, IconButton} from 'react-native-paper';
+import { useRouter } from "expo-router";
 
 
 const { width, height } = Dimensions.get("window");
 export default function Page() {
+
+  const router = useRouter();
   return (
     // <SafeAreaProvider>
-    //   <SafeAreaView style={{ flex: 1,backgroundColor: "#1B434D" }}>
+    //   <SafeAreaView style={{ flex: 1, backgroundColor: "#1B434D" }}>
         <View className="flex-1 bg-[#1B434D]">
           <StatusBar hidden={false} backgroundColor={"#1B434D"} barStyle={"light-content"} />
           {/* Circulo screen-52 */}
@@ -59,7 +62,7 @@ export default function Page() {
           </View>
 
           <View className="flex mx-auto">
-          <Button labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  className="bg-[#3E86B9] flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[125vw] justify-center align-middle" contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex"}} mode="contained"  onPress={() => console.log('Pressed')}><Text>Empezar</Text></Button>
+          <Button labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  className="bg-[#3E86B9] flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[125vw] justify-center align-middle" contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex"}} mode="contained"  onPress={() => router.push('../login')}><Text>Empezar</Text></Button>
           </View>
 
           <View className="flex mx-auto">
