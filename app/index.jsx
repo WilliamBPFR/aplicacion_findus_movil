@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Link } from 'expo-router';
-
+import { StatusBar } from "expo-status-bar";
 
 // Crea la configuración de Tamagui
 
@@ -9,6 +9,7 @@ export default function Page() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
+
         <Text className="text-red-500 text-5xl">Hello World3</Text>
         <Text style={styles.subtitle}>This is the first page of your app.</Text>
       </View>

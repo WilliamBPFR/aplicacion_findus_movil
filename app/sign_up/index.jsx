@@ -177,7 +177,7 @@ export default function Page() {
 
             {/* Label Crear Cuenta */}
             <View className="flex">
-                <Text className="text-3xl text-[#233E58] font-extrabold py-[1vh] mx-[10vw]">Crea tu cuenta</Text>
+                <Text className="text-3xl text-[#233E58] font-extrabold py-[1vh] mx-[7vw]">Crea tu cuenta</Text>
             </View>
 
             {/* Formulario */}
@@ -421,6 +421,8 @@ export default function Page() {
                     </View>
                     
                     {/* <TouchableOpacity 
+                    </View>
+                    <TouchableOpacity 
                         activeOpacity={0.7}
                         className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[13%] rounded-md justify-center mb-[calc(1vh)]" 
                         onPress={handleConfirm}
