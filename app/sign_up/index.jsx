@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar,Dimensions } from "react-native";
+import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar,Dimensions,Keyboard } from "react-native";
 import { Link, useRouter} from 'expo-router';
 import { Button,Icon,Modal,Portal,PaperProvider, TextInput  } from "react-native-paper";
 import { useState,useEffect,useRef } from "react";
@@ -11,6 +11,7 @@ import BarraVolverAtras from "../../components/barra_volver_atras";
 import DropdownComponent from "../../components/dropdown";
 import { obtenerTiposDocumentos } from "../../services/catalogoServices";
 import {registrarUsuario,formato_nombres,confirmarCorreo} from "../../services/userServices";
+import BotonEnvioFormularios from "../../components/boton_envio_formularios";
 
 const { width, height } = Dimensions.get("window");
 
@@ -19,16 +20,19 @@ export default function Page() {
     const [visibleEmailConfirmatioModal, setVisibleEmailConfirmatioModal] = useState(false);
     const [visibleRegisterStatusModal, setVisibleRegisterStatusModal] = useState(false);
     const [showDateModal, setShowDateModal] = useState(false);
-    const [visibleCodeErrorMessage, setVisibleCodeErrorMessage] = useState(false);
+    const [sendingUserData, setSendingUserData] = useState(false);
+    const [sendingCode, setSendingCode] = useState(false);
+    const [buttonBGColor, setButtonBGColor] = useState('#FFFFFF');
+    // const [visibleCodeErrorMessage, setVisibleCodeErrorMessage] = useState(false);
     const showEmailConfirmationModal = () => setVisibleEmailConfirmatioModal(true);
     const hideEmailConfirmationModal = () => setVisibleEmailConfirmatioModal(false);
     const showRegisterStatusModal = () => setVisibleRegisterStatusModal(true);
     const hideRegisterStatusModal = () => setVisibleRegisterStatusModal(false);
-    const showCodeErrorMessage = () => setVisibleCodeErrorMessage(true);
-    const hideCodeErrorMessage = () => setVisibleCodeErrorMessage(false);
+    // const showCodeErrorMessage = () => setVisibleCodeErrorMessage(true);
+    // const hideCodeErrorMessage = () => setVisibleCodeErrorMessage(false);
     const router = useRouter();
     const [apiRessponse, setApiResponse] = useState();
-    const [code, setCode] = useState(["", "", "", ""]);
+    const [code, setCode] = useState(["", "", "", "","",""]);
     const inputs = useRef([]);
     const [data, setData] = useState(
         [{ nombreTipoDocumento: 'NA', id: 1 }]
@@ -39,17 +43,18 @@ export default function Page() {
         formik.resetForm();
         router.push("../login");
     }
+
     const handleChange = (text, index) => {
         let newCode = [...code];
         newCode[index] = text;
         setCode(newCode);
     
         // Mueve el foco al siguiente campo
-        if (text && index < 3) {
+        if (text && index < 5) {
           inputs.current[index + 1].focus();
         }
       };
-    
+       
     const handleKeyPress = (e, index) => {
         if (e.nativeEvent.key === 'Backspace' && index > 0) {
           // Mueve el foco al campo anterior si está vacío y se presiona la tecla de retroceso
@@ -59,23 +64,21 @@ export default function Page() {
 
     const handleConfirm = () => {
         // Aquí puedes manejar la confirmación del código
-        confirmarCorreo({codigoVerificacion: code.join(""),userid: apiRessponse?.data.userid}).then((response) => {
-            console.log("Respuesta de la petición:", response);
-            setApiResponse({...response, verifyingCode: true});
+        Keyboard.dismiss();
+        setSendingCode(true);
+        confirmarCorreo({codigoVerificacion: code.join(""),email: apiRessponse?.data.email}).then((response) => {
+            // console.log("Respuesta de la peticiónnnnnnnnnnnnnnn:", response);
+            if(response.status == 200){
+                setApiResponse({...response, verifyingCode: true});
+            }else{
+                setApiResponse({...apiRessponse, status: response.status,data:{...apiRessponse?.data, message: response.data.message}});
+                setSendingCode(false);
+            }
         }
         );
-        console.log(code.join(""));
+        // console.log(code.join(""));
+        // console.log("Código confirmado");
       };
-
-    useEffect(() => {
-        console.log("useEffect ejecutado");
-        obtenerTiposDocumentos().then((response) => {
-            console.log("Respuesta de la ppetición:", response.data);
-            if(response.status == 200){
-                setData(response.data);
-            }
-    });
-    }, []);
     
     const validationSchema = Yup.object({
         nombres: Yup.string().required("Este campo es obligatorio"),
@@ -117,13 +120,14 @@ export default function Page() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log(values);
+            Keyboard.dismiss();
+            setSendingUserData(true);
             values.nombres = formato_nombres(values.nombres);
             values.apellidos = formato_nombres(values.apellidos);
             values.IdTipoDocumento = parseInt(values.IdTipoDocumento);
             registrarUsuario(values).then((response) => {
-                console.log("Respuesta de la petición:", response);
-                setApiResponse({status: response.status, data: response.data});
+                // console.log("Respuesta de la petición:", response.data);
+                setApiResponse({status: response.status, data: response.data, verifyingCode: false});
                 if(response.status == 400){
                     if(response?.data?.message.includes("email")){
                         formik.setFieldValue("email", "");
@@ -141,17 +145,28 @@ export default function Page() {
                 hideEmailConfirmationModal();
                 showRegisterStatusModal();
             }else{
+                setSendingUserData(false);
                 showEmailConfirmationModal();
             }
         }else if(apiRessponse){
             if(!apiRessponse?.verifyingCode){
+                setSendingUserData(false);
                 showRegisterStatusModal();
-            }else{
-
             }
         }
     }
     , [apiRessponse]);
+
+    useEffect(() => {
+        // console.log("useEffect ejecutado");
+        formik.validateForm();
+        obtenerTiposDocumentos().then((response) => {
+            // console.log("Respuesta de la petición:", response.data);
+            if(response.status == 200){
+                setData(response.data);
+            }
+    });
+    }, []);
 
   return (
     <PaperProvider>
@@ -305,7 +320,7 @@ export default function Page() {
                         handlePressed={()=> setPressed({...pressed, IdTipoDocumento: true})}
                         error={formik.errors.IdTipoDocumento}
                         valueField={"id"}
-                        labelField={"nombreTipoDocumento"}
+                        labelField={"nombretipodocumento"}
                     />
 
                     {/* Input Número de Documento */}
@@ -325,25 +340,36 @@ export default function Page() {
 
             {/* Boton Crear Cuenta */}
             <View className="flex flex-col w-full">
-                <TouchableOpacity 
-                    activeOpacity={0.7} 
-                    className={`flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center align-middle`}
-                    style={{backgroundColor: (formik.isValid) ? "#3E86B9" : "#CFCDD1"}}
-                    onPress={formik.handleSubmit}
-                    disabled={!formik.isValid}
-                >
-                        <Text className="flex w-full text-center text-xl font-bold text-[#F3F7FD]">
-                            Crear Cuenta
-                        </Text>
-                </TouchableOpacity>
-
+                <BotonEnvioFormularios
+                    esValido={formik.isValid}
+                    sendingData={sendingUserData}
+                    label={"Crear Cuenta"}
+                    handleSubmit={formik.handleSubmit}
+                />
                 <View className="flex mx-auto mt-[1vh]">
                     <Text className="text-[#233E58] text-lg">¿Ya tienes una cuenta? <Link href="/login" className="text-[#3E86B9] font-bold">Inicia sesión</Link></Text>
                 </View>
             </View>
+
+
+             {/* Overlay con animación de carga */}
+             {sendingUserData ? (
+                    <View className="absolute top-0 left-0 w-full h-full bg-[#0000003c] justify-center items-center z-[1]">
+                        <LottieView 
+                            source={require("../../assets/sign_up/sendingData.json")}
+                            autoPlay
+                            loop
+                            className="w-[70%] h-[70%]"
+                            style={styles.loadingAnimation}
+                        />
+                        <Text className="text-[#ffffff] text-2xl font-bold">Enviando datos...</Text>
+                    </View>
+                )  : null}
+
+
             {/* Modal de Verificacion Correo */}
             <Portal>
-                <Modal className="w-full h-full mt-0" visible={visibleEmailConfirmatioModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: height*0.55,justifyContent: "center", alignItems:"center"}}>
+                <Modal className="w-full h-full mt-0" visible={visibleEmailConfirmatioModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "94%", height: "58vh",justifyContent: "center", alignItems:"center"}}>
                     <LottieView 
                         className="flex h-[25%] w-[80%]" 
                         source={require(`../../assets/sign_up/email_sended.json`)} 
@@ -354,20 +380,20 @@ export default function Page() {
                     <Text className="text-center text-2xl font-bold text-[#233E58]">
                         Correo Electrónico Enviado 
                     </Text>
-                    <Text className="text-center text-[2vh] p-[2vw] text-[#233E58] mt-[calc(1vh)]">
+                    <Text className="text-center text-[2vh] p-[2vw]  text-[#233E58] mt-[calc(1vh)]">
                         !Te has registrado exitosamente! 
                     </Text>
-                    <Text className="text-center text-[2vh] mb-[2vh] text-[#233E58]">
+                    <Text className="text-center text-[2vh] mb-[2vh] px-[3vw] text-[#233E58]">
                     Para verificar que eres tu, revisa tu correo electrónico e introduce el código de verificación aquí debajo. 
                     </Text>
 
-                    {apiRessponse?.status == 200 ? <></> :
+                    {(apiRessponse?.status == 200 && apiRessponse?.verifyingCode == false) ? null :
                         <Text className="text-center text-[#d95151] text-md font-bold mb-[calc(2vh)]">
                                 {apiRessponse?.data.message}
                         </Text>
                     }
 
-                    <View className="flex-row mx-auto justify-between w-full px-[15%]">
+                    <View className="flex-row mx-auto justify-between w-full px-[5%]">
                         {code.map((digit, index) => (
                             <TextInput
                                 key={index}
@@ -377,7 +403,7 @@ export default function Page() {
                                 onKeyPress={(e) => handleKeyPress(e, index)}
                                 onChangeText={(text) => handleChange(text, index)}
                                 outlineStyle={{borderColor: "#3E86B9", borderWidth: 1, borderRadius: 6}}
-                                className={`border rounded-lg w-[13vw] h-[${height*0.06}] text-2xl bg-white text-center leading-none`}
+                                className={`border rounded-lg w-[12vw] h-[${height*0.06}] text-2xl bg-white text-center leading-none`}
                                 style={{borderColor: "transparent", borderWidth: 0, borderRadius: 0}}
                                 contentStyle={{textAlign: "center"}}
                                 keyboardType="numeric"
@@ -385,7 +411,16 @@ export default function Page() {
                             />
                         ))}
                         </View>
-                    <TouchableOpacity 
+                    <View className="mt-[2vh] w-[80%] mb-[1vh]">
+                        <BotonEnvioFormularios
+                            label="Confirmar Correo"
+                            esValido={code.join("").length === 6}
+                            sendingData={sendingCode}
+                            handleSubmit={handleConfirm}
+                        />
+                    </View>
+                    
+                    {/* <TouchableOpacity 
                         activeOpacity={0.7}
                         className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[13%] rounded-md justify-center mb-[calc(1vh)]" 
                         onPress={handleConfirm}
@@ -393,7 +428,7 @@ export default function Page() {
                         <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
                             Confirmar Correo
                         </Text>
-                    </TouchableOpacity>   
+                    </TouchableOpacity>    */}
                 </Modal>
             </Portal>
 

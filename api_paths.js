@@ -1,5 +1,5 @@
 // API Link de prueba en Emulador de Android: en PC
-const API_BASE_URL = 'http://10.0.2.2:3000/api';
+const API_BASE_URL = 'http://10.0.0.254:3000/api';
 
 // // API Link de prueba en Telefono Android
 // const IP = "10.0.0.254";
@@ -9,6 +9,10 @@ const apiRoutes = {
     // Rutas de usuario
     registrarUsuario: () => `${API_BASE_URL}/user/registrar_usuario`,
     confirmarCorreo: () => `${API_BASE_URL}/user/confirmar_correo`,
+    solicitarCambioContrasena: () => `${API_BASE_URL}/user/solicitar_cambio_contrasena`,
+    verificar_codigo_cambio_contrasena: () => `${API_BASE_URL}/user/verificar_codigo_cambio_contrasena`,
+    cambiar_contrasena: () => `${API_BASE_URL}/user/cambiar_contrasena`,
+
 
     //Rutas Tipo de Documento
     obtenerTiposDocumentos: () => `${API_BASE_URL}/tipo_documento/obtenerTipoDocumento`,
