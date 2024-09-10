@@ -46,6 +46,7 @@ const _renderIcon = (routeName, focused) => {
 
 const TabsLayout = () => {
   return (
+    <>
       <Tabs
         screenOptions={{
             tabBarShowLabel: false,

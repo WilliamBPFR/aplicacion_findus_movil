@@ -458,8 +458,7 @@ export default function Page() {
                     }
                     
                     
-                    <TouchableOpacity 
-                        activeOpacity={0.7}  
+                    <TouchableOpacity  
                         className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[10%] rounded-md justify-center mb-[calc(1vh)]" 
                         onPress={apiRessponse?.status == 200 ? () => router.push("../login"): hideRegisterStatusModal}
                     >
