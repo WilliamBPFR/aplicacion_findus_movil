@@ -1,11 +1,5 @@
 import {API_BASE_URL} from "@env"
 
-// API Link de prueba en Emulador de Android: en PC
-
-// // API Link de prueba en Telefono Android
-// const IP = "10.0.0.254";
-// const API_BASE_URL = `http://${IP}:3000/api`;
-
 const apiRoutes = {
     // Rutas de usuario
     registrarUsuario: () => `${API_BASE_URL}/user/registrar_usuario`,

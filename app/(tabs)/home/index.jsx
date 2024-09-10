@@ -7,7 +7,7 @@ const { width, height } = Dimensions.get("window");
 export default function Page() {
 
   return (
-    <View className="flex-1 bg-[#C6DAEB]">
+    <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
       <TopBar/>
     </View>
