@@ -1,5 +1,5 @@
 // API Link de prueba en Emulador de Android: en PC
-const API_BASE_URL = 'http://10.0.0.254:3000/api';
+const API_BASE_URL = 'http://10.0.0.254:5000/api';
 
 // // API Link de prueba en Telefono Android
 // const IP = "10.0.0.254";

@@ -99,4 +99,6 @@ module.exports = {
     solicitarCambioContrasena,
     verificarCodigoCambioContrasena,
     cambiarContrasena,
+    guardarToken,
+    obtenerToken
 }
