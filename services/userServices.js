@@ -68,6 +68,15 @@ const solicitarCambioContrasena = async (data) => {
     }
 }
 
+const login = async (data) => {
+    try {
+        const response = await axios.post(apiRoutes.loginUsuario(), data);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
 const verificarCodigoCambioContrasena = async (data) => {
     try {
         const response = await axios.post(apiRoutes.verificar_codigo_cambio_contrasena(), data);
@@ -100,5 +109,6 @@ module.exports = {
     verificarCodigoCambioContrasena,
     cambiarContrasena,
     guardarToken,
-    obtenerToken
+    obtenerToken,
+    login
 }
