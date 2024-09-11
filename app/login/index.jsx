@@ -88,9 +88,16 @@ export default function Page() {
 
         {/* Botón Iniciar sesión */}
         <View className="flex flex-col w-full">
-          <TouchableOpacity activeOpacity={0.7} className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center align-middle" onPress={formik.handleSubmit}>
+          {/* <TouchableOpacity activeOpacity={0.7} className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center align-middle" onPress={formik.handleSubmit}>
             <Text className="text-center text-[16px] font-bold text-[#F3F7FD]">Iniciar sesión</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          <BotonEnvioFormularios
+            esValido={formik.isValid}
+            sendingData={loading}
+            label={"Iniciar sesión"}
+            handleSubmit={formik.handleSubmit}
+          />
 
           <View className="flex mx-auto mt-[4vh]">
             <Link href="../recuperarContrasena" className="text-[#3E86B9] font-semibold">¿Olvidaste tu contraseña?</Link>
