@@ -1,4 +1,4 @@
-import { Text, View, Image, TouchableOpacity, StatusBar,Dimensions, Animated} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, StatusBar,Dimensions, Animated,ScrollView,Platform } from "react-native";
 import { TextInput,Icon } from "react-native-paper";
 import BarraVolverAtras from "../../components/barra_volver_atras";
 import InputSignUp from "../../components/input_sign_up";
@@ -7,7 +7,8 @@ import { useState,useRef,useEffect } from "react";
 import LottieView from "lottie-react-native";
 import BotonEnvioFormularios from "../../components/boton_envio_formularios";
 import * as Yup from "yup";
-import {solicitarCambioContrasena, verificarCodigoCambioContrasena} from "../../services/userServices";
+import {solicitarCambioContrasena, verificarCodigoCambioContrasena, cambiarContrasena} from "../../services/userServices";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get("window");
 
@@ -78,7 +79,7 @@ export default function Page() {
       };
     
     const handleKeyPress = (e, index) => {
-        if (e.nativeEvent.key === 'Backspace' && index > 0) {
+        if (e.nativeEvent.key === 'Backspace' && index > 0 && !code[index]) {
           // Mueve el foco al campo anterior si está vacío y se presiona la tecla de retroceso
           inputs.current[index - 1].focus();
         }
@@ -93,7 +94,7 @@ export default function Page() {
                 setResponseState({status: 200, purpose: "tomacodigo", data: response.data});
                 handleAnimation({ tomaCodigo: false, tomaNuevaContrasena: true });
             }else{
-                setResponseState({... responseState, status: 400, purpose: "tomacodigo", data: response.data});
+                setResponseState({... responseState, status: 400, purpose: "tomacodigo", data: {...responseState?.data, message: response?.data?.message}});
                 setSendingCode(false);
             }
             console.log(response.data);
@@ -172,6 +173,21 @@ export default function Page() {
         }),
         onSubmit: (values) => {
             console.log("APIRESPONSE", responseState);
+
+            cambiarContrasena({contrasena: values.contrasena}, responseState?.data?.token).then((response) => {
+                if(response.status == 200){
+                    setResponseState({status: 200, purpose: "cambioContrasena", data: response.data});
+                    handleAnimation({ tomaNuevaContrasena: false, contrasenaActualizada: true });
+                }else{
+                    setResponseState({status: 400, purpose: "cambioContrasena", data: response.data});
+                    formikContrasena.setSubmitting(false);
+                }
+                console.log(response.data);
+
+            }).catch((error) => {
+                console.log("Error al cambiar contraseña");
+                console.log(error);
+            });
             console.log(values);
         }
     });
@@ -207,11 +223,12 @@ export default function Page() {
           {!processPart.contrasenaActualizada && (
                 <BarraVolverAtras/>
             )}
-         
+
+        <ScrollView contentContainerStyle={styles.scrollViewContent} className=" flex mb-[calc(1.5vh)] max-h-[90vh]">
             {processPart.tomaCorreo && (
-                <Animated.View className="flex w-full h-[100%] mt-[4vh]" style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
+                <Animated.View className="flex w-full h-[55vh] mt-[4vh]" style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
                     <LottieView 
-                        className="h-[24%] " 
+                        className="h-[27%] " 
                         source={require(`../../assets/recuperarContrasena/lock.json`)} 
                         autoPlay 
                         loop={true} 
@@ -246,7 +263,7 @@ export default function Page() {
             )}
 
             {processPart.tomaCodigo && (
-                 <Animated.View className="flex w-full h-[70vh] mt-[4vh]" style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
+                 <Animated.View className="flex w-full h-[70vh]" style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
                      <LottieView 
                             className="h-[30%]" 
                             source={require(`../../assets/sign_up/email_sended.json`)} 
@@ -323,98 +340,99 @@ export default function Page() {
             )}
 
           {processPart.tomaNuevaContrasena && (
-                <Animated.View  className="flex h-[60vh] w-full mt-[4vh]" style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
-                    <LottieView 
-                            className="h-[37%] " 
-                            source={require(`../../assets/recuperarContrasena/password.json`)} 
-                            autoPlay 
-                            loop={true} 
-                        />           
-                        {/* <Image source={require("../../assets/recuperarContrasena/candado.png")} className="w-[22vw] h-[10vh] mx-auto"></Image> */}
-                        <Text className="text-[24px] text-[#233E58] font-extrabold text-center max-w-[47vw] mx-auto">Crea tu nueva contraseña</Text>
-                        <Text className="text-[16px] text-[#233E58] text-center mt-[1vh] max-w-[78vw] mx-auto">Escribe y confirma tu nueva contraseña.</Text>
+                    <Animated.View  className="flex h-[80vh] w-full " style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
+                        <LottieView 
+                                className="h-[24%] " 
+                                source={require(`../../assets/recuperarContrasena/password.json`)} 
+                                autoPlay 
+                                loop={true} 
+                            />           
+                            {/* <Image source={require("../../assets/recuperarContrasena/candado.png")} className="w-[22vw] h-[10vh] mx-auto"></Image> */}
+                            <Text className="text-[24px] text-[#233E58] font-extrabold text-center max-w-[47vw] mx-auto">Crea tu nueva contraseña</Text>
+                            <Text className="text-[16px] text-[#233E58] text-center mt-[1vh] max-w-[78vw] mx-auto">Escribe y confirma tu nueva contraseña.</Text>
 
-                        <View className="flex mx-auto mt-[2vh] w-[calc(85.38vw)]">
+                            <View className="flex mx-auto mt-[2vh] w-[calc(85.38vw)]">
 
-                        {/* Input Contraseña */}
-                        <InputSignUp 
-                            separation={0.028} 
-                            label={"Contraseña"} 
-                            text={formikContrasena.values.contrasena} 
-                            placeholder={"Nueva Contraseña"} 
-                            id_name={"contrasena"}
-                            handleChange={formikContrasena.handleChange("contrasena")}
-                            tipo_contrasena={true}
-                            pressed={pressed.contrasena}
-                            handlePressed={()=> setPressed({...pressed, contrasena: true})}
-                            error={formikContrasena.errors.contrasena}
-                            showLabel={false}
-                        />
-
-                        {/* Texto de validación de contraseña */}
-                        <View className="mb-6">
-                            <Text className="text-[#233E58] text-[14px] font-extrabold">Tu contraseña debe:</Text>
-
-                            <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                                <Icon size={16} color={(formikContrasena.values.contrasena.length >= 8) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                                <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos 8 caracteres</Text>
-                            </View>
-
-                            <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                                <Icon size={16} color={/[A-Z]/.test(formikContrasena.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                                <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos una mayúscula</Text>
-                            </View>
-
-                            <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                                <Icon size={16} color={/\d/.test(formikContrasena.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                                <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos un número</Text>
-                            </View>
-
-                            <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                                <Icon size={16} color={/[!@#$%^&*(),.?":{}|<>]/.test(formikContrasena.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                                <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos un caracter especial</Text>
-                            </View>
-                        </View>
-
-                        {/* Input Confirmar Contraseña */}
-                        <InputSignUp 
-                            separation={0.028} 
-                            text={formikContrasena.values.confirmar_contrasena} 
-                            placeholder={"Confirmar Nueva Contraseña"} 
-                            id_name={"confirmar_contrasena"}
-                            handleChange={formikContrasena.handleChange("confirmar_contrasena")}
-                            tipo_contrasena={true}
-                            pressed={pressed.confirmar_contrasena}
-                            handlePressed={()=> setPressed({...pressed, confirmar_contrasena: true})}
-                            error={formikContrasena.errors.confirmar_contrasena}
-                            showLabel={false}
-                        />
-
-                        <View className="mt-[3vh]">
-                            <BotonEnvioFormularios
-                                esValido={formikContrasena.isValid }
-                                sendingData={formikContrasena.isSubmitting}
-                                label={"Confirmar"}
-                                handleSubmit={formikContrasena.handleSubmit}
+                            {/* Input Contraseña */}
+                            <InputSignUp 
+                                separation={0.028} 
+                                label={"Contraseña"} 
+                                text={formikContrasena.values.contrasena} 
+                                placeholder={"Nueva Contraseña"} 
+                                id_name={"contrasena"}
+                                handleChange={formikContrasena.handleChange("contrasena")}
+                                tipo_contrasena={true}
+                                pressed={pressed.contrasena}
+                                handlePressed={()=> setPressed({...pressed, contrasena: true})}
+                                error={formikContrasena.errors.contrasena}
+                                showLabel={false}
                             />
+
+                            {/* Texto de validación de contraseña */}
+                            <View className="mb-6">
+                                <Text className="text-[#233E58] text-[14px] font-extrabold">Tu contraseña debe:</Text>
+
+                                <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
+                                    <Icon size={16} color={(formikContrasena.values.contrasena.length >= 8) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
+                                    <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos 8 caracteres</Text>
+                                </View>
+
+                                <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
+                                    <Icon size={16} color={/[A-Z]/.test(formikContrasena.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
+                                    <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos una mayúscula</Text>
+                                </View>
+
+                                <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
+                                    <Icon size={16} color={/\d/.test(formikContrasena.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
+                                    <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos un número</Text>
+                                </View>
+
+                                <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
+                                    <Icon size={16} color={/[!@#$%^&*(),.?":{}|<>]/.test(formikContrasena.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
+                                    <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos un caracter especial</Text>
+                                </View>
+                            </View>
+
+                            {/* Input Confirmar Contraseña */}
+                            <InputSignUp 
+                                separation={0.028} 
+                                text={formikContrasena.values.confirmar_contrasena} 
+                                placeholder={"Confirmar Nueva Contraseña"} 
+                                id_name={"confirmar_contrasena"}
+                                handleChange={formikContrasena.handleChange("confirmar_contrasena")}
+                                tipo_contrasena={true}
+                                pressed={pressed.confirmar_contrasena}
+                                handlePressed={()=> setPressed({...pressed, confirmar_contrasena: true})}
+                                error={formikContrasena.errors.confirmar_contrasena}
+                                showLabel={false}
+                            />
+
+                            <View className="mt-[3vh]">
+                                <BotonEnvioFormularios
+                                    esValido={formikContrasena.isValid }
+                                    sendingData={formikContrasena.isSubmitting}
+                                    label={"Confirmar"}
+                                    handleSubmit={formikContrasena.handleSubmit}
+                                />
+                            </View>
                         </View>
-                    </View>
-                   </Animated.View >
+                    </Animated.View >
+
             )}
 
            {processPart.contrasenaActualizada && (
-                    <Animated.View className="flex h-[35vh] mb-0 w-full mt-[23vh]" style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
+                    <Animated.View className="flex h-[55vh] mb-0 w-full mt-[27vh]" style={{ opacity: fadeAnim, transform: [{ translateX: slideAnim }] }}>
                         <LottieView 
-                            className="h-[65%] " 
+                            className="h-[20vh]" 
                             source={require(`../../assets/sign_up/check.json`)} 
                             autoPlay 
                             loop={true} 
                         />                        
-                        <Text className="text-[24px] text-[#233E58] font-extrabold text-center mt-[2vh] max-w-[47vw] mx-auto">Tu contraseña ha sido actualizada</Text>
+                        <Text className="text-[20px] text-[#233E58] font-extrabold text-center mt-[2vh] max-w-[47vw] mx-auto">Tu contraseña ha sido actualizada</Text>
                         <View className="flex mx-auto mt-[2vh] w-[calc(85.38vw)]">
                             <TouchableOpacity 
                                 activeOpacity={0.7}  
-                                className=" bg-[#3E86B9] w-[100%] h-[44%] rounded-md justify-center mb-[calc(1vh)]" 
+                                className=" bg-[#3E86B9] w-[100%] h-[6vh] rounded-md justify-center mb-[calc(1vh)]" 
                                 onPress={() => console.log('Pressed')}
                             >
                                 <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
@@ -424,6 +442,15 @@ export default function Page() {
                     </View>
                         </Animated.View >
             )}
+        </ScrollView>
         </View>
+        
 );
 }
+
+const styles = StyleSheet.create({
+    scrollViewContent: {
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+});
