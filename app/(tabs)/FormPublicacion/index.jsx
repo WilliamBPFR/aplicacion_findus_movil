@@ -21,7 +21,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { obtenerTiposDocumentos } from "../../../services/catalogoServices";
 import MapInput from "../../../components/map";
 export default function Page() {
-  const [showDateModal, setShowDateModal] = useState(false);
+  const [showDateModalNacimiento, setShowDateModalNacimiento] = useState(false);
+  const [showDateModalDesaparicion, setShowDateModalDesaparicion] = useState(false);
+
 
   const router = useRouter();
   // Estado para el valor seleccionado del dropdown
@@ -62,11 +64,13 @@ export default function Page() {
 
   const validationSchema = Yup.object({
     nombre: Yup.string().required("Este campo es obligatorio"),
+    fecha_nacimiento: Yup.date().required("Este campo es obligatorio"),
     tipo_documento: Yup.string().required("Este campo es obligatorio"),
     documento: Yup.string().required("Este campo es obligatorio"),
     telefono: Yup.string().required("Este campo es obligatorio"),
     relacion_desaparecido: Yup.string().required("Este campo es obligatorio"),
     contacto: Yup.string().required("Este campo es obligatorio"),
+    fecha_desaparicion: Yup.date().required("Este campo es obligatorio"),
     ubicacion: Yup.string().required("Este campo es obligatorio"),
     descripcion_desaparecido: Yup.string().required(
       "Este campo es obligatorio"
@@ -167,8 +171,8 @@ export default function Page() {
               setPressed({ ...pressed, fecha_nacimiento: true })
             }
             error={formik.errors.fecha_nacimiento}
-            showDateModal={showDateModal}
-            setShowDateModal={setShowDateModal}
+            showDateModal={showDateModalNacimiento}
+            setShowDateModal={setShowDateModalNacimiento}
             maxDate={new Date()}
           />
 
@@ -229,8 +233,8 @@ export default function Page() {
               setPressed({ ...pressed, fecha_desaparicion: true })
             }
             error={formik.errors.fecha_desaparicion}
-            showDateModal={showDateModal}
-            setShowDateModal={setShowDateModal}
+            showDateModal={showDateModalDesaparicion}
+            setShowDateModal={setShowDateModalDesaparicion}
           />
 
           {/* Subir imagen */}

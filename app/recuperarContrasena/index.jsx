@@ -8,7 +8,6 @@ import LottieView from "lottie-react-native";
 import BotonEnvioFormularios from "../../components/boton_envio_formularios";
 import * as Yup from "yup";
 import {solicitarCambioContrasena, verificarCodigoCambioContrasena, cambiarContrasena} from "../../services/userServices";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get("window");
 
