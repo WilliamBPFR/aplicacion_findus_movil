@@ -20,14 +20,41 @@ export default function Page() {
           <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
 
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
+
+          <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>
+
           <CardPublicacionesGrande/>
       </ScrollView>
     </View>
