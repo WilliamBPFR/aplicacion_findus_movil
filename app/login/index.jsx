@@ -1,11 +1,14 @@
 import { Text, View, Image, TouchableOpacity, Modal, StatusBar, ActivityIndicator, StyleSheet } from "react-native";
 import { Link, useRouter } from 'expo-router';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputSignUp from "../../components/input_sign_up";
 import { useFormik } from "formik";
 import { login, guardarToken } from "../../services/userServices";
 import LottieView from 'lottie-react-native'; // Para animaciones
 import { Portal, PaperProvider } from 'react-native-paper'; // Para modal de tipo portal
+import BotonEnvioFormularios from "../../components/boton_envio_formularios";
+import * as Yup from "yup";
+
 
 export default function Page() {
   const router = useRouter();
@@ -14,11 +17,16 @@ export default function Page() {
   const [modalMessage, setModalMessage] = useState(''); // Mensaje de éxito/error
   const [apiRessponse, setApiResponse] = useState(null); // Para guardar la respuesta
 
+
   const formik = useFormik({
     initialValues: {
       email: "",
       contrasena: "",
     },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Correo electrónico inválido").required("Campo requerido"),
+      contrasena: Yup.string().required("Campo requerido"),
+    }),
     onSubmit: async (values) => {
       console.log("Enviando datos: ", values);
       setLoading(true); // Mostrar modal de carga
@@ -81,7 +89,7 @@ export default function Page() {
         {/* Formulario */}
         <View className="flex mx-[7.2vw] py-[4vh] max-h-[70vh] mb-[calc(1.5vh)]">
           <View className="flex w-[calc(85.380vw)]">
-            <InputSignUp separation={0.028} label={"Correo electrónico"} text={formik.values.email} placeholder={"nombre@dominio.com"} handleChange={formik.handleChange("email")} />
+            <InputSignUp separation={0.028} label={"Correo electrónico"} text={formik.values.email} placeholder={"nombre@dominio.com"} id_name={"email"} handleChange={formik.handleChange("email")} />
             <InputSignUp separation={0.028} label={"Contraseña"} text={formik.values.contrasena} placeholder={"Ingresa tu contraseña"} handleChange={formik.handleChange("contrasena")} tipo_contrasena={true} />
           </View>
         </View>
