@@ -1,6 +1,4 @@
 import {Text, TouchableOpacity, View,Image} from "react-native";
-import { useEffect,useRef } from "react";
-import { useState } from "react";
 
 
 export default function CardPublicacionesGrande() {
@@ -30,7 +28,7 @@ export default function CardPublicacionesGrande() {
                />
           </View>
         </View>
-        <TouchableOpacity className="flex w-[90%] h-[6vh] bg-[#233E58] mx-auto items-center justify-center mt-[calc(0.5vh)] rounded-lg" onPress={()=> console.log("Pressed")} activeOpacity={0.9}>
+        <TouchableOpacity className="flex w-[90%] h-[6vh] bg-[#3E86B9] mx-auto items-center justify-center mt-[calc(0.5vh)] rounded-lg" onPress={()=> console.log("Pressed")} activeOpacity={0.9}>
             <Text className="text-white text-lg font-bold">Ver Publicación Completa</Text>
         </TouchableOpacity>
       </View>

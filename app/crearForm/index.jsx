@@ -5,22 +5,21 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  BackHandler
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Link, useRouter } from "expo-router";
-import { Button, Icon } from "react-native-paper";
 import { useState, useEffect } from "react";
-import InputSignUp from "../../components/input_sign_up";
+import InputSignUp from "../../components/input_sign_up.jsx";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import InputFecha from "../../components/input_fecha";
-import DropdownComponent from "../../components/dropdown";
-import ImagePickerComponent from "../../components/imagePicker";
-import DocumentPickerComponent from "../../components/filePicker";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { obtenerTiposDocumentos } from "../../services/catalogoServices";
-import MapInput from "../../components/map";
-import { obtenerPublicacion, obtenerPublicaciones, crearPublicacion, actualizarPublicacion, eliminarPublicacion } from "../../services/publicacionServices";
+import InputFecha from "../../components/input_fecha.jsx";
+import DropdownComponent from "../../components/dropdown.jsx";
+import ImagePickerComponent from "../../components/imagePicker.jsx";
+import DocumentPickerComponent from "../../components/filePicker.jsx";
+import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
+import MapInput from "../../components/map.jsx";
+import {crearPublicacion} from "../../services/publicacionServices.js";
 
 export default function Page() {
   const [showDateModalNacimiento, setShowDateModalNacimiento] = useState(false);
@@ -28,6 +27,21 @@ export default function Page() {
 
 
   const router = useRouter();
+
+  useEffect(() => {
+    const backAction = () => {
+      // Aquí defines la ruta a la que quieres redirigir
+      router.replace('/FormPublicacion');  // Reemplaza con la pantalla específica
+      return true; // Esto indica que estamos manejando el evento nosotros.
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   // // Estado para el valor seleccionado del dropdown
   // const [selectedValue, setSelectedValue] = useState("");
   // const [error, setError] = useState(false);

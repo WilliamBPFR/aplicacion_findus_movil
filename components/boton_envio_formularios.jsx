@@ -1,6 +1,5 @@
 import {Text, TouchableOpacity} from "react-native";
-import { useEffect,useRef } from "react";
-import { useState } from "react";
+import { useEffect } from "react";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolateColor } from 'react-native-reanimated';
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);

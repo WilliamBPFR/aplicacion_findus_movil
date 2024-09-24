@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/Feather'; // Asegúrate de instalar react-native-vector-icons
 
 const { width, height } = Dimensions.get("window");
-const ImagePickerComponent = ({ 
+export default function ImagePickerComponent ({ 
   onImagePicked, 
   containerStyle,
   label, 
@@ -13,7 +13,7 @@ const ImagePickerComponent = ({
   pressed,
   error,
   separation, 
-}) => {
+}) {
   const [imageName, setImageName] = useState(null);
   const borderColor = (pressed && error) ? "#F26D6F" : "#C6DAEB";
 
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImagePickerComponent;
+// export default ImagePickerComponent;

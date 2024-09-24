@@ -1,12 +1,12 @@
 import { Text, View, Image, TouchableOpacity, Modal, StatusBar, ActivityIndicator, StyleSheet } from "react-native";
 import { Link, useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
-import InputSignUp from "../../components/input_sign_up";
+import InputSignUp from "../../components/input_sign_up.jsx";
 import { useFormik } from "formik";
-import { login, guardarToken } from "../../services/userServices";
+import { login, guardarToken } from "../../services/userServices.js";
 import LottieView from 'lottie-react-native'; // Para animaciones
 import { Portal, PaperProvider } from 'react-native-paper'; // Para modal de tipo portal
-import BotonEnvioFormularios from "../../components/boton_envio_formularios";
+import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
 import * as Yup from "yup";
 
 

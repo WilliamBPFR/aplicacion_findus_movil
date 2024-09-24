@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const { width, height } = Dimensions.get("window");
 
-const MapInput = ({ onLocationSelect, separation, pressed, error }) => {
+export default function MapInput ({ onLocationSelect, separation, pressed, error })  {
   const [modalVisible, setModalVisible] = useState(false);
   const [region, setRegion] = useState(null); // Guarda la región actual
   const [marker, setMarker] = useState(null); // Guarda la posición del marcador
@@ -142,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MapInput;
+// export default MapInput;

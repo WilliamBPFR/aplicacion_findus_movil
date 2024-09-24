@@ -2,16 +2,16 @@ import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar,Dim
 import { Link, useRouter} from 'expo-router';
 import { Button,Icon,Modal,Portal,PaperProvider, TextInput  } from "react-native-paper";
 import { useState,useEffect,useRef } from "react";
-import InputSignUp from "../../components/input_sign_up";
-import InputFecha from "../../components/input_fecha";
+import InputSignUp from "../../components/input_sign_up.jsx";
+import InputFecha from "../../components/input_fecha.jsx";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import LottieView from "lottie-react-native";
-import BarraVolverAtras from "../../components/barra_volver_atras";
-import DropdownComponent from "../../components/dropdown";
-import { obtenerTiposDocumentos } from "../../services/catalogoServices";
-import {registrarUsuario,formato_nombres,confirmarCorreo} from "../../services/userServices";
-import BotonEnvioFormularios from "../../components/boton_envio_formularios";
+import BarraVolverAtras from "../../components/barra_volver_atras.jsx";
+import DropdownComponent from "../../components/dropdown.jsx";
+import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
+import {registrarUsuario,formato_nombres,confirmarCorreo} from "../../services/userServices.js";
+import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
 
 const { width, height } = Dimensions.get("window");
 
@@ -62,7 +62,7 @@ export default function Page() {
         }
       };
 
-    const handleConfirm = () => {
+    const handleConfirm = () => {   
         // Aquí puedes manejar la confirmación del código
         Keyboard.dismiss();
         setSendingCode(true);

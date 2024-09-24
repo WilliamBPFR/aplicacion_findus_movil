@@ -1,6 +1,5 @@
 import { Text, View, Image, Dimensions, StatusBar, ScrollView, view} from "react-native";
-import CardPublicacionesHorizontal from "./card_publicacion_horizontal";
-const { width, height } = Dimensions.get("window");
+import CardPublicacionesHorizontal from "./card_publicacion_horizontal.jsx";
 
 export default function SliderPublicacionesRecientes() {
 

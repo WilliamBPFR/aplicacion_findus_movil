@@ -1,9 +1,7 @@
 import {Text, View,Dimensions, StyleSheet } from "react-native";
-import {FontAwesome} from "@expo/vector-icons";
 import { Dropdown } from "react-native-element-dropdown";
-import React, { useEffect, useState } from "react";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Icon } from 'react-native-paper';
+import { useState } from "react";
+
 
 const { width, height } = Dimensions.get("window");
 

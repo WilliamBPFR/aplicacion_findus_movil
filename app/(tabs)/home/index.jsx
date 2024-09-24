@@ -1,7 +1,7 @@
 import { Text, View, Image, Dimensions, StatusBar, ScrollView, view} from "react-native";
-import TopBar from "../../../components/topbar";
-import CardPublicacionesGrande from "../../../components/card_publicacion_grande_home";
-import SliderPublicacionesRecientes from "../../../components/slider_arriba_publicaciones_recientes";
+import TopBar from "../../../components/topbar.jsx";
+import CardPublicacionesGrande from "../../../components/card_publicacion_grande_home.jsx";
+import SliderPublicacionesRecientes from "../../../components/slider_arriba_publicaciones_recientes.jsx";
 import { Divider } from "react-native-paper";
 
 

@@ -1,6 +1,4 @@
 import {Text, TouchableOpacity, View,Image} from "react-native";
-import { useEffect,useRef } from "react";
-import { useState } from "react";
 import { Divider } from "react-native-paper";
 
 
