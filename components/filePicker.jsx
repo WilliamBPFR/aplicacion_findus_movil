@@ -11,7 +11,7 @@ import Icon from "react-native-vector-icons/Feather"; // Asegúrate de instalar 
 
 const { width, height } = Dimensions.get("window");
 
-const DocumentPickerComponent = ({
+export default function DocumentPickerComponent  ({
   onDocumentPicked,
   containerStyle,
   label,
@@ -20,7 +20,7 @@ const DocumentPickerComponent = ({
   separation,
   pressed,
   error,
-}) => {
+}) {
   const [documentName, setDocumentName] = useState(null);
   const borderColor = pressed && error ? "#F26D6F" : "#C6DAEB";
 
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DocumentPickerComponent;
+// export default DocumentPickerComponent;

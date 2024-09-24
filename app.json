@@ -13,12 +13,13 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "config":{
+      "config": {
         "usesNonExemptEncryption": false
       },
       "supportsTablet": true
     },
     "android": {
+      "package": "com.william_ferreira.findus",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -31,6 +32,14 @@
       "expo-router",
       "expo-font",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "820bcd7d-5915-4620-89f1-d0d71b391918"
+      }
+    }
   }
 }

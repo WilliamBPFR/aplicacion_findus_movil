@@ -1,7 +1,7 @@
 import apiRoutes from "../api_paths";
 import axios from "axios";
 
-const obtenerTiposDocumentos = async () => {
+export const obtenerTiposDocumentos = async () => {
     try {
         // console.log("Entrando en la función obtenerTiposDocumentos");
         const response = await axios.get(apiRoutes.obtenerTiposDocumentos());
@@ -13,7 +13,3 @@ const obtenerTiposDocumentos = async () => {
     }
 }
 
-
-module.exports = {
-    obtenerTiposDocumentos
-}

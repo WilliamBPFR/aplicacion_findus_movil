@@ -1,13 +1,13 @@
 import { Text, View, StyleSheet, TouchableOpacity, StatusBar,Dimensions, Animated,ScrollView,Platform } from "react-native";
 import { TextInput,Icon } from "react-native-paper";
-import BarraVolverAtras from "../../components/barra_volver_atras";
-import InputSignUp from "../../components/input_sign_up";
+import BarraVolverAtras from "../../components/barra_volver_atras.jsx";
+import InputSignUp from "../../components/input_sign_up.jsx";
 import { useFormik } from "formik";
 import { useState,useRef,useEffect } from "react";
 import LottieView from "lottie-react-native";
-import BotonEnvioFormularios from "../../components/boton_envio_formularios";
+import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
 import * as Yup from "yup";
-import {solicitarCambioContrasena, verificarCodigoCambioContrasena, cambiarContrasena} from "../../services/userServices";
+import {solicitarCambioContrasena, verificarCodigoCambioContrasena, cambiarContrasena} from "../../services/userServices.js";
 
 const { width, height } = Dimensions.get("window");
 

@@ -1,11 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { TouchableOpacity, View, Image, StyleSheet, FlatList, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Chip } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import TopBar from "../../../components/topbar";
+import TopBar from "../../../components/topbar.jsx";
 
 
 export default function Page() {

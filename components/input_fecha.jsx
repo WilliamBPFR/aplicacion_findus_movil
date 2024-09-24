@@ -1,10 +1,6 @@
 import {Text, View,Dimensions } from "react-native";
 import { TextInput } from "react-native-paper" 
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-import React,{ useEffect, useState } from "react";
-import PropTypes from 'prop-types';
 
 const { width, height } = Dimensions.get("window");
 

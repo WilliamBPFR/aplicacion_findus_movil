@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import { Tabs, Redirect } from "expo-router";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
@@ -19,7 +18,7 @@ const _renderIcon = (routeName, focused) => {
       IconComponent = AntDesign;
       iconName = "search1";
       break;
-    case "material/index":
+    case "material-educativo/index":
       IconComponent = Feather;
       iconName = "book-open";
       break;
@@ -44,7 +43,7 @@ const _renderIcon = (routeName, focused) => {
   );
 };
 
-const TabsLayout = () => {
+export default function TabsLayout () {
   return (
     <>
       <Tabs
@@ -86,12 +85,12 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="material/index"
+          name="material-educativo/index"
           options={{
             headerShown: false,
             title: "",
             tabBarIcon: ({ focused }) =>
-              _renderIcon("material/index", focused),
+              _renderIcon("material-educativo/index", focused),
           }}
         />
         <Tabs.Screen
@@ -103,10 +102,19 @@ const TabsLayout = () => {
               _renderIcon("profile/index", focused),
           }}
         />
+        <Tabs.Screen
+          name="publicacionDentroPublicacion/index"
+          options={{
+            href: null,
+            headerShown: false,
+            title: "",
+          }}
+        />
       </Tabs>
+      
     <StatusBar backgroundColor="#F3F7FD" style="auto" />
     </>
   );
 };
 
-export default TabsLayout;
+// export default TabsLayout;

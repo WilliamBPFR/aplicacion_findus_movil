@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Link } from 'expo-router';
-import { StatusBar } from "expo-status-bar";
 
 // Crea la configuración de Tamagui
 
@@ -20,6 +19,8 @@ export default function Page() {
         <Link href="/FormPublicacion">Form Publicacion</Link>
         <Link href="/recuperarContrasena">Recuperar Contraseña</Link>
         <Link href="/home">Pantalla Home</Link>
+        <Link href="/publicacionDentroPublicacion">Pantalla Dentro de Publicacion</Link>
+        <Link href="/material-educativo">Pantalla Material Educativo</Link>
       </View>
     </View>
   );

@@ -1,11 +1,5 @@
 import {Text, View,Dimensions, Image, TouchableOpacity } from "react-native";
-import { TextInput } from "react-native-paper" 
-import { useState } from "react";
-import { Avatar } from 'react-native-paper';
 import {Icon} from "react-native-paper";
-
-
-const { width, height } = Dimensions.get("window");
 
 
 export default function TopBar() {

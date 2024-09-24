@@ -1,7 +1,4 @@
 import {Text, TouchableOpacity, View, Image} from "react-native";
-import { useEffect,useRef } from "react";
-import { useState } from "react";
-
 
 
 export default function CardPublicacionesHorizontal({nombre, edad, fecha_desaparicion, ultima_ubicacion, imagen}) {
