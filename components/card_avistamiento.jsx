@@ -1,7 +1,5 @@
 import {Text, TouchableOpacity, View,Image, StyleSheet} from "react-native";
-import { useEffect,useRef } from "react";
-import { useState } from "react";
-import { MapPinned } from "lucide-react-native";
+
 import { Divider } from "react-native-paper";
 
 

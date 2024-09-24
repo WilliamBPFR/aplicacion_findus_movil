@@ -1,9 +1,9 @@
 // Home simple
 
-import React from 'react';
+// import React from 'react';
 import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 
-const App = () => {
+export default function Page () {
   
 
   return (
@@ -27,4 +27,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;

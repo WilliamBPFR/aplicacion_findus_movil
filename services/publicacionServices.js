@@ -1,7 +1,7 @@
 import apiRoutes from "../api_paths";
 import axios from "axios";
 
-const obtenerPublicaciones = async () => {
+export const obtenerPublicaciones = async () => {
     try {
         const response = await axios.get(apiRoutes.obtenerPublicaciones());
         return response;
@@ -10,7 +10,7 @@ const obtenerPublicaciones = async () => {
     }
 }
 
-const obtenerPublicacion = async (id) => {
+export const obtenerPublicacion = async (id) => {
     try {
         const response = await axios.get(apiRoutes.obtenerPublicacion(id));
         return response;
@@ -19,7 +19,7 @@ const obtenerPublicacion = async (id) => {
     }
 }
 
-const crearPublicacion = async (data, token) => {
+export const crearPublicacion = async (data, token) => {
     try {
         const response = await axios.post(apiRoutes.crearPublicacion(), data, {
             headers: {
@@ -32,7 +32,7 @@ const crearPublicacion = async (data, token) => {
     }
 }
 
-const actualizarPublicacion = async (id, data, token) => {
+export const actualizarPublicacion = async (id, data, token) => {
     try {
         const response = await axios.put(apiRoutes.actualizarPublicacion(id), data, {
             headers: {
@@ -45,7 +45,7 @@ const actualizarPublicacion = async (id, data, token) => {
     }
 }
 
-const eliminarPublicacion = async (id, token) => {
+export const eliminarPublicacion = async (id, token) => {
     try {
         const response = await axios.delete(apiRoutes.eliminarPublicacion(id), {
             headers: {
@@ -58,10 +58,10 @@ const eliminarPublicacion = async (id, token) => {
     }
 }
 
-export {
-    obtenerPublicaciones,
-    obtenerPublicacion,
-    crearPublicacion,
-    actualizarPublicacion,
-    eliminarPublicacion
-}
+// export {
+//     obtenerPublicaciones,
+//     obtenerPublicacion,
+//     crearPublicacion,
+//     actualizarPublicacion,
+//     eliminarPublicacion
+// }

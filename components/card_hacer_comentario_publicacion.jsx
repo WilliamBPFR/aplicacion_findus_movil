@@ -1,5 +1,4 @@
 import {Text, TouchableOpacity, View,Image} from "react-native";
-import { useEffect,useRef } from "react";
 import { useState } from "react";
 import { Divider } from "react-native-paper";
 import { TextInput } from 'react-native-paper';
@@ -22,12 +21,12 @@ export default function CardHacerComentarioPublicacion() {
             </View>
         </View>
 
-        <View className="flex w-[100%] mx-[2%]">
+        <View className="flex w-[100%] mx-[2%] flex-row items-center">
           <TextInput
             value={comentario}
             mode="flat"
             onChangeText={text => setComentario(text)}
-            className="w-[100%] rounded-lg bg-[#9cc1e641] border-0 justify-center align-middle "
+            className="w-[77%] rounded-lg bg-[#9cc1e641] border-0 justify-center align-middle "
             multiline={true}
             placeholder="Escribe un comentario..."
             outlineStyle={{borderColor: "", borderWidth: 0}}
@@ -37,6 +36,14 @@ export default function CardHacerComentarioPublicacion() {
             underlineStyle={{borderColor: "transparent", borderWidth: 0}}
             underlineColor="transparent"
           />
+          <TouchableOpacity
+            className={`flex bg-[#3E86B9] ml-[10%] mx-auto w-[20%] h-[6vh] rounded-md justify-center align-middle`}
+            activeOpacity={0.7}
+          >
+            <Text className="flex w-full text-center text-md font-bold text-[#F3F7FD]" >
+                Enviar
+            </Text>
+          </TouchableOpacity>
         </View>
         <Divider className="w-[100%] h-[2px] bg-[#254E70] rounded-3xl mx-[2%] mt-[4%]"/>
       </View>

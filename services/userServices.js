@@ -3,7 +3,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 
-const formato_nombres = (nombres) => {
+export const formato_nombres = (nombres) => {
     return nombres.trim() // Eliminar espacios al principio y al final
                   .toLowerCase() // Convertir toda la cadena a minúsculas
                   .split(' ') // Dividir la cadena en palabras
@@ -22,7 +22,7 @@ const guardarToken = async (token) => {
     }
 }
 
-const obtenerToken = async () => {
+export const obtenerToken = async () => {
     try {
         const token = await SecureStore.getItemAsync('token');
         if(token == null){
@@ -40,7 +40,7 @@ const obtenerToken = async () => {
 
 
 //Funciones de comunicacion con el servidor
-const registrarUsuario = async (usuario) => {
+export const registrarUsuario = async (usuario) => {
     try {
         const response = await axios.post(apiRoutes.registrarUsuario(), usuario);
         return response;
@@ -49,7 +49,7 @@ const registrarUsuario = async (usuario) => {
     }
 }
 
-const confirmarCorreo = async (data) => {
+export const confirmarCorreo = async (data) => {
     try {
         const response = await axios.post(apiRoutes.confirmarCorreo(), data);
         return response;
@@ -58,7 +58,7 @@ const confirmarCorreo = async (data) => {
     }
 }
 
-const solicitarCambioContrasena = async (data) => {
+export const solicitarCambioContrasena = async (data) => {
     try {
         console.log("KLKKKK")
         const response = await axios.post(apiRoutes.solicitarCambioContrasena(), data);
@@ -68,7 +68,7 @@ const solicitarCambioContrasena = async (data) => {
     }
 }
 
-const login = async (data) => {
+export const login = async (data) => {
     try {
         const response = await axios.post(apiRoutes.loginUsuario(), data);
         return response;
@@ -77,7 +77,7 @@ const login = async (data) => {
     }
 }
 
-const verificarCodigoCambioContrasena = async (data) => {
+export const verificarCodigoCambioContrasena = async (data) => {
     try {
         const response = await axios.post(apiRoutes.verificar_codigo_cambio_contrasena(), data);
         return response;
@@ -86,7 +86,7 @@ const verificarCodigoCambioContrasena = async (data) => {
     }
 }
 
-const  cambiarContrasena = async (data, token) => {
+export const  cambiarContrasena = async (data, token) => {
     try {
         const response = await axios.post(apiRoutes.cambiar_contrasena(), data,{
             headers: {
@@ -100,15 +100,15 @@ const  cambiarContrasena = async (data, token) => {
 }
 
 
-//Exportar funciones
-module.exports = {
-    registrarUsuario,
-    formato_nombres,
-    confirmarCorreo,
-    solicitarCambioContrasena,
-    verificarCodigoCambioContrasena,
-    cambiarContrasena,
-    guardarToken,
-    obtenerToken,
-    login
-}
+// //Exportar funciones
+// module.exports = {
+//     registrarUsuario,
+//     formato_nombres,
+//     confirmarCorreo,
+//     solicitarCambioContrasena,
+//     verificarCodigoCambioContrasena,
+//     cambiarContrasena,
+//     guardarToken,
+//     obtenerToken,
+//     login
+// }

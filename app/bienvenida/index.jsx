@@ -1,6 +1,4 @@
 import { Text, View, Image, Dimensions, StatusBar} from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Link } from 'expo-router';
 import { Button, IconButton} from 'react-native-paper';
 import { useRouter } from "expo-router";
 

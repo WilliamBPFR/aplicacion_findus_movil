@@ -1,12 +1,11 @@
 import { Text, View, Image, Dimensions, StatusBar, ScrollView, TouchableOpacity} from "react-native";
-import TopBar from "../../../components/topbar";
+import TopBar from "../../../components/topbar.jsx";
 import QRCode from "react-native-qrcode-svg";
 import { Download,Forward } from "lucide-react-native";
-import { Divider } from "react-native-paper";
 import {Icon} from "react-native-paper";
-import CardAvistamiento from "../../../components/card_avistamiento";
-import CardComentarioPublicacion from "../../../components/card_comentario_publicacion";
-import CardHacerComentarioPublicacion from "../../../components/card_hacer_comentario_publicacion";
+import CardAvistamiento from "../../../components/card_avistamiento.jsx";
+import CardComentarioPublicacion from "../../../components/card_comentario_publicacion.jsx";
+import CardHacerComentarioPublicacion from "../../../components/card_hacer_comentario_publicacion.jsx";
 const { width, height } = Dimensions.get("window");
 
 export default function Page() {
@@ -84,7 +83,7 @@ export default function Page() {
           <View className="mt-[2vh] bg-[#c5d7e8a5] w-[90vw] rounded-lg items-center justify-center px-[2vw] mb-[2vh]">
               <Text className="text-[#233E58] text-center text-[18px] w-[80%] font-bold mt-[2%] mb-[calc(1.5vh)]">Comentarios de la Publicación</Text>
               <CardHacerComentarioPublicacion/>
-              <CardComentarioPublicacion/>
+              <CardComentarioPublicacion/>  
               <CardComentarioPublicacion/>
               <CardComentarioPublicacion/>
               <CardComentarioPublicacion/>
