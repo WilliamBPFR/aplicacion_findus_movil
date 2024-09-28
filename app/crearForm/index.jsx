@@ -135,20 +135,29 @@ export default function Page() {
       ubicacion_longitud: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      values.edad = calcularEdad(values.fecha_nacimiento);
-      
-      console.log("Enviando datos: ", values);
-      crearPublicacion(values).then((response) => {
-        console.log("Respuesta del servidor: ", response.data);
+    onSubmit: async (values) => {
+      try {
+        values.edad = calcularEdad(values.fecha_nacimiento);
+  
+        console.log("Enviando datos: ", values);
+  
+        const response = await crearPublicacion(values); // Espera la respuesta
+  
         if (response.status === 200) {
           console.log("Publicación creada correctamente: ", response.data);
           console.log("Token: ", response.data.token);
+  
+          // Mostrar mensaje de éxito o redirigir a otra pantalla
+          alert("Publicación creada con éxito!");
           router.push("../home");
         } else {
           console.log("Error al crear la publicación: ", response.data.message);
+          alert("Error al crear la publicación: " + response.data.message);
         }
-      });
+      } catch (error) {
+        console.error("Error en la petición: ", error);
+        alert("Ocurrió un error al intentar crear la publicación.");
+      }
     },
   });
 
@@ -174,7 +183,7 @@ export default function Page() {
         backgroundColor={"#F3F7FD"}
         barStyle={"dark-content"}
       />
-      {/* Boton back */}
+      {/* Botón back */}
       <View className="flex">
         <View className="flex mx-[4.5vw] my-[1vh]">
           <TouchableOpacity onPress={() => router.back()}>
@@ -185,32 +194,31 @@ export default function Page() {
           </TouchableOpacity>
         </View>
       </View>
-
+  
       {/* Formulario */}
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
-        className=" flex  mb-[calc(1.5vh)]"
+        className="flex mb-[calc(1.5vh)]"
       >
         <View className="flex">
           <Text className="text-[24px] text-[#233E58] font-extrabold py-[1vh] mx-[-42.5vw]">
-            Crear publicación de{"\n"}
-            Persona Desaparecida
+            Crear publicación de{"\n"}Persona Desaparecida
           </Text>
         </View>
-        <View className=" flex w-[calc(85.380vw)]">
+        <View className="flex w-[calc(85.380vw)]">
           {/* Input Nombre */}
           <InputSignUp
             separation={0.028}
             label="Nombre"
-            text={formik.values.nombre}
+            text={formik.values.nombre_desaparecido} // Corregido
             placeholder="Ingrese el nombre"
-            id_name={"nombre"}
-            handleChange={formik.handleChange("nombre")}
-            pressed={pressed.nombre}
-            handlePressed={() => setPressed({ ...pressed, nombre: true })}
-            error={formik.errors.nombre}
+            id_name={"nombre_desaparecido"} // Corregido
+            handleChange={formik.handleChange("nombre_desaparecido")} // Corregido
+            pressed={pressed.nombre_desaparecido} // Corregido
+            handlePressed={() => setPressed({ ...pressed, nombre_desaparecido: true })} // Corregido
+            error={formik.errors.nombre_desaparecido} // Corregido
           />
-
+  
           {/* Input Fecha de Nacimiento */}
           <InputFecha
             label={"Fecha de Nacimiento"}
@@ -221,76 +229,71 @@ export default function Page() {
             setFieldValue={formik.setFieldValue}
             fiedName={"fecha_nacimiento"}
             pressed={pressed.fecha_nacimiento}
-            handlePressed={() =>
-              setPressed({ ...pressed, fecha_nacimiento: true })
-            }
+            handlePressed={() => setPressed({ ...pressed, fecha_nacimiento: true })}
             error={formik.errors.fecha_nacimiento}
             showDateModal={showDateModalNacimiento}
             setShowDateModal={setShowDateModalNacimiento}
             maxDate={new Date()}
           />
-
+  
+          {/* Dropdown Tipo de documento */}
           <DropdownComponent
             separation={0.028}
             label="Tipo de documento"
             placeholder="Seleccione el tipo de documento"
-            id_name={"tipo_documento"}
+            id_name={"id_tipo_documento"} // Corregido
             data={data}
-            handleChange={formik.handleChange("tipo_documento")}
-            value={parseInt(formik.values.tipo_documento)}
-            pressed={pressed.tipo_documento}
-            handlePressed={() =>
-              setPressed({ ...pressed, tipo_documento: true })
-            }
-            error={formik.errors.tipo_documento}
+            handleChange={formik.handleChange("id_tipo_documento")} // Corregido
+            value={parseInt(formik.values.id_tipo_documento)} // Corregido
+            pressed={pressed.id_tipo_documento} // Corregido
+            handlePressed={() => setPressed({ ...pressed, id_tipo_documento: true })} // Corregido
+            error={formik.errors.id_tipo_documento} // Corregido
             valueField={"id"}
-            labelField={"nombretipodocumento"}
+            labelField={"nombretipodocumento"} // Corregido
           />
-
+  
           {/* Input Documento */}
           <InputSignUp
             separation={0.028}
             label="Documento"
-            text={formik.values.documento}
+            text={formik.values.documento_desaparecido} // Corregido
             placeholder="Documento"
-            id_name={"documento"}
-            handleChange={formik.handleChange("documento")}
-            pressed={pressed.documento}
-            handlePressed={() => setPressed({ ...pressed, documento: true })}
-            error={formik.errors.documento}
+            id_name={"documento_desaparecido"} // Corregido
+            handleChange={formik.handleChange("documento_desaparecido")} // Corregido
+            pressed={pressed.documento_desaparecido} // Corregido
+            handlePressed={() => setPressed({ ...pressed, documento_desaparecido: true })} // Corregido
+            error={formik.errors.documento_desaparecido} // Corregido
           />
-
+  
           {/* Input Teléfono */}
           <InputSignUp
             separation={0.028}
             label="Teléfono contacto"
-            text={formik.values.telefono}
+            text={formik.values.telefono} // Corregido
             placeholder="809-000-0000"
-            id_name={"telefono"}
-            handleChange={formik.handleChange("telefono")}
-            pressed={pressed.telefono}
-            handlePressed={() => setPressed({ ...pressed, telefono: true })}
-            error={formik.errors.telefono}
+            id_name={"telefono"} // Corregido
+            handleChange={formik.handleChange("telefono")} // Corregido
+            pressed={pressed.telefono} // Corregido
+            handlePressed={() => setPressed({ ...pressed, telefono: true })} // Corregido
+            error={formik.errors.telefono} // Corregido
           />
-
+  
           {/* Input Fecha de desaparición */}
           <InputFecha
             label={"Fecha de desaparición"}
             separation={0.028}
-            value={formik.values.fecha_desaparicion}
+            value={formik.values.fecha_desaparicion} // Corregido
             placeholder={"Seleccione la fecha de desaparición"}
-            id_name={"fecha_desaparicion"}
+            id_name={"fecha_desaparicion"} // Corregido
             setFieldValue={formik.setFieldValue}
-            fiedName={"fecha_desaparicion"}
-            pressed={pressed.fecha_desaparicion}
-            handlePressed={() =>
-              setPressed({ ...pressed, fecha_desaparicion: true })
-            }
-            error={formik.errors.fecha_desaparicion}
+            fiedName={"fecha_desaparicion"} // Corregido
+            pressed={pressed.fecha_desaparicion} // Corregido
+            handlePressed={() => setPressed({ ...pressed, fecha_desaparicion: true })} // Corregido
+            error={formik.errors.fecha_desaparicion} // Corregido
             showDateModal={showDateModalDesaparicion}
             setShowDateModal={setShowDateModalDesaparicion}
           />
-
+  
           {/* Subir imagen */}
           <ImagePickerComponent
             separation={0.028}
@@ -300,14 +303,14 @@ export default function Page() {
             containerStyle={{ marginVertical: 24 }}
             imageStyle={{ width: 200, height: 200 }}
           />
-
+  
           {/* Subir documento */}
           <DocumentPickerComponent
             separation={0.028}
             label="Reporte de la policia"
             onDocumentPicked={(document) => console.log(document)}
           />
-
+  
           {/* Input Ubicación con MapInput */}
           <MapInput
             separation={0.028}
@@ -319,63 +322,51 @@ export default function Page() {
           {pressed.ubicacion && formik.errors.ubicacion && (
             <Text style={{ color: "red" }}>{formik.errors.ubicacion}</Text>
           )}
-
+  
           {/* Input Relación con el desaparecido */}
           <InputSignUp
             separation={0.028}
             label="Relación con el desaparecido"
-            text={formik.values.relacion_desaparecido}
+            text={formik.values.relacion_desaparecido} // Corregido
             placeholder="ej. Madre, Padre, Hermano"
-            id_name={"relacion_desaparecido"}
-            handleChange={formik.handleChange("relacion_desaparecido")}
-            pressed={pressed.relacion_desaparecido}
+            id_name={"relacion_desaparecido"} // Corregido
+            handleChange={formik.handleChange("relacion_desaparecido")} // Corregido
+            pressed={pressed.relacion_desaparecido} // Corregido
             handlePressed={() =>
               setPressed({ ...pressed, relacion_desaparecido: true })
             }
-            error={formik.errors.relacion_desaparecido}
+            error={formik.errors.relacion_desaparecido} // Corregido
           />
-
+  
           {/* Input Contacto */}
           <InputSignUp
             separation={0.028}
             label="Contacto"
-            text={formik.values.contacto}
+            text={formik.values.contacto} // Corregido
             placeholder="Otra información de contacto"
-            id_name={"contacto"}
-            handleChange={formik.handleChange("contacto")}
-            pressed={pressed.contacto}
-            handlePressed={() => setPressed({ ...pressed, contacto: true })}
-            error={formik.errors.contacto}
+            id_name={"contacto"} // Corregido
+            handleChange={formik.handleChange("contacto")} // Corregido
+            pressed={pressed.contacto} // Corregido
+            handlePressed={() => setPressed({ ...pressed, contacto: true })} // Corregido
+            error={formik.errors.contacto} // Corregido
           />
-
-          {/* Input Ubicación */}
-          {/* <InputSignUp
-            separation={0.028}
-            label="Ubicación"
-            placeholder="Ubicación"
-            value={formik.values.ubicacion}
-            onChangeText={formik.handleChange("ubicacion")}
-            onBlur={() => handlePress("ubicacion")}
-            error={pressed.ubicacion && formik.errors.ubicacion}
-          /> */}
-
+  
           {/* Input Descripción del desaparecido */}
           <InputSignUp
             separation={0.028}
             label="Descripción del desaparecido"
-            text={formik.values.descripcion_desaparecido}
+            text={formik.values.descripcion_desaparecido} // Corregido
             placeholder="ej. Estatura, color de piel, color de ojos"
-            id_name={"descripcion_desaparecido"}
-            handleChange={formik.handleChange("descripcion_desaparecido")}
-            pressed={pressed.descripcion_desaparecido}
+            id_name={"descripcion_desaparecido"} // Corregido
+            handleChange={formik.handleChange("descripcion_desaparecido")} // Corregido
+            pressed={pressed.descripcion_desaparecido} // Corregido
             handlePressed={() =>
               setPressed({ ...pressed, descripcion_desaparecido: true })
             }
-            error={formik.errors.descripcion_desaparecido}
+            error={formik.errors.descripcion_desaparecido} // Corregido
           />
-
-          {/* Subit foto */}
-
+  
+          {/* Botón para enviar */}
           <View className="flex flex-col w-full">
             <TouchableOpacity
               activeOpacity={0.7}
@@ -389,9 +380,9 @@ export default function Page() {
           </View>
         </View>
       </ScrollView>
-      {/* <BottomNavigator /> */}
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
