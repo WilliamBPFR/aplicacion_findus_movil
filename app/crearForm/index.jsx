@@ -5,11 +5,15 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  BackHandler
+  BackHandler,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
+import { Portal, PaperProvider} from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Link, useRouter } from "expo-router";
 import { useState, useEffect } from "react";
+import LottieView from 'lottie-react-native'; // Para animaciones
 import InputSignUp from "../../components/input_sign_up.jsx";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -20,11 +24,13 @@ import DocumentPickerComponent from "../../components/filePicker.jsx";
 import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
 import MapInput from "../../components/map.jsx";
 import {crearPublicacion} from "../../services/publicacionServices.js";
-
+import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
 export default function Page() {
   const [showDateModalNacimiento, setShowDateModalNacimiento] = useState(false);
   const [showDateModalDesaparicion, setShowDateModalDesaparicion] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [apiRessponse, setApiResponse] = useState(null);
 
   const router = useRouter();
 
@@ -80,17 +86,20 @@ export default function Page() {
   // function calcular edad
   const calcularEdad = (fecha_nacimiento) => {
     const hoy = new Date();
-    const edad = hoy.getFullYear() - fecha_nacimiento.getFullYear();
-    const mes = hoy.getMonth() - fecha_nacimiento.getMonth();
-
-    if (mes < 0 || (mes === 0 && hoy.getDate() < fecha_nacimiento.getDate())) {
+    let edad = hoy.getFullYear() - fecha_nacimiento.getFullYear();
+    
+    // Obtener el mes actual y el mes de nacimiento
+    const mesActual = hoy.getMonth();
+    const mesNacimiento = fecha_nacimiento.getMonth();
+  
+    // Comprobar si el cumpleaños aún no ha ocurrido este año
+    if (mesActual < mesNacimiento || (mesActual === mesNacimiento && hoy.getDate() < fecha_nacimiento.getDate())) {
       edad--;
     }
-
+  
     return edad;
   };
   
-
 
   const validationSchema = Yup.object({
     nombre_desaparecido: Yup.string().required("Este campo es obligatorio"),
@@ -101,7 +110,6 @@ export default function Page() {
     descripcion_desaparecido: Yup.string().required("Este campo es obligatorio"),
     relacion_desaparecido: Yup.string().required("Este campo es obligatorio"),
     contacto: Yup.string().required("Este campo es obligatorio"),
-    ubicacion: Yup.string().required("Este campo es obligatorio"),
     fecha_nacimiento: Yup.date().required("Este campo es obligatorio"),
   });
 
@@ -114,7 +122,6 @@ export default function Page() {
     descripcion_desaparecido: false,
     relacion_desaparecido: false,
     contacto: false,
-    ubicacion: false,
     fecha_nacimiento: false,
   });
 
@@ -129,41 +136,51 @@ export default function Page() {
       relacion_desaparecido: "",
       contacto: "",
       fecha_nacimiento: new Date(),
-      id_usuario: 1,
-      edad: calcularEdad(new Date()),
+      idusuario: 24,
+      edad: new Date(),
       ubicacion_latitud: "",
       ubicacion_longitud: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setLoading(true);
       try {
+        console.log("Fecha de nacimiento: ", values.fecha_nacimiento);
         values.edad = calcularEdad(values.fecha_nacimiento);
+        values.id_tipo_documento = parseInt(values.id_tipo_documento);
+        
+        values.ubicacion_latitud = values.ubicacion_latitud.toString();
+        values.ubicacion_longitud = values.ubicacion_longitud.toString();
   
         console.log("Enviando datos: ", values);
   
         const response = await crearPublicacion(values); // Espera la respuesta
-  
+        setApiResponse(response)
         if (response.status === 200) {
           console.log("Publicación creada correctamente: ", response.data);
-          console.log("Token: ", response.data.token);
-  
-          // Mostrar mensaje de éxito o redirigir a otra pantalla
-          alert("Publicación creada con éxito!");
-          router.push("../home");
+          
+          setLoading(false);  
+          setModalVisible(true);
+          setTimeout(() => {
+            setModalVisible(false);
+            router.push("../home");
+          }, 2000);
         } else {
           console.log("Error al crear la publicación: ", response.data.message);
-          alert("Error al crear la publicación: " + response.data.message);
+          setModalVisible(true);
+          setLoading(false);
         }
       } catch (error) {
+        setModalVisible(true);
+        setLoading(false);
         console.error("Error en la petición: ", error);
-        alert("Ocurrió un error al intentar crear la publicación.");
       }
     },
   });
 
-  const handlePress = (field) => {
-    setPressed({ ...pressed, [field]: true });
-  };
+  const hideModal = () => setModalVisible(false);
+
+
 
   useEffect(() => {
     // console.log("useEffect ejecutado");
@@ -177,6 +194,7 @@ export default function Page() {
   }, []);
 
   return (
+    <PaperProvider>
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar
         hidden={false}
@@ -368,19 +386,72 @@ export default function Page() {
   
           {/* Botón para enviar */}
           <View className="flex flex-col w-full">
-            <TouchableOpacity
-              activeOpacity={0.7}
-              className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center  align-middle"
-              onPress={formik.handleSubmit}
-            >
-              <Text className="flex w-full text-center text-[16px] font-bold text-[#F3F7FD]">
-                Publicar
-              </Text>
-            </TouchableOpacity>
+            <BotonEnvioFormularios
+              esValido={formik.isValid}
+              sendingData={loading}
+              label="Crear publicación"
+              handleSubmit={formik.handleSubmit}
+            />
           </View>
+
+          {/* Modales */}
+          <Portal>
+            {/* Modal de loading */}
+            <Modal
+              visible={loading}
+              transparent={true}
+              onRequestClose={() => setLoading(false)}
+              animationType="fade"
+            >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContent}>
+                  <ActivityIndicator size="large" color="#3E86B9" />
+                  <Text style={styles.loadingText}>Creando publicación...</Text>
+                </View>
+              </View>
+            </Modal>
+                
+            {/* Modal de éxito o error */}  
+            <Modal
+              visible={modalVisible}
+              transparent={true}
+              onRequestClose={hideModal}
+              animationType="fade"
+            >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContent}>
+                  <LottieView 
+                    style={styles.lottie}
+                    source={apiRessponse?.status === 200 ? require('../../assets/sign_up/check.json') : require('../../assets/sign_up/wrong.json')} 
+                    autoPlay 
+                    loop={false} 
+                  />
+                  <Text style={styles.modalTitle}>
+                    {apiRessponse?.status === 200 ? "¡Publicación creada exitosamente!" : "¡Error al crear la publicación!"}
+                  </Text>
+                  <Text style={styles.modalMessage}>
+                    {apiRessponse?.status === 200 ? "Tu publicación ha sido creada exitosamente." : "Ocurrió un error al intentar crear la publicación."}
+                  </Text>
+                  {apiRessponse?.status !== 200 && (
+                    <Text style={styles.modalErrorMessage}>
+                      {apiRessponse?.data?.message}
+                    </Text>
+                  )}
+                  <TouchableOpacity 
+                    style={styles.modalButton}
+                    onPress={apiRessponse?.status === 200 ? () => router.push("../home") : hideModal}
+                  >
+                    <Text style={styles.modalButtonText}>Aceptar</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+            
+          </Portal>
         </View>
       </ScrollView>
     </View>
+    </PaperProvider>
   );
   
 }
@@ -412,4 +483,62 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 24,
   },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Fondo oscuro semitransparente
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    width: '80%',
+    alignItems: 'center',
+  },
+  lottie: {
+    width: '80%',
+    height: '40%',
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#233E58',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  modalMessage: {
+    fontSize: 18,
+    color: '#233E58',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modalErrorMessage: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#233E58',
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 20,
+  },
+  modalButton: {
+    backgroundColor: '#3E86B9',
+    width: '50%',
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  modalButtonText: {
+    color: '#F3F7FD',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#233E58',
+  },
+
 });
