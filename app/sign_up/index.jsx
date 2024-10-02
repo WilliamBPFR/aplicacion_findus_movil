@@ -35,7 +35,7 @@ export default function Page() {
     const [code, setCode] = useState(["", "", "", "","",""]);
     const inputs = useRef([]);
     const [data, setData] = useState(
-        [{ nombreTipoDocumento: 'NA', id: 1 }]
+        [{ nombretipodocumento: 'NA', id: 1 }]
     );
 
     const hideRegisterStatusModalOnSuccess = () => {
