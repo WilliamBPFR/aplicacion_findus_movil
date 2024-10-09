@@ -25,12 +25,16 @@ import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
 import MapInput from "../../components/map.jsx";
 import {crearPublicacion} from "../../services/publicacionServices.js";
 import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
+import { subirArchivo } from "../../services/uploadFileServices.js";
+
 export default function Page() {
   const [showDateModalNacimiento, setShowDateModalNacimiento] = useState(false);
   const [showDateModalDesaparicion, setShowDateModalDesaparicion] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [apiRessponse, setApiResponse] = useState(null);
+  const [imageData, setImageData] = useState(null);
+  const [documentData, setDocumentData] = useState(null);
 
   const router = useRouter();
 
@@ -155,9 +159,53 @@ export default function Page() {
         console.log("Enviando datos: ", values);
   
         const response = await crearPublicacion(values); // Espera la respuesta
-        setApiResponse(response)
+        setApiResponse(response); // Guarda la respuesta para manejar el estado
+        
         if (response.status === 200) {
           console.log("Publicación creada correctamente: ", response.data);
+          const idPublicacion = response.data.idpublicacion;
+          console.log("Publicación creada correctamente: ", response.data);
+
+          // Paso 2: Subir la imagen o el archivo si se proporcionó
+          if (imageData) {
+            const uploadData = {
+              idpublicacion: idPublicacion,
+              base64Image: imageData?.base64,
+              base64File: null,
+              fileName: imageData?.fileName,
+              mimeType: imageData?.mimeType
+            };
+
+            console.log("Datos de la imagen: ", "fileName:", uploadData.fileName, "mimeType:", uploadData.mimeType, "idPublicacion:", uploadData.idpublicacion);
+            
+            // Llamada a la API para subir la imagen/archivo
+            const uploadResponse = await subirArchivo(uploadData);
+            if (uploadResponse.status === 200) {
+              console.log("Imagen subida correctamente");
+            } else {
+              console.error("Error al subir la imagen", uploadResponse.data.message);
+            }
+          }
+
+          if(documentData){
+            const uploadData = {
+              idpublicacion: idPublicacion,
+              base64Image: null,
+              base64File: documentData?.base64,
+              fileName: documentData?.fileName,
+              mimeType: documentData?.mimeType,
+            };
+
+            console.log("Datos del archivo: ", "fileName:", uploadData.fileName, "mimeType:", uploadData.mimeType, "idPublicacion:", uploadData.idpublicacion);
+            
+            // // Llamada a la API para subir la imagen/archivo
+            const uploadResponse = await subirArchivo(uploadData, 'tu_token_aqui');
+            if (uploadResponse.status === 200) {
+              console.log("Archivo subido correctamente");
+            } else {
+              console.error("Error al subir el archivo: ", uploadResponse.data.message);
+            }
+          }
           
           setLoading(false);  
           setModalVisible(true);
@@ -317,7 +365,7 @@ export default function Page() {
             separation={0.028}
             buttonTitle="Subir foto"
             label="Foto del desaparecido"
-            onImagePicked={(image) => console.log(image)}
+            onImagePicked={(image) => setImageData(image)}
             containerStyle={{ marginVertical: 24 }}
             imageStyle={{ width: 200, height: 200 }}
           />
@@ -326,7 +374,7 @@ export default function Page() {
           <DocumentPickerComponent
             separation={0.028}
             label="Reporte de la policia"
-            onDocumentPicked={(document) => console.log(document)}
+            onDocumentPicked={(document) => setDocumentData(document)}
           />
   
           {/* Input Ubicación con MapInput */}

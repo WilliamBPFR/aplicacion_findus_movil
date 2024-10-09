@@ -17,6 +17,10 @@ const apiRoutes = {
     crearPublicacion: () => `${API_BASE_URL}/desaparecido/crearDesaparecido`,
     actualizarPublicacion: (id) => `${API_BASE_URL}/desaparecido/updateDesaparecido/${id}`,
     eliminarPublicacion: (id) => `${API_BASE_URL}/desaparecido/deleteDesaparecido/${id}`,
+
+    // Fotos publicacion
+    subirArchivo: () => `${API_BASE_URL}/fotospublicacion/crearFotoPublicacion`,
+    
     // Otras rutas
     // ...
 };
