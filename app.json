@@ -16,7 +16,10 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Se requiere acceso a la biblioteca de fotos para seleccionar documentos."
+      }
     },
     "android": {
       "package": "com.william_ferreira.findus",
