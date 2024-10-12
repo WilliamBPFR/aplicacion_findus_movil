@@ -5,7 +5,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming, interpolateColo
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 
-export default function BotonEnvioFormularios({esValido, sendingData, label,handleSubmit}) {
+export default function BotonEnvioFormularios({esValido, sendingData, label,handleSubmit,width="85%"}) {
     // const [buttonBGColor, setButtonBGColor] = useState('#FFFFFF');
 
     const backgroundColorAnim = useSharedValue(0);  // Valor inicial de la animación
@@ -35,7 +35,7 @@ export default function BotonEnvioFormularios({esValido, sendingData, label,hand
     return(
         <AnimatedTouchableOpacity 
             activeOpacity={0.7} 
-            className={`flex  mx-auto w-[85%] h-[7vh] rounded-md justify-center align-middle`}
+            className={`flex  mx-auto w-[${width}] h-[7vh] rounded-md justify-center align-middle`}
             // style={{backgroundColor: buttonBGColor}}
             style={[animatedStyle]}
             onPress={handleSubmit}
