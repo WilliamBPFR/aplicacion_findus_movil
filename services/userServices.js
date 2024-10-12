@@ -22,14 +22,14 @@ export const guardarToken = async (token) => {
     }
 }
 
-export const obtenerToken = async () => {
+export const obtenerToken = () => {
     try {
-        const token = await SecureStore.getItemAsync('token');
+        const token = SecureStore.getItem('token');
         if(token == null){
-            console.log("Token no encontrado");
-            return null;
-        }
-        return token;
+                console.log("Token no encontrado");
+                return null;
+            }
+        return token;        
     } catch (error) {
         console.log("Error al obtener token: ",error);
         return null;
