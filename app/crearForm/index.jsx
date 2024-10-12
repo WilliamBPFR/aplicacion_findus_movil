@@ -5,11 +5,15 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  BackHandler
+  BackHandler,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
+import { Portal, PaperProvider} from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { Link, useRouter } from "expo-router";
 import { useState, useEffect } from "react";
+import LottieView from 'lottie-react-native'; // Para animaciones
 import InputSignUp from "../../components/input_sign_up.jsx";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -20,11 +24,17 @@ import DocumentPickerComponent from "../../components/filePicker.jsx";
 import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
 import MapInput from "../../components/map.jsx";
 import {crearPublicacion} from "../../services/publicacionServices.js";
+import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
+import { subirArchivo } from "../../services/uploadFileServices.js";
 
 export default function Page() {
   const [showDateModalNacimiento, setShowDateModalNacimiento] = useState(false);
   const [showDateModalDesaparicion, setShowDateModalDesaparicion] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [apiRessponse, setApiResponse] = useState(null);
+  const [imageData, setImageData] = useState(null);
+  const [documentData, setDocumentData] = useState(null);
 
   const router = useRouter();
 
@@ -80,17 +90,20 @@ export default function Page() {
   // function calcular edad
   const calcularEdad = (fecha_nacimiento) => {
     const hoy = new Date();
-    const edad = hoy.getFullYear() - fecha_nacimiento.getFullYear();
-    const mes = hoy.getMonth() - fecha_nacimiento.getMonth();
-
-    if (mes < 0 || (mes === 0 && hoy.getDate() < fecha_nacimiento.getDate())) {
+    let edad = hoy.getFullYear() - fecha_nacimiento.getFullYear();
+    
+    // Obtener el mes actual y el mes de nacimiento
+    const mesActual = hoy.getMonth();
+    const mesNacimiento = fecha_nacimiento.getMonth();
+  
+    // Comprobar si el cumpleaños aún no ha ocurrido este año
+    if (mesActual < mesNacimiento || (mesActual === mesNacimiento && hoy.getDate() < fecha_nacimiento.getDate())) {
       edad--;
     }
-
+  
     return edad;
   };
   
-
 
   const validationSchema = Yup.object({
     nombre_desaparecido: Yup.string().required("Este campo es obligatorio"),
@@ -101,7 +114,6 @@ export default function Page() {
     descripcion_desaparecido: Yup.string().required("Este campo es obligatorio"),
     relacion_desaparecido: Yup.string().required("Este campo es obligatorio"),
     contacto: Yup.string().required("Este campo es obligatorio"),
-    ubicacion: Yup.string().required("Este campo es obligatorio"),
     fecha_nacimiento: Yup.date().required("Este campo es obligatorio"),
   });
 
@@ -114,7 +126,6 @@ export default function Page() {
     descripcion_desaparecido: false,
     relacion_desaparecido: false,
     contacto: false,
-    ubicacion: false,
     fecha_nacimiento: false,
   });
 
@@ -129,32 +140,95 @@ export default function Page() {
       relacion_desaparecido: "",
       contacto: "",
       fecha_nacimiento: new Date(),
-      id_usuario: 1,
-      edad: calcularEdad(new Date()),
+      idusuario: 24,
+      edad: new Date(),
       ubicacion_latitud: "",
       ubicacion_longitud: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      values.edad = calcularEdad(values.fecha_nacimiento);
-      
-      console.log("Enviando datos: ", values);
-      crearPublicacion(values).then((response) => {
-        console.log("Respuesta del servidor: ", response.data);
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        console.log("Fecha de nacimiento: ", values.fecha_nacimiento);
+        values.edad = calcularEdad(values.fecha_nacimiento);
+        values.id_tipo_documento = parseInt(values.id_tipo_documento);
+        
+        values.ubicacion_latitud = values.ubicacion_latitud.toString();
+        values.ubicacion_longitud = values.ubicacion_longitud.toString();
+  
+        console.log("Enviando datos: ", values);
+  
+        const response = await crearPublicacion(values); // Espera la respuesta
+        setApiResponse(response); // Guarda la respuesta para manejar el estado
+        
         if (response.status === 200) {
           console.log("Publicación creada correctamente: ", response.data);
-          console.log("Token: ", response.data.token);
-          router.push("../home");
+          const idPublicacion = response.data.idpublicacion;
+          console.log("Publicación creada correctamente: ", response.data);
+
+          // Paso 2: Subir la imagen o el archivo si se proporcionó
+          if (imageData) {
+            const uploadData = {
+              idpublicacion: idPublicacion,
+              base64Image: imageData?.base64,
+              base64File: null,
+              fileName: imageData?.fileName,
+              mimeType: imageData?.mimeType
+            };
+
+            console.log("Datos de la imagen: ", "fileName:", uploadData.fileName, "mimeType:", uploadData.mimeType, "idPublicacion:", uploadData.idpublicacion);
+            
+            // Llamada a la API para subir la imagen/archivo
+            const uploadResponse = await subirArchivo(uploadData);
+            if (uploadResponse.status === 200) {
+              console.log("Imagen subida correctamente");
+            } else {
+              console.error("Error al subir la imagen", uploadResponse.data.message);
+            }
+          }
+
+          if(documentData){
+            const uploadData = {
+              idpublicacion: idPublicacion,
+              base64Image: null,
+              base64File: documentData?.base64,
+              fileName: documentData?.fileName,
+              mimeType: documentData?.mimeType,
+            };
+
+            console.log("Datos del archivo: ", "fileName:", uploadData.fileName, "mimeType:", uploadData.mimeType, "idPublicacion:", uploadData.idpublicacion);
+            
+            // // Llamada a la API para subir la imagen/archivo
+            const uploadResponse = await subirArchivo(uploadData, 'tu_token_aqui');
+            if (uploadResponse.status === 200) {
+              console.log("Archivo subido correctamente");
+            } else {
+              console.error("Error al subir el archivo: ", uploadResponse.data.message);
+            }
+          }
+          
+          setLoading(false);  
+          setModalVisible(true);
+          setTimeout(() => {
+            setModalVisible(false);
+            router.push("../home");
+          }, 2000);
         } else {
           console.log("Error al crear la publicación: ", response.data.message);
+          setModalVisible(true);
+          setLoading(false);
         }
-      });
+      } catch (error) {
+        setModalVisible(true);
+        setLoading(false);
+        console.error("Error en la petición: ", error);
+      }
     },
   });
 
-  const handlePress = (field) => {
-    setPressed({ ...pressed, [field]: true });
-  };
+  const hideModal = () => setModalVisible(false);
+
+
 
   useEffect(() => {
     // console.log("useEffect ejecutado");
@@ -168,13 +242,14 @@ export default function Page() {
   }, []);
 
   return (
+    <PaperProvider>
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar
         hidden={false}
         backgroundColor={"#F3F7FD"}
         barStyle={"dark-content"}
       />
-      {/* Boton back */}
+      {/* Botón back */}
       <View className="flex">
         <View className="flex mx-[4.5vw] my-[1vh]">
           <TouchableOpacity onPress={() => router.back()}>
@@ -185,32 +260,31 @@ export default function Page() {
           </TouchableOpacity>
         </View>
       </View>
-
+  
       {/* Formulario */}
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
-        className=" flex  mb-[calc(1.5vh)]"
+        className="flex mb-[calc(1.5vh)]"
       >
         <View className="flex">
           <Text className="text-[24px] text-[#233E58] font-extrabold py-[1vh] mx-[-42.5vw]">
-            Crear publicación de{"\n"}
-            Persona Desaparecida
+            Crear publicación de{"\n"}Persona Desaparecida
           </Text>
         </View>
-        <View className=" flex w-[calc(85.380vw)]">
+        <View className="flex w-[calc(85.380vw)]">
           {/* Input Nombre */}
           <InputSignUp
             separation={0.028}
             label="Nombre"
-            text={formik.values.nombre}
+            text={formik.values.nombre_desaparecido} // Corregido
             placeholder="Ingrese el nombre"
-            id_name={"nombre"}
-            handleChange={formik.handleChange("nombre")}
-            pressed={pressed.nombre}
-            handlePressed={() => setPressed({ ...pressed, nombre: true })}
-            error={formik.errors.nombre}
+            id_name={"nombre_desaparecido"} // Corregido
+            handleChange={formik.handleChange("nombre_desaparecido")} // Corregido
+            pressed={pressed.nombre_desaparecido} // Corregido
+            handlePressed={() => setPressed({ ...pressed, nombre_desaparecido: true })} // Corregido
+            error={formik.errors.nombre_desaparecido} // Corregido
           />
-
+  
           {/* Input Fecha de Nacimiento */}
           <InputFecha
             label={"Fecha de Nacimiento"}
@@ -221,93 +295,88 @@ export default function Page() {
             setFieldValue={formik.setFieldValue}
             fiedName={"fecha_nacimiento"}
             pressed={pressed.fecha_nacimiento}
-            handlePressed={() =>
-              setPressed({ ...pressed, fecha_nacimiento: true })
-            }
+            handlePressed={() => setPressed({ ...pressed, fecha_nacimiento: true })}
             error={formik.errors.fecha_nacimiento}
             showDateModal={showDateModalNacimiento}
             setShowDateModal={setShowDateModalNacimiento}
             maxDate={new Date()}
           />
-
+  
+          {/* Dropdown Tipo de documento */}
           <DropdownComponent
             separation={0.028}
             label="Tipo de documento"
             placeholder="Seleccione el tipo de documento"
-            id_name={"tipo_documento"}
+            id_name={"id_tipo_documento"} // Corregido
             data={data}
-            handleChange={formik.handleChange("tipo_documento")}
-            value={parseInt(formik.values.tipo_documento)}
-            pressed={pressed.tipo_documento}
-            handlePressed={() =>
-              setPressed({ ...pressed, tipo_documento: true })
-            }
-            error={formik.errors.tipo_documento}
+            handleChange={formik.handleChange("id_tipo_documento")} // Corregido
+            value={parseInt(formik.values.id_tipo_documento)} // Corregido
+            pressed={pressed.id_tipo_documento} // Corregido
+            handlePressed={() => setPressed({ ...pressed, id_tipo_documento: true })} // Corregido
+            error={formik.errors.id_tipo_documento} // Corregido
             valueField={"id"}
-            labelField={"nombretipodocumento"}
+            labelField={"nombretipodocumento"} // Corregido
           />
-
+  
           {/* Input Documento */}
           <InputSignUp
             separation={0.028}
             label="Documento"
-            text={formik.values.documento}
+            text={formik.values.documento_desaparecido} // Corregido
             placeholder="Documento"
-            id_name={"documento"}
-            handleChange={formik.handleChange("documento")}
-            pressed={pressed.documento}
-            handlePressed={() => setPressed({ ...pressed, documento: true })}
-            error={formik.errors.documento}
+            id_name={"documento_desaparecido"} // Corregido
+            handleChange={formik.handleChange("documento_desaparecido")} // Corregido
+            pressed={pressed.documento_desaparecido} // Corregido
+            handlePressed={() => setPressed({ ...pressed, documento_desaparecido: true })} // Corregido
+            error={formik.errors.documento_desaparecido} // Corregido
           />
-
+  
           {/* Input Teléfono */}
           <InputSignUp
             separation={0.028}
             label="Teléfono contacto"
-            text={formik.values.telefono}
+            text={formik.values.telefono} // Corregido
             placeholder="809-000-0000"
-            id_name={"telefono"}
-            handleChange={formik.handleChange("telefono")}
-            pressed={pressed.telefono}
-            handlePressed={() => setPressed({ ...pressed, telefono: true })}
-            error={formik.errors.telefono}
+            id_name={"telefono"} // Corregido
+            handleChange={formik.handleChange("telefono")} // Corregido
+            pressed={pressed.telefono} // Corregido
+            handlePressed={() => setPressed({ ...pressed, telefono: true })} // Corregido
+            error={formik.errors.telefono} // Corregido
           />
-
+  
           {/* Input Fecha de desaparición */}
           <InputFecha
             label={"Fecha de desaparición"}
             separation={0.028}
-            value={formik.values.fecha_desaparicion}
+            value={formik.values.fecha_desaparicion} // Corregido
             placeholder={"Seleccione la fecha de desaparición"}
-            id_name={"fecha_desaparicion"}
+            id_name={"fecha_desaparicion"} // Corregido
             setFieldValue={formik.setFieldValue}
-            fiedName={"fecha_desaparicion"}
-            pressed={pressed.fecha_desaparicion}
-            handlePressed={() =>
-              setPressed({ ...pressed, fecha_desaparicion: true })
-            }
-            error={formik.errors.fecha_desaparicion}
+            fiedName={"fecha_desaparicion"} // Corregido
+            pressed={pressed.fecha_desaparicion} // Corregido
+            handlePressed={() => setPressed({ ...pressed, fecha_desaparicion: true })} // Corregido
+            error={formik.errors.fecha_desaparicion} // Corregido
             showDateModal={showDateModalDesaparicion}
             setShowDateModal={setShowDateModalDesaparicion}
           />
-
+  
           {/* Subir imagen */}
           <ImagePickerComponent
             separation={0.028}
             buttonTitle="Subir foto"
             label="Foto del desaparecido"
-            onImagePicked={(image) => console.log(image)}
+            onImagePicked={(image) => setImageData(image)}
             containerStyle={{ marginVertical: 24 }}
             imageStyle={{ width: 200, height: 200 }}
           />
-
+  
           {/* Subir documento */}
           <DocumentPickerComponent
             separation={0.028}
             label="Reporte de la policia"
-            onDocumentPicked={(document) => console.log(document)}
+            onDocumentPicked={(document) => setDocumentData(document)}
           />
-
+  
           {/* Input Ubicación con MapInput */}
           <MapInput
             separation={0.028}
@@ -319,79 +388,120 @@ export default function Page() {
           {pressed.ubicacion && formik.errors.ubicacion && (
             <Text style={{ color: "red" }}>{formik.errors.ubicacion}</Text>
           )}
-
+  
           {/* Input Relación con el desaparecido */}
           <InputSignUp
             separation={0.028}
             label="Relación con el desaparecido"
-            text={formik.values.relacion_desaparecido}
+            text={formik.values.relacion_desaparecido} // Corregido
             placeholder="ej. Madre, Padre, Hermano"
-            id_name={"relacion_desaparecido"}
-            handleChange={formik.handleChange("relacion_desaparecido")}
-            pressed={pressed.relacion_desaparecido}
+            id_name={"relacion_desaparecido"} // Corregido
+            handleChange={formik.handleChange("relacion_desaparecido")} // Corregido
+            pressed={pressed.relacion_desaparecido} // Corregido
             handlePressed={() =>
               setPressed({ ...pressed, relacion_desaparecido: true })
             }
-            error={formik.errors.relacion_desaparecido}
+            error={formik.errors.relacion_desaparecido} // Corregido
           />
-
+  
           {/* Input Contacto */}
           <InputSignUp
             separation={0.028}
             label="Contacto"
-            text={formik.values.contacto}
+            text={formik.values.contacto} // Corregido
             placeholder="Otra información de contacto"
-            id_name={"contacto"}
-            handleChange={formik.handleChange("contacto")}
-            pressed={pressed.contacto}
-            handlePressed={() => setPressed({ ...pressed, contacto: true })}
-            error={formik.errors.contacto}
+            id_name={"contacto"} // Corregido
+            handleChange={formik.handleChange("contacto")} // Corregido
+            pressed={pressed.contacto} // Corregido
+            handlePressed={() => setPressed({ ...pressed, contacto: true })} // Corregido
+            error={formik.errors.contacto} // Corregido
           />
-
-          {/* Input Ubicación */}
-          {/* <InputSignUp
-            separation={0.028}
-            label="Ubicación"
-            placeholder="Ubicación"
-            value={formik.values.ubicacion}
-            onChangeText={formik.handleChange("ubicacion")}
-            onBlur={() => handlePress("ubicacion")}
-            error={pressed.ubicacion && formik.errors.ubicacion}
-          /> */}
-
+  
           {/* Input Descripción del desaparecido */}
           <InputSignUp
             separation={0.028}
             label="Descripción del desaparecido"
-            text={formik.values.descripcion_desaparecido}
+            text={formik.values.descripcion_desaparecido} // Corregido
             placeholder="ej. Estatura, color de piel, color de ojos"
-            id_name={"descripcion_desaparecido"}
-            handleChange={formik.handleChange("descripcion_desaparecido")}
-            pressed={pressed.descripcion_desaparecido}
+            id_name={"descripcion_desaparecido"} // Corregido
+            handleChange={formik.handleChange("descripcion_desaparecido")} // Corregido
+            pressed={pressed.descripcion_desaparecido} // Corregido
             handlePressed={() =>
               setPressed({ ...pressed, descripcion_desaparecido: true })
             }
-            error={formik.errors.descripcion_desaparecido}
+            error={formik.errors.descripcion_desaparecido} // Corregido
           />
-
-          {/* Subit foto */}
-
+  
+          {/* Botón para enviar */}
           <View className="flex flex-col w-full">
-            <TouchableOpacity
-              activeOpacity={0.7}
-              className="bg-[#3E86B9] flex mx-auto w-[85vw] h-[7vh] rounded-md justify-center  align-middle"
-              onPress={formik.handleSubmit}
-            >
-              <Text className="flex w-full text-center text-[16px] font-bold text-[#F3F7FD]">
-                Publicar
-              </Text>
-            </TouchableOpacity>
+            <BotonEnvioFormularios
+              esValido={formik.isValid}
+              sendingData={loading}
+              label="Crear publicación"
+              handleSubmit={formik.handleSubmit}
+            />
           </View>
+
+          {/* Modales */}
+          <Portal>
+            {/* Modal de loading */}
+            <Modal
+              visible={loading}
+              transparent={true}
+              onRequestClose={() => setLoading(false)}
+              animationType="fade"
+            >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContent}>
+                  <ActivityIndicator size="large" color="#3E86B9" />
+                  <Text style={styles.loadingText}>Creando publicación...</Text>
+                </View>
+              </View>
+            </Modal>
+                
+            {/* Modal de éxito o error */}  
+            <Modal
+              visible={modalVisible}
+              transparent={true}
+              onRequestClose={hideModal}
+              animationType="fade"
+            >
+              <View style={styles.modalBackground}>
+                <View style={styles.modalContent}>
+                  <LottieView 
+                    style={styles.lottie}
+                    source={apiRessponse?.status === 200 ? require('../../assets/sign_up/check.json') : require('../../assets/sign_up/wrong.json')} 
+                    autoPlay 
+                    loop={false} 
+                  />
+                  <Text style={styles.modalTitle}>
+                    {apiRessponse?.status === 200 ? "¡Publicación creada exitosamente!" : "¡Error al crear la publicación!"}
+                  </Text>
+                  <Text style={styles.modalMessage}>
+                    {apiRessponse?.status === 200 ? "Tu publicación ha sido creada exitosamente." : "Ocurrió un error al intentar crear la publicación."}
+                  </Text>
+                  {apiRessponse?.status !== 200 && (
+                    <Text style={styles.modalErrorMessage}>
+                      {apiRessponse?.data?.message}
+                    </Text>
+                  )}
+                  <TouchableOpacity 
+                    style={styles.modalButton}
+                    onPress={apiRessponse?.status === 200 ? () => router.push("../home") : hideModal}
+                  >
+                    <Text style={styles.modalButtonText}>Aceptar</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+            
+          </Portal>
         </View>
       </ScrollView>
-      {/* <BottomNavigator /> */}
     </View>
+    </PaperProvider>
   );
+  
 }
 
 const styles = StyleSheet.create({
@@ -421,4 +531,62 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 24,
   },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Fondo oscuro semitransparente
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    width: '80%',
+    alignItems: 'center',
+  },
+  lottie: {
+    width: '80%',
+    height: '40%',
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#233E58',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  modalMessage: {
+    fontSize: 18,
+    color: '#233E58',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modalErrorMessage: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#233E58',
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 20,
+  },
+  modalButton: {
+    backgroundColor: '#3E86B9',
+    width: '50%',
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  modalButtonText: {
+    color: '#F3F7FD',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#233E58',
+  },
+
 });

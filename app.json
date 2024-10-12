@@ -16,7 +16,10 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Se requiere acceso a la biblioteca de fotos para seleccionar documentos."
+      }
     },
     "android": {
       "package": "com.william_ferreira.findus",
@@ -36,10 +39,8 @@
     "extra": {
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "820bcd7d-5915-4620-89f1-d0d71b391918"
       }
+      
     }
   }
 }
