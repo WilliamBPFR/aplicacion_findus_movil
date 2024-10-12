@@ -22,6 +22,7 @@ import DropdownComponent from "../../components/dropdown.jsx";
 import ImagePickerComponent from "../../components/imagePicker.jsx";
 import DocumentPickerComponent from "../../components/filePicker.jsx";
 import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
+import { obtenerToken } from "../../services/userServices.js";
 import MapInput from "../../components/map.jsx";
 import {crearPublicacion} from "../../services/publicacionServices.js";
 import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
@@ -37,7 +38,11 @@ export default function Page() {
   const [documentData, setDocumentData] = useState(null);
 
   const router = useRouter();
-
+  // const obtenerToken = async () => {
+  //   // const isAvailable = await SecureStore.isAvailableAsync();
+  //   // console.log("SecureStore disponible:", isAvailable)
+  //   return await obtenerToken();
+  // };
   useEffect(() => {
     const backAction = () => {
       // Aquí defines la ruta a la que quieres redirigir
@@ -140,7 +145,7 @@ export default function Page() {
       relacion_desaparecido: "",
       contacto: "",
       fecha_nacimiento: new Date(),
-      idusuario: 24,
+      // idusuario: 24,
       edad: new Date(),
       ubicacion_latitud: "",
       ubicacion_longitud: "",
@@ -158,7 +163,7 @@ export default function Page() {
   
         console.log("Enviando datos: ", values);
   
-        const response = await crearPublicacion(values); // Espera la respuesta
+        const response = await crearPublicacion(values,obtenerToken()); // Espera la respuesta
         setApiResponse(response); // Guarda la respuesta para manejar el estado
         
         if (response.status === 200) {
@@ -232,6 +237,8 @@ export default function Page() {
 
   useEffect(() => {
     // console.log("useEffect ejecutado");
+    // console.log("TOKENNNNNN");
+    // console.log(obtenerToken());
     formik.validateForm();
     obtenerTiposDocumentos().then((response) => {
         // console.log("Respuesta de la petición:", response.data);
