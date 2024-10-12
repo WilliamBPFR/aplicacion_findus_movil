@@ -110,6 +110,15 @@ export default function TabsLayout () {
             title: "",
           }}
         />
+
+        <Tabs.Screen
+          name="perfilAdentro/index"
+          options={{
+            href: null,
+            headerShown: false,
+            title: "",
+          }}
+        />
       </Tabs>
       
     <StatusBar backgroundColor="#F3F7FD" style="auto" />
