@@ -35,7 +35,7 @@ export default function Page() {
     const [code, setCode] = useState(["", "", "", "","",""]);
     const inputs = useRef([]);
     const [data, setData] = useState(
-        [{ nombretipodocumento: 'NA', id: 1 }]
+        [{ nombreTipoDocumento: 'NA', id: 1 }]
     );
 
     const hideRegisterStatusModalOnSuccess = () => {
@@ -177,11 +177,11 @@ export default function Page() {
 
             {/* Label Crear Cuenta */}
             <View className="flex">
-                <Text className="text-3xl text-[#233E58] font-extrabold py-[1vh] mx-[10vw]">Crea tu cuenta</Text>
+                <Text className="text-3xl text-[#233E58] font-extrabold py-[1vh] mx-[10vw]">Editar Perfil</Text>
             </View>
 
             {/* Formulario */}
-            <ScrollView contentContainerStyle={styles.scrollViewContent} className=" flex mb-[calc(1.5vh)] max-h-[72vh]">
+            <ScrollView contentContainerStyle={styles.scrollViewContent} className=" flex mb-[calc(1.5vh)] max-h-[76vh]">
                 <View className=" flex w-[calc(85.380vw)]">
                     {/* Input Nombre */}
                     <InputSignUp 
@@ -227,7 +227,7 @@ export default function Page() {
                     />
 
                     {/* Input Correo */}
-                    <InputSignUp 
+                    {/* <InputSignUp 
                         separation={0.028} 
                         label={"Correo Electrónico"} 
                         text={formik.values.email} 
@@ -237,12 +237,12 @@ export default function Page() {
                         pressed={pressed.email}
                         handlePressed={()=> setPressed({...pressed, email: true})}
                         error={formik.errors.email}
-                    />
+                    /> */}
 
 
 
                     {/* Input Contraseña */}
-                    <InputSignUp 
+                    {/* <InputSignUp 
                         separation={0.028} 
                         label={"Contraseña"} 
                         text={formik.values.contrasena} 
@@ -253,10 +253,10 @@ export default function Page() {
                         pressed={pressed.contrasena}
                         handlePressed={()=> setPressed({...pressed, contrasena: true})}
                         error={formik.errors.contrasena}
-                    />
+                    /> */}
 
                     {/* Texto de validación de contraseña */}
-                    <View className="mb-6">
+                    {/* <View className="mb-6">
                         <Text className="text-[#233E58] text-[14px] font-extrabold">Tu contraseña debe:</Text>
 
                         <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
@@ -278,10 +278,10 @@ export default function Page() {
                             <Icon size={16} color={/[!@#$%^&*(),.?":{}|<>]/.test(formik.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
                             <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos un caracter especial</Text>
                         </View>
-                    </View>
+                    </View> */}
 
                     {/* Input Confirmar Contraseña */}
-                    <InputSignUp 
+                    {/* <InputSignUp 
                         separation={0.028} 
                         label={"Confirmar Contraseña"} 
                         text={formik.values.confirmar_contrasena} 
@@ -292,7 +292,7 @@ export default function Page() {
                         pressed={pressed.confirmar_contrasena}
                         handlePressed={()=> setPressed({...pressed, confirmar_contrasena: true})}
                         error={formik.errors.confirmar_contrasena}
-                    />
+                    /> */}
 
                     {/* Input Teléfono */}
                     <InputSignUp 
@@ -339,16 +339,23 @@ export default function Page() {
             </ScrollView>
 
             {/* Boton Crear Cuenta */}
-            <View className="flex flex-col w-full">
-                <BotonEnvioFormularios
-                    esValido={formik.isValid}
-                    sendingData={sendingUserData}
-                    label={"Crear Cuenta"}
-                    handleSubmit={formik.handleSubmit}
-                />
-                <View className="flex mx-auto mt-[1vh]">
-                    <Text className="text-[#233E58] text-lg">¿Ya tienes una cuenta? <Link href="/login" className="text-[#3E86B9] font-bold">Inicia sesión</Link></Text>
-                </View>
+            <View className="flex flex-row w-full">
+            <TouchableOpacity
+                activeOpacity={0.7}
+                className={`flex bg-auto bg-[#e17b73] mx-auto w-[45%] h-[7vh] rounded-md justify-center align-middle`}
+            >
+                <Text className="flex w-full text-center text-xl font-bold text-[#F3F7FD]">
+                    Cancelar
+                </Text>
+            </TouchableOpacity>
+
+            <BotonEnvioFormularios
+                esValido={formik.isValid}
+                sendingData={sendingUserData}
+                label={"Guardar Cambios"}
+                handleSubmit={formik.handleSubmit}
+                width="45%"
+            />
             </View>
 
 
@@ -365,72 +372,6 @@ export default function Page() {
                         <Text className="text-[#ffffff] text-2xl font-bold">Enviando datos...</Text>
                     </View>
                 )  : null}
-
-
-            {/* Modal de Verificacion Correo */}
-            <Portal>
-                <Modal className="w-full h-full mt-0" visible={visibleEmailConfirmatioModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "94%", height: "58vh",justifyContent: "center", alignItems:"center"}}>
-                    <LottieView 
-                        className="flex h-[25%] w-[80%]" 
-                        source={require(`../../assets/sign_up/email_sended.json`)} 
-                        autoPlay 
-                        loop={true} 
-                    />
-
-                    <Text className="text-center text-2xl font-bold text-[#233E58]">
-                        Correo Electrónico Enviado 
-                    </Text>
-                    <Text className="text-center text-[2vh] p-[2vw]  text-[#233E58] mt-[calc(1vh)]">
-                        !Te has registrado exitosamente! 
-                    </Text>
-                    <Text className="text-center text-[2vh] mb-[2vh] px-[3vw] text-[#233E58]">
-                    Para verificar que eres tu, revisa tu correo electrónico e introduce el código de verificación aquí debajo. 
-                    </Text>
-
-                    {(apiRessponse?.status == 200 && apiRessponse?.verifyingCode == false) ? null :
-                        <Text className="text-center text-[#d95151] text-md font-bold mb-[calc(2vh)]">
-                                {apiRessponse?.data.message}
-                        </Text>
-                    }
-
-                    <View className="flex-row mx-auto justify-between w-full px-[5%]">
-                        {code.map((digit, index) => (
-                            <TextInput
-                                key={index}
-                                ref={(input) => (inputs.current[index] = input)}
-                                value={digit}
-                                mode="outlined"
-                                onKeyPress={(e) => handleKeyPress(e, index)}
-                                onChangeText={(text) => handleChange(text, index)}
-                                outlineStyle={{borderColor: "#3E86B9", borderWidth: 1, borderRadius: 6}}
-                                className={`border rounded-lg w-[12vw] h-[${height*0.06}] text-2xl bg-white text-center leading-none`}
-                                style={{borderColor: "transparent", borderWidth: 0, borderRadius: 0}}
-                                contentStyle={{textAlign: "center"}}
-                                keyboardType="numeric"
-                                maxLength={1}
-                            />
-                        ))}
-                        </View>
-                    <View className="mt-[2vh] w-[80%] mb-[1vh]">
-                        <BotonEnvioFormularios
-                            label="Confirmar Correo"
-                            esValido={code.join("").length === 6}
-                            sendingData={sendingCode}
-                            handleSubmit={handleConfirm}
-                        />
-                    </View>
-                    
-                    {/* <TouchableOpacity 
-                        activeOpacity={0.7}
-                        className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[13%] rounded-md justify-center mb-[calc(1vh)]" 
-                        onPress={handleConfirm}
-                    >
-                        <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
-                            Confirmar Correo
-                        </Text>
-                    </TouchableOpacity>    */}
-                </Modal>
-            </Portal>
 
             {/* Modal de registro exitoso */}
             <Portal>
