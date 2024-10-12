@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import Icon from "react-native-vector-icons/Feather"; // Asegúrate de instalar react-native-vector-icons
-import * as Permissions from 'expo-permissions';
+// import * as Permissions from 'expo-permissions';
 
 
 const { width, height } = Dimensions.get("window");
