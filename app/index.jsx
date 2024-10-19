@@ -23,6 +23,7 @@ export default function Page() {
         <Link href="/material-educativo">Pantalla Material Educativo</Link>
         <Link href="/perfilAdentro">Pantalla Profile Adentro</Link>
         <Link href="/editarPerfil">Pantalla Editar Perfil</Link>
+        <Link href="/crearReporteAvistamiento">Pantalla Reporte de Avistamiento</Link>
       </View>
     </View>
   );
