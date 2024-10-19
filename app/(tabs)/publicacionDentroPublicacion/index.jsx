@@ -6,10 +6,11 @@ import {Icon} from "react-native-paper";
 import CardAvistamiento from "../../../components/card_avistamiento.jsx";
 import CardComentarioPublicacion from "../../../components/card_comentario_publicacion.jsx";
 import CardHacerComentarioPublicacion from "../../../components/card_hacer_comentario_publicacion.jsx";
+import { useRouter } from "expo-router";
 const { width, height } = Dimensions.get("window");
 
 export default function Page() {
-
+  const router = useRouter();
   return (
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
@@ -73,7 +74,7 @@ export default function Page() {
               <CardAvistamiento/>
 
               <TouchableOpacity
-                onPress={() => console.log("Reportar Avistamiento")}
+                onPress={() => router.push("/crearReporteAvistamiento")}
                 className="bg-[#3E86B9] w-[80%] h-[6vh] rounded-lg mt-[4%] mb-[4%] items-center justify-center"
               >
                 <Text className="text-white text-center text-[18px] font-bold">Reportar Avistamiento</Text>

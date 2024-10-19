@@ -15,7 +15,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const { width, height } = Dimensions.get("window");
 
-export default function MapInput ({ onLocationSelect, separation, pressed, error })  {
+export default function MapInput ({ onLocationSelect, separation, pressed, error,label="Ubicación" }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [region, setRegion] = useState(null); // Guarda la región actual
   const [marker, setMarker] = useState(null); // Guarda la posición del marcador
@@ -61,7 +61,7 @@ export default function MapInput ({ onLocationSelect, separation, pressed, error
       style={{ marginBottom: height * separation }}
     >
       <Text className=" mb-[calc(1.4vh)] text-[#233E58] text-[14px] font-medium">
-        Ubicación
+        {label}
       </Text>
       <TouchableOpacity
         onPress={() => setModalVisible(true)}

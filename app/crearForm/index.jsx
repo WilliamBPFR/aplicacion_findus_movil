@@ -171,13 +171,21 @@ export default function Page() {
           const idPublicacion = response.data.idpublicacion;
           console.log("Publicación creada correctamente: ", response.data);
 
+        
           // Paso 2: Subir la imagen o el archivo si se proporcionó
           if (imageData) {
+            //Ponerle la fecha con el nombre de la foto
+            const fecha = new Date();
+            const fechaString = fecha.toISOString().split("T")[0];
+            //Separamos el nombre de la foto por el punto y al final le agregamos la fecha
+            const nombreFoto = imageData?.fileName.split(".")[0] + fechaString + "." + imageData?.fileName.split(".")[1];
+            console.log("Nombre de la foto: ", nombreFoto);
+
             const uploadData = {
               idpublicacion: idPublicacion,
               base64Image: imageData?.base64,
               base64File: null,
-              fileName: imageData?.fileName,
+              fileName: nombreFoto,
               mimeType: imageData?.mimeType
             };
 
@@ -193,18 +201,24 @@ export default function Page() {
           }
 
           if(documentData){
+            //Ponerle la fecha con el nombre de la foto
+            const fecha = new Date();
+            const fechaString = fecha.toISOString().split("T")[0].replace(/-/g, "");
+            //Separamos el nombre de la foto por el punto y al final le agregamos la fecha
+            const nombreFotoDoc = documentData?.fileName.split(".")[0] + fechaString + "." + imageData?.fileName.split(".")[1];
+            console.log("Nombre de la foto: ", nombreFotoDoc);
             const uploadData = {
               idpublicacion: idPublicacion,
               base64Image: null,
               base64File: documentData?.base64,
-              fileName: documentData?.fileName,
+              fileName: nombreFotoDoc,
               mimeType: documentData?.mimeType,
             };
 
             console.log("Datos del archivo: ", "fileName:", uploadData.fileName, "mimeType:", uploadData.mimeType, "idPublicacion:", uploadData.idpublicacion);
             
             // // Llamada a la API para subir la imagen/archivo
-            const uploadResponse = await subirArchivo(uploadData, 'tu_token_aqui');
+            const uploadResponse = await subirArchivo(uploadData);
             if (uploadResponse.status === 200) {
               console.log("Archivo subido correctamente");
             } else {
