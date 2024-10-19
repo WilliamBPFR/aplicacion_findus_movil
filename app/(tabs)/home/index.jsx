@@ -9,6 +9,8 @@ const { width, height } = Dimensions.get("window");
 
 export default function Page() {
 
+  //UseEffect para traer las publicaciones
+
   return (
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
