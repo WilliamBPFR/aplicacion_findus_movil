@@ -322,6 +322,7 @@ export default function Page() {
             setShowDateModal={setShowDateModalNacimiento}
             maxDate={new Date()}
           />
+          
   
           {/* Dropdown Tipo de documento */}
           <DropdownComponent
