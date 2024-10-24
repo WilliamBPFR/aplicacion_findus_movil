@@ -1,9 +1,18 @@
 import apiRoutes from "../api_paths";
 import axios from "axios";
 
-export const obtenerPublicaciones = async () => {
+export const obtenerPublicacionesScrollGrande = async (page,limit) => {
     try {
-        const response = await axios.get(apiRoutes.obtenerPublicaciones());
+        const response = await axios.get(`${apiRoutes.obtenerPublicacionesScrollGrande()+page}/${limit}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const obtenerPublicacionesScrollHorizontal = async () => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerPublicacionesScrollHorizontal());
         return response;
     } catch (error) {
         return error.response;

@@ -1,13 +1,41 @@
 import {Text, View,Dimensions, Image, TouchableOpacity } from "react-native";
 import {Icon} from "react-native-paper";
+import { obtenerFotoPerfil, obtenerFotoPerfilUsuarioBD,guardarFotoPerfil,obtenerToken} from "../services/userServices";
+import { useState } from "react";
 
 
 export default function TopBar() {
+    const [fotoPerfil, setFotoPerfil] = useState(obtenerFotoPerfil());
+
+    const tomarFotoPerfil = async () => {
+        console.log("Obteniendo foto de perfil...");
+        if (fotoPerfil == null) {
+            console.log("Foto de perfil no encontrada");
+            await obtenerFotoPerfilUsuarioBD(obtenerToken()).then((response) => {
+                if (response.status === 200) {
+                    console.log("Foto de perfil encontrada: ", response.data);
+                    guardarFotoPerfil(response.data.urlFotoPerfil);
+                    setFotoPerfil(response.data.urlFotoPerfil);
+                }
+                else {
+                    console.log("Error al obtener foto de perfil: ", response);
+                }
+            });
+        }
+        else {
+            console.log("Foto de perfil encontrada: ", fotoPerfil);
+        }
+    }
+
+    useState(() => {
+        tomarFotoPerfil();
+    }
+    , [fotoPerfil]);
     return(
         <View className="w-full flex-row h-[8vh] items-center justify-between px-[5vw] border-b-2 border-b-[#C6DAEB]">
             <TouchableOpacity>
                 <Image
-                    source={{ uri: "https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/logo_findus.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvbG9nb19maW5kdXMucG5nIiwiaWF0IjoxNzI1NTAzODk5LCJleHAiOjMzMjYxNTAzODk5fQ.DK_-tbuq-B9GxEPDkKQbT08OZ_ojjDoZ3-0nz3bTJ4s&t=2024-09-05T02%3A38%3A19.638Z" }}
+                    source={{ uri: fotoPerfil ? fotoPerfil : "https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/logo_findus.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvbG9nb19maW5kdXMucG5nIiwiaWF0IjoxNzI1NTAzODk5LCJleHAiOjMzMjYxNTAzODk5fQ.DK_-tbuq-B9GxEPDkKQbT08OZ_ojjDoZ3-0nz3bTJ4s&t=2024-09-05T02%3A38%3A19.638Z" }}
                     // style={{ width: 50, height: 50, borderRadius: 25 }}
                     className="bg-yellow-100 w-[45px] h-[45px] rounded-full"
                     resizeMode="contain"  // Puedes usar "cover", "contain", o "stretch"
