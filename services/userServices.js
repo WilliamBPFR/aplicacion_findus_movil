@@ -36,7 +36,30 @@ export const obtenerToken = () => {
     }
 }
 
+export const guardarFotoPerfil = async (urlFoto) => {
+    try {
+        await SecureStore.setItemAsync('fotoPerfil', urlFoto);
+        console.log("Foto de perfil guardada");
+        return true;
+    } catch (error) {
+        console.log("Error al guardar foto de perfil: ",error);
+        return false;
+    }
+}
 
+export const obtenerFotoPerfil = () => {
+    try {
+        const urlFoto = SecureStore.getItem('fotoPerfil');
+        if(urlFoto == null){
+                console.log("Foto de perfil no encontrada");
+                return null;
+            }
+        return urlFoto;        
+    } catch (error) {
+        console.log("Error al obtener foto de perfil: ",error);
+        return null;
+    }
+}
 
 
 //Funciones de comunicacion con el servidor
@@ -89,6 +112,19 @@ export const verificarCodigoCambioContrasena = async (data) => {
 export const  cambiarContrasena = async (data, token) => {
     try {
         const response = await axios.post(apiRoutes.cambiar_contrasena(), data,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const obtenerFotoPerfilUsuarioBD = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerFotoPerfilUsuario(),{
             headers: {
                 Authorization: `Bearer ${token}`
             }

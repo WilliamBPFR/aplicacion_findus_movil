@@ -1,7 +1,8 @@
 import {Text, TouchableOpacity, View, Image} from "react-native";
+import { useRouter } from "expo-router";
 
-
-export default function CardPublicacionesHorizontal({nombre, edad, fecha_desaparicion, ultima_ubicacion, imagen}) {
+export default function CardPublicacionesHorizontal({idPublicacion,nombre, edad, fecha_desaparicion, documento, imagen}) {
+    const router = useRouter();
     return(
       <View className="flex flex-col items-center justify-center rounded-lg overflow-hiddenz  bg-[#DCECFA] border-2 border-[#C6DAEB] w-[60vw] h-[45vh] mb-[calc(1.5vh)] mr-[5vw]">
             <Image
@@ -21,11 +22,11 @@ export default function CardPublicacionesHorizontal({nombre, edad, fecha_desapar
             </Text>
 
             <Text className="text-[#233E58] font-normal text-sm mt-[calc(0.2vh)]">
-                <Text className="font-bold">Últ. Ubicación:</Text> {ultima_ubicacion}
+                <Text className="font-bold">Doc. Desaparecido:</Text> {documento}
             </Text>
 
             <TouchableOpacity
-                onPress={() => console.log("Ver más")}
+                onPress={() => router.push(`/publicacionDentroPublicacion/${idPublicacion}`)}
                 className="mt-[calc(1vh)] w-[85%] h-[14%] bg-[#3E86B9] rounded-lg align-middle justify-center"
 
             >

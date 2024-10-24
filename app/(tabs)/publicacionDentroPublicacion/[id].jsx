@@ -6,11 +6,17 @@ import {Icon} from "react-native-paper";
 import CardAvistamiento from "../../../components/card_avistamiento.jsx";
 import CardComentarioPublicacion from "../../../components/card_comentario_publicacion.jsx";
 import CardHacerComentarioPublicacion from "../../../components/card_hacer_comentario_publicacion.jsx";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams,  } from "expo-router";
+import { useEffect } from "react";
 const { width, height } = Dimensions.get("window");
 
 export default function Page() {
   const router = useRouter();
+  const { id } = useLocalSearchParams();
+
+  useEffect(() => {
+    console.log("ID de la publicación: ", id);
+  }, [id]);
   return (
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
