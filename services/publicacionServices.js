@@ -1,6 +1,19 @@
 import apiRoutes from "../api_paths";
 import axios from "axios";
 
+
+//SERVICIOS LOCALES
+export const formatearFecha = (fecha) => {
+    const fechaDesaparicion = new Date(fecha);
+    const dia = fechaDesaparicion.getDate();
+    const mes = fechaDesaparicion.getMonth() + 1;
+    const anio = fechaDesaparicion.getFullYear();
+    return `${dia}/${mes}/${anio}`;
+  }
+
+
+
+//SERVICIOS DE LLAMADAS A LA API
 export const obtenerPublicacionesScrollGrande = async (page,limit) => {
     try {
         const response = await axios.get(`${apiRoutes.obtenerPublicacionesScrollGrande()+page}/${limit}`);
@@ -13,6 +26,15 @@ export const obtenerPublicacionesScrollGrande = async (page,limit) => {
 export const obtenerPublicacionesScrollHorizontal = async () => {
     try {
         const response = await axios.get(apiRoutes.obtenerPublicacionesScrollHorizontal());
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const obtenerInfoDesaparecidoByID = async (id) => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerInfoDesaparecidoByID(id));
         return response;
     } catch (error) {
         return error.response;

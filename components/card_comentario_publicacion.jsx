@@ -2,7 +2,7 @@ import {Text, TouchableOpacity, View,Image} from "react-native";
 import { Divider } from "react-native-paper";
 
 
-export default function CardComentarioPublicacion() {
+export default function CardComentarioPublicacion({nombrePersona, fechaComentario, contenidoComentario, urlfotoPerfil}) {
     return(
       <View className="flex  w-[95%] mb-[2vh]">
         <View className="flex flex-row w-[100%] mb-[calc(1.2vh)]">
