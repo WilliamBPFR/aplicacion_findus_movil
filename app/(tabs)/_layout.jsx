@@ -103,7 +103,7 @@ export default function TabsLayout () {
           }}
         />
         <Tabs.Screen
-          name="publicacionDentroPublicacion/index"
+          name="publicacionDentroPublicacion/[id]"
           options={{
             href: null,
             headerShown: false,
