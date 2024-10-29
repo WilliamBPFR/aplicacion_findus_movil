@@ -11,37 +11,39 @@ import {
   } from "react-native";
   import { Portal, PaperProvider} from "react-native-paper";
   import { StatusBar } from "expo-status-bar";
-  import { Link, useRouter } from "expo-router";
+  import { useRouter,useLocalSearchParams } from "expo-router";
   import { useState, useEffect } from "react";
   import LottieView from 'lottie-react-native'; // Para animaciones
   import InputSignUp from "../../components/input_sign_up.jsx";
   import { useFormik } from "formik";
   import * as Yup from "yup";
   import InputFecha from "../../components/input_fecha.jsx";
-  import DropdownComponent from "../../components/dropdown.jsx";
-  import ImagePickerComponent from "../../components/imagePicker.jsx";
-  import DocumentPickerComponent from "../../components/filePicker.jsx";
-  import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
   import { obtenerToken } from "../../services/userServices.js";
   import MapInput from "../../components/map.jsx";
-  import {crearPublicacion} from "../../services/publicacionServices.js";
   import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
   import { subirArchivo } from "../../services/uploadFileServices.js";
+  import { crearAvistamiento, subirFotoAvistamiento } from "../../services/avistamiento.js";
+  import ImagePickerComponent from "../../components/imagePicker.jsx";
   
   export default function Page() {
     const [showDateModalNacimiento, setShowDateModalNacimiento] = useState(false);
-    const [showDateModalDesaparicion, setShowDateModalDesaparicion] = useState(false);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [apiRessponse, setApiResponse] = useState(null);
-    const [imageData, setImageData] = useState(null);
-    const [documentData, setDocumentData] = useState(null);
-  
+    const { id,nombredesaparecido} = useLocalSearchParams(); // Accede a los parámetros por nombre.
+    const hideModal = () => setModalVisible(false);
+
+
+    useEffect(() => {
+      console.log("ID de la publicación:", id);
+      console.log("Nombre del desaparecido:", nombredesaparecido.trim());
+    }, [id]);
+    
     const router = useRouter();
     useEffect(() => {
       const backAction = () => {
         // Aquí defines la ruta a la que quieres redirigir
-        router.replace('/publicacionDentroPublicacion');  // Reemplaza con la pantalla específica
+        router.replace(`/publicacionDentroPublicacion/${id}`);  // Reemplaza con la pantalla específica
         return true; // Esto indica que estamos manejando el evento nosotros.
       };
   
@@ -53,24 +55,22 @@ import {
       return () => backHandler.remove();
     }, []);
   
+    useEffect(() => {
+      formik.validateForm();
+    }, []);
+
     const validationSchema = Yup.object({
       fecha_avistamiento: Yup.date().required("Este campo es obligatorio"),
       detalles: Yup.string().required("Este campo es obligatorio"),
-      relacion_desaparecido: Yup.string().required("Este campo es obligatorio"),
       ubicacion_latitud: Yup.string().required("Este campo es obligatorio"),
       ubicacion_longitud: Yup.string().required("Este campo es obligatorio"),
+      imageData: Yup.object().required(),
     });
   
     const [pressed, setPressed] = useState({
-      nombre_desaparecido: false,
-      id_tipo_documento: false,
-      documento_desaparecido: false,
-      telefono: false,
-      fecha_desaparicion: false,
-      descripcion_desaparecido: false,
-      relacion_desaparecido: false,
-      contacto: false,
-      fecha_nacimiento: false,
+      fecha_avistamiento: false,
+      detalles: false,
+      ubicacion: false,
     });
   
     const formik = useFormik({
@@ -79,100 +79,59 @@ import {
         detalles: "",
         ubicacion_latitud: "",
         ubicacion_longitud: "",
+        imageData: null,
+        idPublicacion: id,
       },
       validationSchema: validationSchema,
       onSubmit: async (values) => {
+        // console.log(values)
+
         setLoading(true);
-        try {
-          console.log("Fecha de nacimiento: ", values.fecha_nacimiento);
-          values.edad = calcularEdad(values.fecha_nacimiento);
-          values.id_tipo_documento = parseInt(values.id_tipo_documento);
-          
-          values.ubicacion_latitud = values.ubicacion_latitud.toString();
-          values.ubicacion_longitud = values.ubicacion_longitud.toString();
-    
-          console.log("Enviando datos: ", values);
-    
-          const response = await crearPublicacion(values,obtenerToken()); // Espera la respuesta
-          setApiResponse(response); // Guarda la respuesta para manejar el estado
-          
+        try{
+          const response = await crearAvistamiento(values);
+          setApiResponse(response);
+
           if (response.status === 200) {
-            console.log("Publicación creada correctamente: ", response.data);
-            const idPublicacion = response.data.idpublicacion;
-            console.log("Publicación creada correctamente: ", response.data);
-  
-            // Paso 2: Subir la imagen o el archivo si se proporcionó
-            if (imageData) {
-              const uploadData = {
-                idpublicacion: idPublicacion,
-                base64Image: imageData?.base64,
-                base64File: null,
-                fileName: imageData?.fileName,
-                mimeType: imageData?.mimeType
-              };
-  
-              console.log("Datos de la imagen: ", "fileName:", uploadData.fileName, "mimeType:", uploadData.mimeType, "idPublicacion:", uploadData.idpublicacion);
-              
-              // Llamada a la API para subir la imagen/archivo
-              const uploadResponse = await subirArchivo(uploadData);
-              if (uploadResponse.status === 200) {
-                console.log("Imagen subida correctamente");
-              } else {
-                console.error("Error al subir la imagen", uploadResponse.data.message);
-              }
+            console.log("Avistamiento creado correctamente: ", response.data);
+            console.log("ID DEL AVISTAMIENTO: ", response.data.idAvistamiento);
+
+            const dataFoto = {
+              idavistamiento: response.data.idAvistamiento,
+              base64File: values?.imageData?.base64,
+              fileName: values?.imageData?.fileName,
+              mimeType: values?.imageData?.mimeType
             }
-  
-            if(documentData){
-              const uploadData = {
-                idpublicacion: idPublicacion,
-                base64Image: null,
-                base64File: documentData?.base64,
-                fileName: documentData?.fileName,
-                mimeType: documentData?.mimeType,
-              };
-  
-              console.log("Datos del archivo: ", "fileName:", uploadData.fileName, "mimeType:", uploadData.mimeType, "idPublicacion:", uploadData.idpublicacion);
-              
-              // // Llamada a la API para subir la imagen/archivo
-              const uploadResponse = await subirArchivo(uploadData, 'tu_token_aqui');
-              if (uploadResponse.status === 200) {
-                console.log("Archivo subido correctamente");
-              } else {
-                console.error("Error al subir el archivo: ", uploadResponse.data.message);
-              }
+
+            const responseFoto = await subirFotoAvistamiento(dataFoto);
+            if (responseFoto.status === 200) {
+              setLoading(false);  
+              setModalVisible(true);
+              setTimeout(() => {
+                setModalVisible(false);
+                router.push(`/publicacionDentroPublicacion/${id}`);
+              }, 2000);
             }
-            
-            setLoading(false);  
-            setModalVisible(true);
-            setTimeout(() => {
-              setModalVisible(false);
-              router.push("../home");
-            }, 2000);
-          } else {
-            console.log("Error al crear la publicación: ", response.data.message);
-            setModalVisible(true);
-            setLoading(false);
+          }else{
+              console.log("Error al crear la publicación: ", response.data.message);
+              setModalVisible(true);
+              setLoading(false);
           }
-        } catch (error) {
-          setModalVisible(true);
-          setLoading(false);
-          console.error("Error en la petición: ", error);
-        }
-      },
+      } catch (error) {
+        setModalVisible(true);
+        setLoading(false);
+        console.error("Error en la petición: ", error);
+      }
+    }
     });
-  
-    const hideModal = () => setModalVisible(false);
   
   
   
     useEffect(() => {
       formik.validateForm();
-      obtenerTiposDocumentos().then((response) => {
-          if(response.status == 200){
-              setData(response.data);
-          }
-    });
-    }, []);
+      // console.log(formik?.values);
+      // console.log(formik?.errors);
+      // console.log(typeof(formik?.values.ubicacion_latitud))
+    }, [formik?.values]);
   
     return (
       <PaperProvider>
@@ -201,7 +160,7 @@ import {
         >
           <View className="flex">
             <Text className="text-[24px] w-[90vw] text-[#233E58] font-extrabold py-[1vh] mx-[-42.5vw]">
-              Crear Reporte de Avistamiento de William Chawillfer Ferreira Rosado
+              Crear Reporte de Avistamiento de {nombredesaparecido}
             </Text>
           </View>
           <View className="flex w-[calc(85.380vw)]">
@@ -209,14 +168,14 @@ import {
             <InputFecha
               label={"Fecha de Avistamiento"}
               separation={0.028}
-              value={formik.values.fecha_nacimiento}
+              value={formik.values.fecha_avistamiento}
               placeholder={"Seleccione su fecha de Nacimiento"}
               id_name={"fecha_avistamiento"}
               setFieldValue={formik.setFieldValue}
               fiedName={"fecha_avistamiento"}
-              pressed={pressed.fecha_nacimiento}
-              handlePressed={() => setPressed({ ...pressed, fecha_nacimiento: true })}
-              error={formik.errors.fecha_nacimiento}
+              pressed={pressed.fecha_avistamiento}
+              handlePressed={() => setPressed({ ...pressed, fecha_avistamiento: true })}
+              error={formik.errors.fecha_avistamiento}
               showDateModal={showDateModalNacimiento}
               setShowDateModal={setShowDateModalNacimiento}
               maxDate={new Date()}
@@ -226,26 +185,37 @@ import {
             <InputSignUp
               separation={0.028}
               label="Detalles del Avistamiento"
-              text={formik.values.documento_desaparecido} // Corregido
+              text={formik.values.detalles} // Corregido
               placeholder="Detalles del Avistamiento"
               id_name={"detalles"} // Corregido
               handleChange={formik.handleChange("detalles")} // Corregido
-              pressed={pressed.documento_desaparecido} // Corregido
-              handlePressed={() => setPressed({ ...pressed, documento_desaparecido: true })} // Corregido
-              error={formik.errors.documento_desaparecido} // Corregido
+              pressed={pressed.detalles} // Corregido
+              handlePressed={() => setPressed({ ...pressed, detalles: true })} // Corregido
+              error={formik.errors.detalles} // Corregido
               multiline={true}
             />
+
+                      {/* Subir imagen */}
+          <ImagePickerComponent
+            separation={0.028}
+            buttonTitle="Subir foto"
+            label="Foto del Avistamiento"
+            onImagePicked={(image) => formik.setFieldValue("imageData",image)}
+            containerStyle={{ marginVertical: 24 }}
+            imageStyle={{ width: 300, height: 300 }}
+          />
+  
     
             {/* Input Ubicación con MapInput */}
             <MapInput
               separation={0.028}
               onLocationSelect={(location) => {
-                formik.setFieldValue("ubicacion_latitud", location.latitude);
-                formik.setFieldValue("ubicacion_longitud", location.longitude);
+                formik.setFieldValue("ubicacion_latitud", location.latitude.toString());
+                formik.setFieldValue("ubicacion_longitud", location.longitude.toString());
               }}
               label="Ubicación de la Desaparición"
             />
-            {pressed.ubicacion && formik.errors.ubicacion && (
+            {pressed.ubicacion && (formik.errors.ubicacion_latitud || formik.errors.ubicacion_longitud) && (
               <Text style={{ color: "red" }}>{formik.errors.ubicacion}</Text>
             )}
     
@@ -271,7 +241,7 @@ import {
                 <View style={styles.modalBackground}>
                   <View style={styles.modalContent}>
                     <ActivityIndicator size="large" color="#3E86B9" />
-                    <Text style={styles.loadingText}>Creando publicación...</Text>
+                    <Text style={styles.loadingText}>Creando Avistamiento...</Text>
                   </View>
                 </View>
               </Modal>
@@ -292,10 +262,10 @@ import {
                       loop={false} 
                     />
                     <Text style={styles.modalTitle}>
-                      {apiRessponse?.status === 200 ? "¡Publicación creada exitosamente!" : "¡Error al crear la publicación!"}
+                      {apiRessponse?.status === 200 ? "Avistamiento creado exitosamente!" : "¡Error al crear el avistamiento!"}
                     </Text>
                     <Text style={styles.modalMessage}>
-                      {apiRessponse?.status === 200 ? "Tu publicación ha sido creada exitosamente." : "Ocurrió un error al intentar crear la publicación."}
+                      {apiRessponse?.status === 200 ? "Tu avistamiento ha sido creado exitosamente." : "Ocurrió un error al intentar crear el avistamiento."}
                     </Text>
                     {apiRessponse?.status !== 200 && (
                       <Text style={styles.modalErrorMessage}>
@@ -304,7 +274,7 @@ import {
                     )}
                     <TouchableOpacity 
                       style={styles.modalButton}
-                      onPress={apiRessponse?.status === 200 ? () => router.push("../home") : hideModal}
+                      onPress={apiRessponse?.status === 200 ? () => router.push(`/publicacionDentroPublicacion/${id}`) : hideModal}
                     >
                       <Text style={styles.modalButtonText}>Aceptar</Text>
                     </TouchableOpacity>

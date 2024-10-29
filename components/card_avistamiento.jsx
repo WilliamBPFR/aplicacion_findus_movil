@@ -4,21 +4,21 @@ import { Divider } from "react-native-paper";
 
 
 
-export default function CardAvistamiento() {
+export default function CardAvistamiento({nombreQuienVio, dondeVio, descripcion, urlfotoAvistamiento, cantItems, numItem}) {
     return(
       <View className="flex w-[100%] mt-[3%] ">
             <View className="ml-[1vw]">
-                <Text className="text-[#254E70] font-bold text-[15px]">Último Avistamiento</Text>
+                <Text className="text-[#254E70] font-bold text-[15px]">{ ((numItem) == 0) ? "Último Avistamiento" : `Avistamiento #${(cantItems - numItem)}`}</Text>
                 <View className="flex-row mx-auto mt-[2%] rounded-lg">
                     <Image
-                        source={{uri: "https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/trauma-and-loss.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvdHJhdW1hLWFuZC1sb3NzLmpwZyIsImlhdCI6MTcyNjMyODY4MiwiZXhwIjo4NjU3MjYyNDIyODJ9.afy8Wi7XEZAEzjG1wUBO-n0AH9YsLk0tJH9o58m4eGk&t=2024-09-14T15%3A44%3A40.306Z"}}
+                        source={{uri: urlfotoAvistamiento}}
                         className="w-[35%] h-[100%] rounded-lg"
                     />
 
                     <View className="flex-col max-w-[60%] mx-auto ml-[3%]">
-                        <Text className="text-[15px] text-[#254E70] mb-[1.5%]"><Text className="font-bold">Quién lo vió:</Text> William Chawillfer Ferreira Rosado</Text>
-                        <Text className="text-[15px] text-[#254E70] mb-[1.5%]"><Text className="font-bold">Dónde lo vió:</Text> Calle Maria Gala #10, Jardines del Norte, D. N.</Text>
-                        <Text className="text-[15px] text-[#254E70] mb-[1.5%]"><Text className="font-bold">Descripción:</Text> La persona divagaba sin rumbo. Al tratar de detenorlo, se fue corriendo.</Text>
+                        <Text className="text-[15px] text-[#254E70] mb-[1.5%]"><Text className="font-bold">Quién lo vió:</Text> {nombreQuienVio}</Text>
+                        <Text className="text-[15px] text-[#254E70] mb-[1.5%]"><Text className="font-bold">Dónde lo vió:</Text> {dondeVio}</Text>
+                        <Text className="text-[15px] text-[#254E70] mb-[1.5%]"><Text className="font-bold">Descripción:</Text> {descripcion}</Text>
                     </View> 
                 </View>
             </View>

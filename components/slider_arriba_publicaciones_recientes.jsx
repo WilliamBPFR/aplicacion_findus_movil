@@ -2,7 +2,7 @@ import { Text, View, Image, Dimensions, StatusBar, ScrollView, view} from "react
 import CardPublicacionesHorizontal from "./card_publicacion_horizontal.jsx";
 import { useState, useEffect } from "react";
 import { ActivityIndicator } from 'react-native-paper';
-import {obtenerPublicacionesScrollHorizontal} from "../services/publicacionServices.js";
+import {obtenerPublicacionesScrollHorizontal,formatearFecha} from "../services/publicacionServices.js";
 
 export default function SliderPublicacionesRecientes() {
   
@@ -16,15 +16,6 @@ export default function SliderPublicacionesRecientes() {
     const fechaDesaparicion = new Date(fecha);
     const diferencia = fechaActual.getFullYear() - fechaDesaparicion.getFullYear();
     return diferencia;
-  }
-
-
-  const formatearFecha = (fecha) => {
-    const fechaDesaparicion = new Date(fecha);
-    const dia = fechaDesaparicion.getDate();
-    const mes = fechaDesaparicion.getMonth() + 1;
-    const anio = fechaDesaparicion.getFullYear();
-    return `${dia}/${mes}/${anio}`;
   }
 
   useEffect(() => {

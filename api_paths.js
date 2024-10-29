@@ -20,6 +20,11 @@ const apiRoutes = {
     crearPublicacion: () => `${API_BASE_URL}/desaparecido/crearDesaparecido`,
     actualizarPublicacion: (id) => `${API_BASE_URL}/desaparecido/updateDesaparecido/${id}`,
     eliminarPublicacion: (id) => `${API_BASE_URL}/desaparecido/deleteDesaparecido/${id}`,
+    obtenerInfoDesaparecidoByID: (id) => `${API_BASE_URL}/desaparecido/obtenerInfoDesaparecidoByID/${id}`,
+    
+    //Rutas de Avistamientos
+    crearAvistamiento: () => `${API_BASE_URL}/avistamiento/crearAvistamiento`,
+    subirFotoAvistamiento: () => `${API_BASE_URL}/avistamiento/subirFotoAvistamiento`,
 
     // Fotos publicacion
     subirArchivo: () => `${API_BASE_URL}/fotospublicacion/crearFotoPublicacion`,
