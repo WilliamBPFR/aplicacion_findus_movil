@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react';
 import { Chip } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import TopBar from "../../../components/topbar.jsx";
+import {publicacionesByUser} from "../../../services/publicacionServices.js";
+import { obtenerToken } from "../../../services/userServices.js";
+
 
 
 export default function Page() {
@@ -12,96 +15,38 @@ export default function Page() {
   const [desaparecidos, setDesaparecidos] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = [
-        {
-          id: '1',
-          nombre: 'Juan Pérez',
-          fecha: '2024-09-01',
-          estado: 'Activo',
-          imagen: 'https://via.placeholder.com/100',
-        },
-        {
-          id: '2',
-          nombre: 'Ana Gómez',
-          fecha: '2024-08-25',
-          estado: 'Cerrado',
-          imagen: 'https://via.placeholder.com/100',
-        },
-        {
-          id: '3',
-          nombre: 'Pedro Rodríguez',
-          fecha: '2024-08-15',
-          estado: 'Inactivo',
-          imagen: 'https://via.placeholder.com/100',
-        },
-        {
-          id: '4',
-          nombre: 'María López',
-          fecha: '2024-08-10',
-          estado: 'Activo',
-          imagen: 'https://via.placeholder.com/100',
-        },
-        {
-          id: '5',
-          nombre: 'José Martínez',
-          fecha: '2024-08-05',
-          estado: 'Activo',
-          imagen: 'https://via.placeholder.com/100',
-        },
-        // {
-        //   id: '6',
-        //   nombre: 'Laura Hernández',
-        //   fecha: '2024-08-01',
-        //   estado: 'Cerrado',
-        //   imagen: 'https://via.placeholder.com/100',
-        // },
-        // {
-        //   id: '7',
-        //   nombre: 'Carlos Sánchez',
-        //   fecha: '2024-07-25',
-        //   estado: 'Activo',
-        //   imagen: 'https://via.placeholder.com/100',
-        // },
-        // {
-        //   id: '8',
-        //   nombre: 'Sofía Pérez',
-        //   fecha: '2024-07-15',
-        //   estado: 'Inactivo',
-        //   imagen: 'https://via.placeholder.com/100',
-        // },
-        // {
-        //   id: '9',
-        //   nombre: 'Javier Gómez',
-        //   fecha: '2024-07-10',
-        //   estado: 'Activo',
-        //   imagen: 'https://via.placeholder.com/100',
-        // },
-        // {
-        //   id: '10',
-        //   nombre: 'Diana Rodríguez',
-        //   fecha: '2024-07-05',
-        //   estado: 'Activo',
-        //   imagen: 'https://via.placeholder.com/100',
-        // },
-      ];
-      setDesaparecidos(data);
+    const obtenerPublicaciones = async () => {
+      try{
+        const token = obtenerToken();
+        console.log("Token: ", token);
+        const response = await publicacionesByUser(token);
+        console.log("Respuesta del servidor: ", response);
+        if (response.status === 200) {
+          console.log("Publicaciones: ", response.data);
+          setDesaparecidos(response.data);
+        } else {
+          console.log("Error al obtener las publicaciones: ", response);
+        }
+      } catch (error) {
+        console.log("Error al obtener las publicaciones: ", error);
+      }
+      
     };
-
-    fetchData();
+    obtenerPublicaciones();
   }, []);
+
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <Image source={{ uri: item.imagen }} style={styles.image} />
       <View style={styles.details}>
-        <Text style={styles.name}>{item.nombre}</Text>
-        <Text>{item.fecha}</Text>
+        <Text style={styles.name}>{item.nombredesaparecido}</Text>
+        <Text>{item.fechadesaparicion}</Text>
         <Chip
         style={[
           styles.chip,
-          item.estado === 'Activo' ? styles.chipActive :
-          item.estado === 'Cerrado' ? styles.chipClosed :
+          item.idestado === 1 ? styles.chipActive :
+          item.idestado === 2 ? styles.chipClosed :
           styles.chipDisabled
         ]}
         textStyle={styles.chipText}

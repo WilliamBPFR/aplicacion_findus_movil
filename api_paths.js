@@ -1,4 +1,5 @@
 import {API_BASE_URL} from "@env"
+import { publicacionesByUser } from "./services/publicacionServices";
 
 const apiRoutes = {
     // Rutas de usuario
@@ -17,7 +18,7 @@ const apiRoutes = {
     crearPublicacion: () => `${API_BASE_URL}/desaparecido/crearDesaparecido`,
     actualizarPublicacion: (id) => `${API_BASE_URL}/desaparecido/updateDesaparecido/${id}`,
     eliminarPublicacion: (id) => `${API_BASE_URL}/desaparecido/deleteDesaparecido/${id}`,
-
+    publicacionesByUser: (id) => `${API_BASE_URL}/desaparecido/obtenerDesaparecidosByUser`,
     // Fotos publicacion
     subirArchivo: () => `${API_BASE_URL}/fotospublicacion/crearFotoPublicacion`,
     
