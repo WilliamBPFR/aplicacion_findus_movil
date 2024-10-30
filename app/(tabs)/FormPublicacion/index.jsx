@@ -1,58 +1,71 @@
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { TouchableOpacity, View, Image, StyleSheet, FlatList, Text } from "react-native";
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Chip } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useFocusEffect } from "@react-navigation/native";
 import TopBar from "../../../components/topbar.jsx";
-import {publicacionesByUser} from "../../../services/publicacionServices.js";
+import { publicacionesByUser } from "../../../services/publicacionServices.js";
 import { obtenerToken } from "../../../services/userServices.js";
-
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 
 export default function Page() {
-  const router = useRouter(); // Usar router para la navegación
+  const router = useRouter(); 
   const [desaparecidos, setDesaparecidos] = useState([]);
 
-  useEffect(() => {
-    const obtenerPublicaciones = async () => {
-      try{
-        const token = obtenerToken();
-        console.log("Token: ", token);
-        const response = await publicacionesByUser(token);
-        console.log("Respuesta del servidor: ", response);
-        if (response.status === 200) {
-          console.log("Publicaciones: ", response.data);
-          setDesaparecidos(response.data);
-        } else {
-          console.log("Error al obtener las publicaciones: ", response);
+  useFocusEffect(
+    useCallback(() => {
+      const obtenerPublicaciones = async () => {
+        try {
+          const token = obtenerToken();
+          console.log("Token: ", token);
+          const response = await publicacionesByUser(token);
+          console.log("Respuesta del servidor: ", response);
+          if (response.status === 200) {
+            console.log("Publicaciones: ", response.data);
+            console.log("Fotos publicaciones: ", response.data[0].fotospublicacion.urlarchivo);
+            setDesaparecidos(response.data);
+          } else {
+            console.log("Error al obtener las publicaciones: ", response);
+          }
+        } catch (error) {
+          console.log("Error al obtener las publicaciones: ", error);
         }
-      } catch (error) {
-        console.log("Error al obtener las publicaciones: ", error);
-      }
+      };
       
-    };
-    obtenerPublicaciones();
-  }, []);
+      obtenerPublicaciones();
+    }, [])
+  );
 
 
   const renderItem = ({ item }) => (
+
+    // Estructura de cada tarjeta
     <View style={styles.card}>
-      <Image source={{ uri: item.imagen }} style={styles.image} />
+      <Image source={{ uri: item.fotospublicacion[0]?.urlarchivo }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{item.nombredesaparecido}</Text>
-        <Text>{item.fechadesaparicion}</Text>
+        <Text>{formatDistanceToNow(new Date(item.fechadesaparicion), { addSuffix: true, locale: es })}</Text>
         <Chip
         style={[
           styles.chip,
-          item.idestado === 1 ? styles.chipActive :
-          item.idestado === 2 ? styles.chipClosed :
+          item.estado.id === 1 ? styles.chipActive :
+          item.estado.id === 2 ? styles.chipClosed :
           styles.chipDisabled
         ]}
         textStyle={styles.chipText}
       >
-        {item.estado}
+        {item.estado.nombreestado}
       </Chip>
+      <Chip
+          style={[styles.chip, item.verificado ? styles.chipActive : styles.chipDisabled]}
+          textStyle={styles.chipText}
+        >
+          {item.verificado ? "Verificado" : "No verificado"}
+        </Chip>
       </View>
     </View>
   );
