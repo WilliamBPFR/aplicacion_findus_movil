@@ -41,6 +41,25 @@ export const obtenerInfoDesaparecidoByID = async (id) => {
     }
 }
 
+export const crearComentario = async (data,token) => {
+    try {
+        const response = await axios.post(apiRoutes.crearComentarioPublicaciones(), data,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+
+
+
+
+
 export const obtenerPublicacion = async (id) => {
     try {
         const response = await axios.get(apiRoutes.obtenerPublicacion(id));
