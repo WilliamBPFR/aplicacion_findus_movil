@@ -108,6 +108,20 @@ export const eliminarPublicacion = async (id, token) => {
     }
 }
 
+// obtener publicaciones por usuario, pasando el token
+export const publicacionesByUser = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.publicacionesByUser(), {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
 // export {
 //     obtenerPublicaciones,
 //     obtenerPublicacion,
