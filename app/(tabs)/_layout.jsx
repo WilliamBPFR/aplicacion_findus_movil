@@ -3,6 +3,9 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import Octicons from "react-native-vector-icons/Octicons";
 import { StatusBar } from "expo-status-bar";
+import * as Permissions from 'expo-permissions';
+import { useEffect } from "react";
+
 
 const _renderIcon = (routeName, focused) => {
   let IconComponent = Feather;

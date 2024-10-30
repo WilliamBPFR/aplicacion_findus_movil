@@ -3,7 +3,7 @@ import { Link, useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
 import InputSignUp from "../../components/input_sign_up.jsx";
 import { useFormik } from "formik";
-import { login, guardarToken } from "../../services/userServices.js";
+import { login, guardarToken, limpiarAsyncStorage } from "../../services/userServices.js";
 import LottieView from 'lottie-react-native'; // Para animaciones
 import { Portal, PaperProvider } from 'react-native-paper'; // Para modal de tipo portal
 import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
@@ -40,6 +40,7 @@ export default function Page() {
           console.log("Token: ", response.data.token);
 
           // Guardar el token
+          await limpiarAsyncStorage(); // Limpiar el storage antes de guardar el nuevo token
           const tokenGuardado = await guardarToken(response.data.token);
           setLoading(false); // Ocultar modal de carga
 

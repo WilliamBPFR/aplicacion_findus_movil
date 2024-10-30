@@ -9,7 +9,7 @@ const apiRoutes = {
     verificar_codigo_cambio_contrasena: () => `${API_BASE_URL}/user/verificar_codigo_cambio_contrasena`,
     cambiar_contrasena: () => `${API_BASE_URL}/user/cambiar_contrasena`,
     loginUsuario: () => `${API_BASE_URL}/user/login`,
-    obtenerFotoPerfilUsuario: () => `${API_BASE_URL}/user/obtener_foto_perfil_usuario`,
+    obtenerInfoBasicaUser : () => `${API_BASE_URL}/user/obtener_info_basica_user`,
 
     //Rutas Tipo de Documento
     obtenerTiposDocumentos: () => `${API_BASE_URL}/tipo_documento/obtenerTipoDocumento`,
@@ -23,6 +23,7 @@ const apiRoutes = {
     eliminarPublicacion: (id) => `${API_BASE_URL}/desaparecido/deleteDesaparecido/${id}`,
     publicacionesByUser: (id) => `${API_BASE_URL}/desaparecido/obtenerDesaparecidosByUser`,
     obtenerInfoDesaparecidoByID: (id) => `${API_BASE_URL}/desaparecido/obtenerInfoDesaparecidoByID/${id}`,
+    crearComentarioPublicaciones: () => `${API_BASE_URL}/desaparecido/crearComentarioPublicaciones`,
     
     //Rutas de Avistamientos
     crearAvistamiento: () => `${API_BASE_URL}/avistamiento/crearAvistamiento`,
@@ -31,6 +32,9 @@ const apiRoutes = {
     // Fotos publicacion
     subirArchivo: () => `${API_BASE_URL}/fotospublicacion/crearFotoPublicacion`,
     
+
+    //Material Educativo
+    obtenerMaterialEducativoActivo: () => `${API_BASE_URL}/recursos_educativos/get_recursos_educativos_activos`,
     // Otras rutas
     // ...
 };

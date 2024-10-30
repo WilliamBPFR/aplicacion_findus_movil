@@ -36,7 +36,7 @@ export default function Page() {
     if(id){
       // Aquí se puede hacer la petición a la API para obtener la publicación con el id
       obtenerInfoDesaparecidoByID(id).then((response) => {
-        console.log(response);
+        console.log(response.data);
         if (response.status === 200) {
           setPublicacion(response.data);
           // console.log(response.data.avistamiento[0].fotosavistamiento[0].urlarchivo);
@@ -103,7 +103,7 @@ export default function Page() {
                   <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">Nombre: </Text>{publicacion?.nombredesaparecido}</Text>
                   <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">Edad: </Text> {publicacion?.edad} años</Text>
                   <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">Fecha de Desaparición: </Text>{formatearFecha(publicacion?.fechadesaparicion)}</Text>
-                  {/* <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">Últ. Ubicación: </Text>Los Minas - 20/08/2024</Text> */}
+                  <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">Últ. Ubicación: </Text>{publicacion?.localidad_desaparicion}</Text>
                   <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">{publicacion?.tipodocumento.nombretipodocumento}: </Text>{publicacion?.numerodocumentodesaparecido}</Text>
                   <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">Descripción: </Text>{publicacion?.descripcionpersonadesaparecido}</Text>
                   <Text className="text-[15px] text-[#254E70] mb-[1%]"><Text className="font-bold">Información de Contacto: </Text>{publicacion?.informacioncontacto}</Text>
@@ -144,12 +144,31 @@ export default function Page() {
 
           <View className="mt-[2vh] bg-[#c5d7e8a5] w-[90vw] rounded-lg items-center justify-center px-[2vw] mb-[2vh]">
               <Text className="text-[#233E58] text-center text-[18px] w-[80%] font-bold mt-[2%] mb-[calc(1.5vh)]">Comentarios de la Publicación</Text>
-              <CardHacerComentarioPublicacion/>
+              
+              <CardHacerComentarioPublicacion
+                setPublicacion={setPublicacion}
+                publicacion={publicacion}
+                idpublicacion={id}
+              />
+              {publicacion?.comentario.length != 0 ? (
+                publicacion?.comentario.map((comentario) => (
+                  <CardComentarioPublicacion 
+                    key={comentario.idcomentario}
+                    nombrePersona={comentario.usuario.nombre + " " + comentario.usuario.apellido}
+                    fechaComentario={comentario.fechacreacion}
+                    contenidoComentario={comentario.texto}
+                    urlfotoPerfil={comentario.usuario.urlfotoperfil}
+                  />
+                ) )) : (
+                  <Text className="text-[#233E58] text-center text-[16px] w-[80%] font-bold mt-[0.5%] mb-[2vh]">No hay comentarios registrados</Text>
+                )
+              }
+              {/* <CardComentarioPublicacion/>
               <CardComentarioPublicacion/>  
               <CardComentarioPublicacion/>
               <CardComentarioPublicacion/>
               <CardComentarioPublicacion/>
-              <CardComentarioPublicacion/>
+              <CardComentarioPublicacion/> */}
 
           </View> 
       </ScrollView>
