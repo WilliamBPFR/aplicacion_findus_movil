@@ -1,6 +1,6 @@
 import {Text, View,Dimensions, Image, TouchableOpacity } from "react-native";
 import {Icon} from "react-native-paper";
-import { obtenerFotoPerfil, obtenerFotoPerfilUsuarioBD,guardarFotoPerfil,obtenerToken} from "../services/userServices";
+import { obtenerFotoPerfil, obtenerInfoBasicaUserBD,guardarFotoPerfil,obtenerToken, guardarNombreUsuario} from "../services/userServices";
 import { useState } from "react";
 
 
@@ -11,10 +11,11 @@ export default function TopBar() {
         console.log("Obteniendo foto de perfil...");
         if (fotoPerfil == null) {
             console.log("Foto de perfil no encontrada");
-            await obtenerFotoPerfilUsuarioBD(obtenerToken()).then((response) => {
+            await obtenerInfoBasicaUserBD(obtenerToken()).then((response) => {
                 if (response.status === 200) {
-                    console.log("Foto de perfil encontrada: ", response.data);
+                    console.log("Foto de perfil encontrada en BD: ", response.data);
                     guardarFotoPerfil(response.data.urlFotoPerfil);
+                    guardarNombreUsuario(response.data.nombreUsuario);
                     setFotoPerfil(response.data.urlFotoPerfil);
                 }
                 else {
@@ -38,7 +39,7 @@ export default function TopBar() {
                     source={{ uri: fotoPerfil ? fotoPerfil : "https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/logo_findus.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvbG9nb19maW5kdXMucG5nIiwiaWF0IjoxNzI1NTAzODk5LCJleHAiOjMzMjYxNTAzODk5fQ.DK_-tbuq-B9GxEPDkKQbT08OZ_ojjDoZ3-0nz3bTJ4s&t=2024-09-05T02%3A38%3A19.638Z" }}
                     // style={{ width: 50, height: 50, borderRadius: 25 }}
                     className="bg-yellow-100 w-[45px] h-[45px] rounded-full"
-                    resizeMode="contain"  // Puedes usar "cover", "contain", o "stretch"
+                    resizeMode="cover"  // Puedes usar "cover", "contain", o "stretch"
                 />
             </TouchableOpacity>
 

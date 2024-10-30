@@ -12,7 +12,7 @@ export default function CardPublicacionesGrande({idPublicacion=1,fotoPerfil="htt
                 source={{ uri: fotoPerfil }}
                 // style={{ width: 50, height: 50, borderRadius: 25 }}
                 className="bg-yellow-100 w-[45px] h-[45px] rounded-full"
-                resizeMode="contain"  // Puedes usar "cover", "contain", o "stretch"
+                resizeMode="cover"  // Puedes usar "cover", "contain", o "stretch"
             />
 
             <View className="flex flex-col ml-[5%] ">

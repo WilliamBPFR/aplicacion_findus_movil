@@ -61,6 +61,30 @@ export const obtenerFotoPerfil = () => {
     }
 }
 
+export const guardarNombreUsuario = async (nombre) => { 
+    try {
+        await SecureStore.setItemAsync('nombreUsuario', nombre);
+        console.log("Nombre de usuario guardado");
+        return true;
+    } catch (error) {
+        console.log("Error al guardar nombre de usuario: ",error);
+        return false;
+    }
+}
+
+export const obtenerNombreUsuario = () => {
+    try {
+        const nombre = SecureStore.getItem('nombreUsuario');
+        if(nombre == null){
+                console.log("Nombre de usuario no encontrado");
+                return null;
+            }
+        return nombre;
+    } catch (error) {
+        console.log("Error al obtener nombre de usuario: ",error);
+        return null;
+    }
+}
 
 //Funciones de comunicacion con el servidor
 export const registrarUsuario = async (usuario) => {
@@ -122,9 +146,9 @@ export const  cambiarContrasena = async (data, token) => {
     }
 }
 
-export const obtenerFotoPerfilUsuarioBD = async (token) => {
+export const obtenerInfoBasicaUserBD = async (token) => {
     try {
-        const response = await axios.get(apiRoutes.obtenerFotoPerfilUsuario(),{
+        const response = await axios.get(apiRoutes.obtenerInfoBasicaUser(),{
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -132,6 +156,19 @@ export const obtenerFotoPerfilUsuarioBD = async (token) => {
         return response;
     } catch (error) {
         return error.response;
+    }
+}
+
+export const limpiarAsyncStorage = async () => {
+    try {
+        await SecureStore.deleteItemAsync('token');
+        await SecureStore.deleteItemAsync('nombreUsuario');
+        await SecureStore.deleteItemAsync('fotoPerfil');
+        console.log("AsyncStorage limpiado");
+        return true;
+    } catch (error) {
+        console.log("Error al limpiar AsyncStorage: ",error);
+        return false;
     }
 }
 

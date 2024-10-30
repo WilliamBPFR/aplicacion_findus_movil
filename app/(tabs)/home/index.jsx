@@ -41,7 +41,7 @@ export default function Page() {
 
   const cargarDatos = useCallback(async (pageNumber = 1) => {
     setLoading(true);
-    await delay(500); // Simula una carga
+    // await delay(500); // Simula una carga
 
     const response = await obtenerPublicacionesScrollGrande(pageNumber, limit);
 
@@ -86,7 +86,7 @@ export default function Page() {
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
       <TopBar/>
-      <ScrollView className="flex-col ]" contentContainerStyle={{alignItems: "center", justifyContent: "center"}} onScroll={handleScroll}>
+      <ScrollView className="flex-col" contentContainerStyle={{alignItems: "center", justifyContent: "center"}} onScroll={handleScroll}>
           {/*Componente Slider de Arriba*/}
           
           <SliderPublicacionesRecientes/>
