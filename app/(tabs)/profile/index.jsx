@@ -5,6 +5,7 @@ import { Dialog, Portal, PaperProvider,Button } from 'react-native-paper';
 import OptionsButtons from "../../../components/optionButtons.jsx";
 import { User2, BookA, BookCheck, LogOut} from "lucide-react-native";
 import { useRouter } from "expo-router";
+import { obtenerFotoPerfil, obtenerNombreUsuario } from "../../../services/userServices.js";
 
 
 
@@ -28,14 +29,14 @@ export default function Page() {
           <View className="flex-col w-full justify-center items-center">
             <TouchableOpacity activeOpacity={0.8} onPress={showDialog}>
               <Image
-                source={{ uri: "https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/persona4.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvcGVyc29uYTQucG5nIiwiaWF0IjoxNzI3NzM5NDIyLCJleHAiOjMxNTUyOTYyMDM0MjJ9.Bpj268olzbmxG_A_hO9yLEDzEpjsPv7DpQtj4aTbEWY&t=2024-09-30T23%3A37%3A02.760Z"}}
+                source={{ uri: obtenerFotoPerfil()}}
                 // style={{ width: 50, height: 50, borderRadius: 25 }}
                 className="w-[35vw] h-[35vw] rounded-full"
-                resizeMode="contain"  // Puedes usar "cover", "contain", o "stretch"
+                resizeMode="cover"  // Puedes usar "cover", "contain", o "stretch"
               />
             </TouchableOpacity>
               <Text className="mt-[1vh] text-xl font-bold text-[#233E58]">
-                Nombre de Usuario
+                {obtenerNombreUsuario()}
               </Text>
           </View>
 

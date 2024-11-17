@@ -11,6 +11,28 @@ export const formato_nombres = (nombres) => {
                   .join(' '); // Volver a unir las palabras con un espacio en blanco
 }
 
+export const extraerEdad = (fecha) => {
+    const fechaNacimiento = new Date(fecha);
+    const fechaActual = new Date();
+  
+    let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+  
+    // Verifica si el cumpleaños ya ocurrió este año
+    const mesNacimiento = fechaNacimiento.getMonth();
+    const diaNacimiento = fechaNacimiento.getDate();
+    const mesActual = fechaActual.getMonth();
+    const diaActual = fechaActual.getDate();
+  
+    // Resta un año si el cumpleaños no ha ocurrido aún en el año actual
+    if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) {
+      edad--;
+    }
+  
+    return edad;
+  };
+  
+
+
 export const guardarToken = async (token) => {
     try {
         await SecureStore.setItemAsync('token', token);
@@ -145,6 +167,61 @@ export const  cambiarContrasena = async (data, token) => {
         return error.response;
     }
 }
+
+
+export const obtenerInfoUserPerfilBD = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerInfoUserPerfil(),{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const obtenerInfoEditarUsuarioBD = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerInfoEditarUsuario(),{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const editarUsuarioBD = async (data, token) => {
+    try {
+        const response = await axios.put(apiRoutes.editarUsuario(), data,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const cambiarFotoPerfilBD = async (data, token) => {
+    try {
+        const response = await axios.put(apiRoutes.cambiarFotoPerfil(), data,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+
 
 export const obtenerInfoBasicaUserBD = async (token) => {
     try {

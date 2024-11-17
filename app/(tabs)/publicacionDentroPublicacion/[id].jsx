@@ -17,34 +17,60 @@ const { width, height } = Dimensions.get("window");
 export default function Page() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  
+  // const [id, setId] = useState(null);
   const [publicacion, setPublicacion] = useState({});
   const [loadingData, setLoadingData] = useState(true);
+  const [actualizar, setActualizar] = useState({params: useLocalSearchParams("id"), actualizar: false});
 
   useFocusEffect(
     useCallback(() => {
-      // Esta función se ejecuta al recibir el foco. No hacemos nada aquí.
-      
-      return () => {
-        // Esta función solo se ejecuta al perder el foco.
-       setLoadingData(true);
-       setPublicacion({});
+      const cargarDatos = () => {
+        if (id) {
+          setLoadingData(true);
+          obtenerInfoDesaparecidoByID(id).then((response) => {
+            if (response.status === 200) {
+              setPublicacion(response.data);
+              setLoadingData(false);
+            }
+          });
+        }
       };
-    }, [])
+0
+      // Cargar los datos al entrar en la pantalla
+      cargarDatos();
+
+      return () => {
+        // Limpiar los datos al salir de la pantalla
+        setPublicacion({});
+        setLoadingData(true);
+      };
+    }, [id])
   );
 
-  useEffect(() => {
-    if(id){
-      // Aquí se puede hacer la petición a la API para obtener la publicación con el id
-      obtenerInfoDesaparecidoByID(id).then((response) => {
-        console.log(response.data);
-        if (response.status === 200) {
-          setPublicacion(response.data);
-          // console.log(response.data.avistamiento[0].fotosavistamiento[0].urlarchivo);
-          setLoadingData(false);
-        }
-      });
-    }
-  }, [id]);
+  // useEffect(() => {
+  //   console.log(id);
+  //   console.log("Publicacion dentro de publicacion");
+  //   if(id || actualizar.actualizar === true){
+  //     // Aquí se puede hacer la petición a la API para obtener la publicación con el id
+  //     obtenerInfoDesaparecidoByID(id).then((response) => {
+  //       console.log(response.data);
+  //       if (response.status === 200) {
+  //         setPublicacion(response.data);
+  //         // console.log(response.data.avistamiento[0].fotosavistamiento[0].urlarchivo);
+  //         setLoadingData(false);
+  //       }
+  //     });
+  //   }
+  // }, [id, actualizar?.actualizar]);
+  
+  // useEffect(() => {
+  //   if(actualizar){
+  //     console.log("Actualizar");
+  //     console.log(actualizar.params.id);
+  //     setActualizar({...actualizar, actualizar: (actualizar.params.id == id)});
+  //   }
+  // }, [actualizar]);
 
   if (loadingData) {
     return (

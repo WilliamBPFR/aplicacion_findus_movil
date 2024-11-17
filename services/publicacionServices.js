@@ -11,8 +11,6 @@ export const formatearFecha = (fecha) => {
     return `${dia}/${mes}/${anio}`;
   }
 
-
-
 //SERVICIOS DE LLAMADAS A LA API
 export const obtenerPublicacionesScrollGrande = async (page,limit) => {
     try {
