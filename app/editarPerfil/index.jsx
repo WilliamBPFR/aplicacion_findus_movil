@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,Image, TouchableOpacity,ScrollView,StatusBar,Dimensions,Keyboard } from "react-native";
-import { Link, useRouter} from 'expo-router';
+import {useRouter} from 'expo-router';
 import { Button,Icon,Modal,Portal,PaperProvider, TextInput  } from "react-native-paper";
 import { useState,useEffect,useRef } from "react";
 import InputSignUp from "../../components/input_sign_up.jsx";
@@ -10,84 +10,90 @@ import LottieView from "lottie-react-native";
 import BarraVolverAtras from "../../components/barra_volver_atras.jsx";
 import DropdownComponent from "../../components/dropdown.jsx";
 import { obtenerTiposDocumentos } from "../../services/catalogoServices.js";
-import {registrarUsuario,formato_nombres,confirmarCorreo} from "../../services/userServices.js";
+import {obtenerInfoEditarUsuarioBD, obtenerToken, editarUsuarioBD, formato_nombres} from "../../services/userServices.js";
 import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
+import { ActivityIndicator } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
 export default function Page() {
-
-    const [visibleEmailConfirmatioModal, setVisibleEmailConfirmatioModal] = useState(false);
-    const [visibleRegisterStatusModal, setVisibleRegisterStatusModal] = useState(false);
+    // const { id } = useLocalSearchParams();
+    const [initialValues, setInitialValues] = useState({
+        nombres:"",
+        apellidos:"",
+        fechaNacimiento: new Date(),
+        numeroTelefono:"",
+        IdTipoDocumento: "",
+        numero_documento:"",
+    });
+    const [visibleEstatusModificacion, setVisibleEstatusModificacion] = useState(false);
     const [showDateModal, setShowDateModal] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const [sendingUserData, setSendingUserData] = useState(false);
-    const [sendingCode, setSendingCode] = useState(false);
-    const [buttonBGColor, setButtonBGColor] = useState('#FFFFFF');
-    // const [visibleCodeErrorMessage, setVisibleCodeErrorMessage] = useState(false);
-    const showEmailConfirmationModal = () => setVisibleEmailConfirmatioModal(true);
-    const hideEmailConfirmationModal = () => setVisibleEmailConfirmatioModal(false);
-    const showRegisterStatusModal = () => setVisibleRegisterStatusModal(true);
-    const hideRegisterStatusModal = () => setVisibleRegisterStatusModal(false);
-    // const showCodeErrorMessage = () => setVisibleCodeErrorMessage(true);
-    // const hideCodeErrorMessage = () => setVisibleCodeErrorMessage(false);
+    const showEstatusModificacion = () => setVisibleEstatusModificacion(true);
+    const hideEstatusModificacion = () => setVisibleEstatusModificacion(false);
     const router = useRouter();
     const [apiRessponse, setApiResponse] = useState();
-    const [code, setCode] = useState(["", "", "", "","",""]);
-    const inputs = useRef([]);
-    const [data, setData] = useState(
+    // const [code, setCode] = useState(["", "", "", "","",""]);
+    // const inputs = useRef([]);
+    const [tiposDocumentos, setTiposDocumentos] = useState(
         [{ nombreTipoDocumento: 'NA', id: 1 }]
     );
 
-    const hideRegisterStatusModalOnSuccess = () => {
-        setVisibleRegisterStatusModal(false);
-        formik.resetForm();
-        router.push("../login");
+    // const hideRegisterStatusModalOnSuccess = () => {
+    //     setVisibleRegisterStatusModal(false);
+    //     formik.resetForm();
+    //     router.push("../login");
+    // }
+
+    // const handleChange = (text, index) => {
+    //     let newCode = [...code];
+    //     newCode[index] = text;
+    //     setCode(newCode);
+    
+    //     // Mueve el foco al siguiente campo
+    //     if (text && index < 5) {
+    //       inputs.current[index + 1].focus();
+    //     }
+    //   };
+       
+    // const handleKeyPress = (e, index) => {
+    //     if (e.nativeEvent.key === 'Backspace' && index > 0) {
+    //       // Mueve el foco al campo anterior si está vacío y se presiona la tecla de retroceso
+    //       inputs.current[index - 1].focus();
+    //     }
+    //   };
+
+    // const handleConfirm = () => {   
+    //     // Aquí puedes manejar la confirmación del código
+    //     Keyboard.dismiss();
+    //     setSendingCode(true);
+    //     confirmarCorreo({codigoVerificacion: code.join(""),email: apiRessponse?.data.email}).then((response) => {
+    //         // console.log("Respuesta de la peticiónnnnnnnnnnnnnnn:", response);
+    //         if(response.status == 200){
+    //             setApiResponse({...response, verifyingCode: true});
+    //         }else{
+    //             setApiResponse({...apiRessponse, status: response.status,data:{...apiRessponse?.data, message: response.data.message}});
+    //             setSendingCode(false);
+    //         }
+    //     }
+    //     );
+    //     // console.log(code.join(""));
+    //     // console.log("Código confirmado");
+    //   };
+    
+    const handleEdicionFailed = () => {
+        hideEstatusModificacion();
     }
 
-    const handleChange = (text, index) => {
-        let newCode = [...code];
-        newCode[index] = text;
-        setCode(newCode);
-    
-        // Mueve el foco al siguiente campo
-        if (text && index < 5) {
-          inputs.current[index + 1].focus();
-        }
-      };
-       
-    const handleKeyPress = (e, index) => {
-        if (e.nativeEvent.key === 'Backspace' && index > 0) {
-          // Mueve el foco al campo anterior si está vacío y se presiona la tecla de retroceso
-          inputs.current[index - 1].focus();
-        }
-      };
-
-    const handleConfirm = () => {   
-        // Aquí puedes manejar la confirmación del código
-        Keyboard.dismiss();
-        setSendingCode(true);
-        confirmarCorreo({codigoVerificacion: code.join(""),email: apiRessponse?.data.email}).then((response) => {
-            // console.log("Respuesta de la peticiónnnnnnnnnnnnnnn:", response);
-            if(response.status == 200){
-                setApiResponse({...response, verifyingCode: true});
-            }else{
-                setApiResponse({...apiRessponse, status: response.status,data:{...apiRessponse?.data, message: response.data.message}});
-                setSendingCode(false);
-            }
-        }
-        );
-        // console.log(code.join(""));
-        // console.log("Código confirmado");
-      };
-    
+    const handleEdicionSuccess = () => {
+        hideEstatusModificacion();
+        router.push("../perfilAdentro");
+    }
     const validationSchema = Yup.object({
         nombres: Yup.string().required("Este campo es obligatorio"),
         apellidos: Yup.string().required("Este campo es obligatorio"),
-        email: Yup.string().email("Correo inválido").required("Este campo es obligatorio"),
-        contrasena: Yup.string().required("Este campo es obligatorio").min(8, 1).matches(/[A-Z]/, 2)
-                    .matches(/\d/, 3)
-                    .matches(/[!@#$%^&*(),.?":{}|<>]/, 4),
-        confirmar_contrasena: Yup.string().required("Este campo es obligatorio").oneOf([Yup.ref("contrasena"), null], "Las contraseñas deben coincidir"),
         numeroTelefono: Yup.string().required("Este campo es obligatorio"),
         IdTipoDocumento: Yup.string().required("Este campo es obligatorio").matches(/\d/, "Este campo es obligatorio"),
         numero_documento: Yup.string().required("Este campo es obligatorio"),
@@ -97,9 +103,6 @@ export default function Page() {
     const [pressed, setPressed] = useState({
         nombres: false,
         apellidos: false,
-        email: false,
-        contrasena: false,
-        confirmar_contrasena: false,
         numeroTelefono: false,
         IdTipoDocumento: false,
         numero_documento: false,
@@ -107,17 +110,8 @@ export default function Page() {
     });
 
     const formik = useFormik({
-        initialValues:{
-            nombres:"",
-            apellidos:"",
-            email:"",
-            contrasena:"",
-            confirmar_contrasena:"",
-            numeroTelefono:"",
-            IdTipoDocumento: "",
-            numero_documento:"",
-            fechaNacimiento: new Date(),
-        },
+        initialValues: initialValues,
+        enableReinitialize: true,
         validationSchema: validationSchema,
         onSubmit: (values) => {
             Keyboard.dismiss();
@@ -125,13 +119,10 @@ export default function Page() {
             values.nombres = formato_nombres(values.nombres);
             values.apellidos = formato_nombres(values.apellidos);
             values.IdTipoDocumento = parseInt(values.IdTipoDocumento);
-            registrarUsuario(values).then((response) => {
-                // console.log("Respuesta de la petición:", response.data);
-                setApiResponse({status: response.status, data: response.data, verifyingCode: false});
+            editarUsuarioBD(values,obtenerToken()).then((response) => {
+                console.log("Respuesta de la petición de EDITAR USUARIO:", response.data);
+                setApiResponse({status: response.status, data: response.data});
                 if(response.status == 400){
-                    if(response?.data?.message.includes("email")){
-                        formik.setFieldValue("email", "");
-                    }
                     if(response?.data?.message.includes("documento")){
                         formik.setFieldValue("numero_documento", "");
                     }
@@ -140,33 +131,57 @@ export default function Page() {
     }});
 
     useEffect(() => {
-        if(apiRessponse?.status == 200){
-            if(apiRessponse?.verifyingCode){
-                hideEmailConfirmationModal();
-                showRegisterStatusModal();
-            }else{
-                setSendingUserData(false);
-                showEmailConfirmationModal();
-            }
-        }else if(apiRessponse){
-            if(!apiRessponse?.verifyingCode){
-                setSendingUserData(false);
-                showRegisterStatusModal();
-            }
+        setSendingUserData(false);
+        if(apiRessponse){
+            showEstatusModificacion();
         }
     }
     , [apiRessponse]);
 
     useEffect(() => {
         // console.log("useEffect ejecutado");
+        setLoading(true);
         formik.validateForm();
         obtenerTiposDocumentos().then((response) => {
             // console.log("Respuesta de la petición:", response.data);
             if(response.status == 200){
-                setData(response.data);
+                setTiposDocumentos(response.data);
             }
-    });
+        });
+
+        obtenerInfoEditarUsuarioBD(obtenerToken()).then((response) => {
+            if(response.status === 200){
+                // console.log("Información del perfil: ",response.data);
+                setInitialValues({
+                    nombres: response.data.nombre,
+                    apellidos: response.data.apellido,
+                    fechaNacimiento: new Date(response.data.fechanacimiento),
+                    numeroTelefono: response.data.numerotelefono,
+                    IdTipoDocumento: response.data.idtipodocumento,
+                    numero_documento: response.data.numerodocumento,
+                });
+            }else{
+                console.log("Error al obtener la información del perfil: ",response.data);
+            }
+        }).catch((error) => {
+            console.log("Error al obtener la información del perfil: ",error);
+        }).finally(() => {
+            setLoading(false);
+        });
     }, []);
+
+
+    if(loading){
+        return (
+            <View className="flex-1 bg-[#F3F7FD]">
+                <StatusBar hidden={false} backgroundColor={"#F3F7FD"} barStyle={"light-content"} />
+                <BarraVolverAtras/>
+                <View className="flex-1 justify-center items-center">
+                    <ActivityIndicator animating={true} color="#1DE9B6" size="large" />
+                </View>
+            </View>
+        );
+    }
 
   return (
     <PaperProvider>
@@ -226,74 +241,6 @@ export default function Page() {
                         maxDate={new Date()}
                     />
 
-                    {/* Input Correo */}
-                    {/* <InputSignUp 
-                        separation={0.028} 
-                        label={"Correo Electrónico"} 
-                        text={formik.values.email} 
-                        placeholder={"Ingresa tu correo aquí"} 
-                        id_name={"correo"}
-                        handleChange={formik.handleChange("email")}
-                        pressed={pressed.email}
-                        handlePressed={()=> setPressed({...pressed, email: true})}
-                        error={formik.errors.email}
-                    /> */}
-
-
-
-                    {/* Input Contraseña */}
-                    {/* <InputSignUp 
-                        separation={0.028} 
-                        label={"Contraseña"} 
-                        text={formik.values.contrasena} 
-                        placeholder={"Ingresa tu contraseña aquí"} 
-                        id_name={"contrasena"}
-                        handleChange={formik.handleChange("contrasena")}
-                        tipo_contrasena={true}
-                        pressed={pressed.contrasena}
-                        handlePressed={()=> setPressed({...pressed, contrasena: true})}
-                        error={formik.errors.contrasena}
-                    /> */}
-
-                    {/* Texto de validación de contraseña */}
-                    {/* <View className="mb-6">
-                        <Text className="text-[#233E58] text-[14px] font-extrabold">Tu contraseña debe:</Text>
-
-                        <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                            <Icon size={16} color={(formik.values.contrasena.length >= 8) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                            <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos 8 caracteres</Text>
-                        </View>
-
-                        <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                            <Icon size={16} color={/[A-Z]/.test(formik.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                            <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos una mayúscula</Text>
-                        </View>
-
-                        <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                            <Icon size={16} color={/\d/.test(formik.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                            <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos un número</Text>
-                        </View>
-
-                        <View className="flex flex-row ml-4 mt-[calc(0.5vh)] ">
-                            <Icon size={16} color={/[!@#$%^&*(),.?":{}|<>]/.test(formik.values.contrasena) ? "#4ECCAF" : "#CFCDD1"} source={"check-circle"} allowFontScaling={true}/>
-                            <Text className="text-[#233E58] text-[14px] ml-1">Tener al menos un caracter especial</Text>
-                        </View>
-                    </View> */}
-
-                    {/* Input Confirmar Contraseña */}
-                    {/* <InputSignUp 
-                        separation={0.028} 
-                        label={"Confirmar Contraseña"} 
-                        text={formik.values.confirmar_contrasena} 
-                        placeholder={"Confirma tu contraseña aquí"} 
-                        id_name={"confirmar_contrasena"}
-                        handleChange={formik.handleChange("confirmar_contrasena")}
-                        tipo_contrasena={true}
-                        pressed={pressed.confirmar_contrasena}
-                        handlePressed={()=> setPressed({...pressed, confirmar_contrasena: true})}
-                        error={formik.errors.confirmar_contrasena}
-                    /> */}
-
                     {/* Input Teléfono */}
                     <InputSignUp 
                         separation={0.028} 
@@ -313,7 +260,7 @@ export default function Page() {
                         label={"Tipo de Documento de Identidad"} 
                         placeholder={"Ingresa tu documento de identidad"}
                         id_name={"IdTipoDocumento"}
-                        data={data}
+                        data={tiposDocumentos}
                         handleChange={formik.handleChange("IdTipoDocumento")}
                         value={parseInt(formik.values.IdTipoDocumento)}
                         pressed={pressed.IdTipoDocumento}
@@ -350,7 +297,7 @@ export default function Page() {
             </TouchableOpacity>
 
             <BotonEnvioFormularios
-                esValido={formik.isValid}
+                esValido={(formik.isValid && formik.dirty)}
                 sendingData={sendingUserData}
                 label={"Guardar Cambios"}
                 handleSubmit={formik.handleSubmit}
@@ -375,7 +322,7 @@ export default function Page() {
 
             {/* Modal de registro exitoso */}
             <Portal>
-                <Modal className="w-full h-full mt-0" visible={visibleRegisterStatusModal} onDismiss={apiRessponse?.status == 200 ? hideRegisterStatusModalOnSuccess : hideRegisterStatusModal} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: "60%",justifyContent: "center", alignItems:"center"}}>
+                <Modal className="w-full h-full mt-0" visible={visibleEstatusModificacion} onDismiss={apiRessponse?.status == 200 ? handleEdicionSuccess : handleEdicionFailed} contentContainerStyle={{backgroundColor: 'white', borderRadius: 15,marginHorizontal: "auto", width: "90%", height: "60%",justifyContent: "center", alignItems:"center"}}>
                     <LottieView 
                         className="flex h-[40%] w-[80%]" 
                         source={apiRessponse?.status == 200 ? require(`../../assets/sign_up/check.json`) : require(`../../assets/sign_up/wrong.json`)} 
@@ -384,10 +331,10 @@ export default function Page() {
                     />
 
                     <Text className="text-center text-2xl font-bold text-[#233E58]">
-                        {apiRessponse?.status == 200 ? "¡Registro exitoso!" : "¡Registro fallido!"} 
+                        {apiRessponse?.status == 200 ? "Modificación exitosa!" : "Modificación fallida!"} 
                     </Text>
                     <Text className="text-center text-lg text-[#233E58] mt-[calc(1vh)]">
-                        {apiRessponse?.status == 200 ? `Tu cuenta ha sido creada exitosamente.` : `Ha ocurrido un error al intentar crear tu cuenta.`}
+                        {apiRessponse?.status == 200 ? `Tu usuario ha sido modificado con éxito.` : `Ha ocurrido un error al intentar modificar tu usuario.`}
                     </Text>
 
                     {apiRessponse?.status == 200 ? null :
@@ -399,10 +346,10 @@ export default function Page() {
                     
                     <TouchableOpacity  
                         className="mt-[2vh] bg-[#3E86B9] w-[50%] h-[10%] rounded-md justify-center mb-[calc(1vh)]" 
-                        onPress={apiRessponse?.status == 200 ? () => router.push("../login"): hideRegisterStatusModal}
+                        onPress={apiRessponse?.status == 200 ? () => router.push("../perfilAdentro"): handleEdicionFailed}
                     >
                         <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
-                            {apiRessponse?.status == 200 ? "Iniciar Sesión" : "Cerrar"}
+                            {apiRessponse?.status == 200 ? "Aceptar" : "Cerrar"}
                         </Text>
                     </TouchableOpacity>   
                 </Modal>

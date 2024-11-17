@@ -2,10 +2,9 @@ import { Text, View, Image, Dimensions, StatusBar, ScrollView, view} from "react
 import TopBar from "../../../components/topbar.jsx";
 import CardPublicacionesGrande from "../../../components/card_publicacion_grande_home.jsx";
 import SliderPublicacionesRecientes from "../../../components/slider_arriba_publicaciones_recientes.jsx";
-import { Divider } from "react-native-paper";
+import { Divider, ActivityIndicator } from "react-native-paper";
 import { obtenerPublicacionesScrollGrande } from "../../../services/publicacionServices.js";
 import { useEffect, useState, useCallback } from "react";
-import { ActivityIndicator } from 'react-native-paper';
 
 
 const { width, height } = Dimensions.get("window");
