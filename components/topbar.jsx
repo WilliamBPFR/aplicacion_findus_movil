@@ -1,37 +1,46 @@
 import {Text, View,Dimensions, Image, TouchableOpacity } from "react-native";
 import {Icon} from "react-native-paper";
 import { obtenerFotoPerfil, obtenerInfoBasicaUserBD,guardarFotoPerfil,obtenerToken, guardarNombreUsuario} from "../services/userServices";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
-export default function TopBar() {
+export default function TopBar({actualizar=undefined, setActualizar=undefined}) {
     const [fotoPerfil, setFotoPerfil] = useState(obtenerFotoPerfil());
 
     const tomarFotoPerfil = async () => {
         console.log("Obteniendo foto de perfil...");
-        if (fotoPerfil == null) {
-            console.log("Foto de perfil no encontrada");
-            await obtenerInfoBasicaUserBD(obtenerToken()).then((response) => {
-                if (response.status === 200) {
-                    console.log("Foto de perfil encontrada en BD: ", response.data);
-                    guardarFotoPerfil(response.data.urlFotoPerfil);
-                    guardarNombreUsuario(response.data.nombreUsuario);
-                    setFotoPerfil(response.data.urlFotoPerfil);
-                }
-                else {
-                    console.log("Error al obtener foto de perfil: ", response);
-                }
-            });
-        }
-        else {
-            console.log("Foto de perfil encontrada: ", fotoPerfil);
-        }
+        console.log("Foto de perfil no encontrada");
+        await obtenerInfoBasicaUserBD(obtenerToken()).then((response) => {
+            if (response.status === 200) {
+                console.log("Foto de perfil encontrada en BD: ", response.data);
+                guardarFotoPerfil(response.data.urlFotoPerfil);
+                guardarNombreUsuario(response.data.nombreUsuario);
+                setFotoPerfil(response.data.urlFotoPerfil);
+            }
+            else {
+                console.log("Error al obtener foto de perfil: ", response);
+            }
+        });
     }
 
-    useState(() => {
-        tomarFotoPerfil();
+    useEffect(() => {
+        if(fotoPerfil == null){
+            tomarFotoPerfil();
+        }else
+        {
+            console.log("Foto de perfil encontrada en memoria: ", fotoPerfil);
+        }
     }
     , [fotoPerfil]);
+
+
+    useEffect(() => {
+        if(actualizar){
+            tomarFotoPerfil();
+            setActualizar(false);
+        }
+    }, [actualizar])
+
     return(
         <View className="w-full flex-row h-[8vh] items-center justify-between px-[5vw] border-b-2 border-b-[#C6DAEB]">
             <TouchableOpacity>

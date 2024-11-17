@@ -1,5 +1,4 @@
 import {API_BASE_URL} from "@env"
-import { publicacionesByUser } from "./services/publicacionServices";
 
 const apiRoutes = {
     // Rutas de usuario
@@ -10,6 +9,10 @@ const apiRoutes = {
     cambiar_contrasena: () => `${API_BASE_URL}/user/cambiar_contrasena`,
     loginUsuario: () => `${API_BASE_URL}/user/login`,
     obtenerInfoBasicaUser : () => `${API_BASE_URL}/user/obtener_info_basica_user`,
+    obtenerInfoUserPerfil: () => `${API_BASE_URL}/user/obtener_info_user_perfil/`,
+    obtenerInfoEditarUsuario: () => `${API_BASE_URL}/obtener_info_editar_usuario`,
+    editarUsuario: () => `${API_BASE_URL}/user/editar_usuario`,
+    cambiarFotoPerfil: () => `${API_BASE_URL}/user/cambiar_foto_perfil`,
 
     //Rutas Tipo de Documento
     obtenerTiposDocumentos: () => `${API_BASE_URL}/tipo_documento/obtenerTipoDocumento`,
