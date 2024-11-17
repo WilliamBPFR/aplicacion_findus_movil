@@ -11,6 +11,28 @@ export const formato_nombres = (nombres) => {
                   .join(' '); // Volver a unir las palabras con un espacio en blanco
 }
 
+export const extraerEdad = (fecha) => {
+    const fechaNacimiento = new Date(fecha);
+    const fechaActual = new Date();
+  
+    let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+  
+    // Verifica si el cumpleaños ya ocurrió este año
+    const mesNacimiento = fechaNacimiento.getMonth();
+    const diaNacimiento = fechaNacimiento.getDate();
+    const mesActual = fechaActual.getMonth();
+    const diaActual = fechaActual.getDate();
+  
+    // Resta un año si el cumpleaños no ha ocurrido aún en el año actual
+    if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) {
+      edad--;
+    }
+  
+    return edad;
+  };
+  
+
+
 export const guardarToken = async (token) => {
     try {
         await SecureStore.setItemAsync('token', token);
@@ -36,8 +58,55 @@ export const obtenerToken = () => {
     }
 }
 
+export const guardarFotoPerfil = async (urlFoto) => {
+    try {
+        await SecureStore.setItemAsync('fotoPerfil', urlFoto);
+        console.log("Foto de perfil guardada");
+        return true;
+    } catch (error) {
+        console.log("Error al guardar foto de perfil: ",error);
+        return false;
+    }
+}
 
+export const obtenerFotoPerfil = () => {
+    try {
+        const urlFoto = SecureStore.getItem('fotoPerfil');
+        if(urlFoto == null){
+                console.log("Foto de perfil no encontrada");
+                return null;
+            }
+        return urlFoto;        
+    } catch (error) {
+        console.log("Error al obtener foto de perfil: ",error);
+        return null;
+    }
+}
 
+export const guardarNombreUsuario = async (nombre) => { 
+    try {
+        await SecureStore.setItemAsync('nombreUsuario', nombre);
+        console.log("Nombre de usuario guardado");
+        return true;
+    } catch (error) {
+        console.log("Error al guardar nombre de usuario: ",error);
+        return false;
+    }
+}
+
+export const obtenerNombreUsuario = () => {
+    try {
+        const nombre = SecureStore.getItem('nombreUsuario');
+        if(nombre == null){
+                console.log("Nombre de usuario no encontrado");
+                return null;
+            }
+        return nombre;
+    } catch (error) {
+        console.log("Error al obtener nombre de usuario: ",error);
+        return null;
+    }
+}
 
 //Funciones de comunicacion con el servidor
 export const registrarUsuario = async (usuario) => {
@@ -96,6 +165,87 @@ export const  cambiarContrasena = async (data, token) => {
         return response;
     } catch (error) {
         return error.response;
+    }
+}
+
+
+export const obtenerInfoUserPerfilBD = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerInfoUserPerfil(),{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const obtenerInfoEditarUsuarioBD = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerInfoEditarUsuario(),{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const editarUsuarioBD = async (data, token) => {
+    try {
+        const response = await axios.put(apiRoutes.editarUsuario(), data,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const cambiarFotoPerfilBD = async (data, token) => {
+    try {
+        const response = await axios.put(apiRoutes.cambiarFotoPerfil(), data,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+
+
+export const obtenerInfoBasicaUserBD = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.obtenerInfoBasicaUser(),{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const limpiarAsyncStorage = async () => {
+    try {
+        await SecureStore.deleteItemAsync('token');
+        await SecureStore.deleteItemAsync('nombreUsuario');
+        await SecureStore.deleteItemAsync('fotoPerfil');
+        console.log("AsyncStorage limpiado");
+        return true;
+    } catch (error) {
+        console.log("Error al limpiar AsyncStorage: ",error);
+        return false;
     }
 }
 

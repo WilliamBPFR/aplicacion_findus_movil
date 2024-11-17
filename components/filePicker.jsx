@@ -39,6 +39,7 @@ export default function DocumentPickerComponent({
   
           console.log("Document URI:", uri);
           const base64 = await convertToBase64(uri);
+          // console.log("Document base64:", base64);
           setDocumentName(name);
   
           if (onDocumentPicked) {
@@ -63,7 +64,7 @@ export default function DocumentPickerComponent({
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        resolve(reader.result);
+        resolve(reader.result.split(",")[1]); // Devuelve solo la parte Base64s
       };
       reader.onerror = reject;
       reader.readAsDataURL(blob); // Convertir a base64
