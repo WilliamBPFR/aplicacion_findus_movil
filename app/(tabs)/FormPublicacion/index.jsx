@@ -67,6 +67,26 @@ export default function Page() {
           {item.verificado ? "Verificado" : "No verificado"}
         </Chip>
       </View>
+      <View style={styles.iconContainer}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => router.push({
+            pathname: "../../crearForm",
+            params: {
+              modo: "editar",
+              registro: JSON.stringify(item),
+            },
+          })}
+        >
+          <AntDesign name="edit" size={24} color="#00886E" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => console.log('Cerrar', item.id)}
+        >
+          <AntDesign name="delete" size={24} color="#00886E" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -100,6 +120,15 @@ export default function Page() {
 }
 
 const styles = StyleSheet.create({
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  iconButton: {
+    marginLeft: 10,
+    padding: 5,
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#F3F7FD',
