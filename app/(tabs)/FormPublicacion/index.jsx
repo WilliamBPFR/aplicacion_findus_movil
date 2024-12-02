@@ -6,15 +6,20 @@ import { Chip } from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useFocusEffect } from "@react-navigation/native";
 import TopBar from "../../../components/topbar.jsx";
-import { publicacionesByUser } from "../../../services/publicacionServices.js";
+import { publicacionesByUser, cerrarPublicacion } from "../../../services/publicacionServices.js";
 import { obtenerToken } from "../../../services/userServices.js";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
-
+import { Modal } from 'react-native-paper';  // Usamos el modal de react-native-paper
+import LottieView from 'lottie-react-native'; // Importamos Lottie
 
 export default function Page() {
   const router = useRouter(); 
   const [desaparecidos, setDesaparecidos] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false); // Estado para el modal
+  const [modalMessage, setModalMessage] = useState(""); // Mensaje para el modal
+  const [modalConfirmVisible, setModalConfirmVisible] = useState(false); // Modal de confirmación
+  const [publicacionIdToClose, setPublicacionIdToClose] = useState(null); // ID de la publicación a cerrar
 
   useFocusEffect(
     useCallback(() => {
@@ -25,8 +30,6 @@ export default function Page() {
           const response = await publicacionesByUser(token);
           console.log("Respuesta del servidor: ", response);
           if (response.status === 200) {
-            console.log("Publicaciones: ", response.data);
-            console.log("Fotos publicaciones: ", response.data[0].fotospublicacion.urlarchivo);
             setDesaparecidos(response.data);
           } else {
             console.log("Error al obtener las publicaciones: ", response);
@@ -35,32 +38,69 @@ export default function Page() {
           console.log("Error al obtener las publicaciones: ", error);
         }
       };
-      
       obtenerPublicaciones();
     }, [])
   );
 
+  // Función para abrir el modal de confirmación
+  const handleConfirmClose = (id) => {
+    setPublicacionIdToClose(id);
+    setModalConfirmVisible(true); // Muestra el modal de confirmación
+  };
+
+  // Función para cerrar la publicación
+  const handleCerrarPublicacion = async () => {
+    if (publicacionIdToClose === null) return;
+    
+    try {
+      const response = await cerrarPublicacion(publicacionIdToClose);
+      if (response.status === 200) {
+        // Actualiza el estado de la publicación a "cerrada" (no elimina la publicación)
+        setDesaparecidos(prevState => 
+          prevState.map(item =>
+            item.id === publicacionIdToClose
+              ? { ...item, estado: { id: 2, nombreestado: "Cerrada" } } // Estado "cerrada"
+              : item
+          )
+        );
+        setModalMessage("Publicación cerrada correctamente");
+        setModalVisible(true);
+      } else {
+        setModalMessage("Error al cerrar la publicación");
+        setModalVisible(true);
+      }
+    } catch (error) {
+      setModalMessage("Error al cerrar la publicación");
+      setModalVisible(true);
+    }
+
+    // Cierra el modal de confirmación
+    setModalConfirmVisible(false);
+  };
+
+  // Función para cancelar el cierre de la publicación
+  const handleCancelarCerrar = () => {
+    setModalConfirmVisible(false); // Cierra el modal de confirmación sin hacer nada
+  };
 
   const renderItem = ({ item }) => (
-
-    // Estructura de cada tarjeta
     <View style={styles.card}>
       <Image source={{ uri: item.fotospublicacion[0]?.urlarchivo }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{item.nombredesaparecido}</Text>
         <Text>{formatDistanceToNow(new Date(item.fechadesaparicion), { addSuffix: true, locale: es })}</Text>
         <Chip
-        style={[
-          styles.chip,
-          item.estado.id === 1 ? styles.chipActive :
-          item.estado.id === 2 ? styles.chipClosed :
-          styles.chipDisabled
-        ]}
-        textStyle={styles.chipText}
-      >
-        {item.estado.nombreestado}
-      </Chip>
-      <Chip
+          style={[ 
+            styles.chip, 
+            item.estado.id === 1 ? styles.chipActive :
+            item.estado.id === 2 ? styles.chipClosed :
+            styles.chipDisabled 
+          ]}
+          textStyle={styles.chipText}
+        >
+          {item.estado.nombreestado}
+        </Chip>
+        <Chip
           style={[styles.chip, item.verificado ? styles.chipActive : styles.chipDisabled]}
           textStyle={styles.chipText}
         >
@@ -72,17 +112,14 @@ export default function Page() {
           style={styles.iconButton}
           onPress={() => router.push({
             pathname: "../../crearForm",
-            params: {
-              modo: "editar",
-              registro: JSON.stringify(item),
-            },
+            params: { modo: "editar", registro: JSON.stringify(item) },
           })}
         >
           <AntDesign name="edit" size={24} color="#00886E" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={() => console.log('Cerrar', item.id)}
+          onPress={() => handleConfirmClose(item.id)} // Muestra el modal de confirmación
         >
           <AntDesign name="delete" size={24} color="#00886E" />
         </TouchableOpacity>
@@ -91,14 +128,10 @@ export default function Page() {
   );
 
   return (
-    
     <View style={styles.safeArea}>
-      <StatusBar
-        hidden={false}
-        backgroundColor={"#F3F7FD"}
-        barStyle={"dark-content"}
-      />
+      <StatusBar hidden={false} backgroundColor={"#F3F7FD"} barStyle={"dark-content"} />
       <TopBar/>
+      
       {/* FlatList para renderizar la lista */}
       <FlatList
         data={desaparecidos}
@@ -110,36 +143,56 @@ export default function Page() {
       {/* FAB - Botón flotante */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => router.push("../../crearForm")} // Redirige a la pantalla de crearForm
+        onPress={() => router.push("../../crearForm")} 
       >
         <AntDesign name="plus" size={32} color="#F3F7FD" style={styles.fabIcon} />
       </TouchableOpacity>
 
+      {/* Modal de confirmación */}
+      <Modal
+        visible={modalConfirmVisible}
+        onDismiss={handleCancelarCerrar} // Al hacer clic fuera del modal, se cancela
+        contentContainerStyle={styles.modalContainer}
+      >
+        <View style={styles.modalContent}>
+          {/* Animación Lottie */}
+          <LottieView
+            source={require('../../../assets/publicacionAdentro/warning.json')}  // Ajusta la ruta a tu archivo Lottie
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+          <Text style={styles.modalText}>¿Está seguro que desea cerrar esta publicación?</Text>
+          <TouchableOpacity onPress={handleCerrarPublicacion} style={styles.modalButton}>
+            <Text style={styles.modalButtonText}>Aceptar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleCancelarCerrar} style={styles.modalButton}>
+            <Text style={styles.modalButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      {/* Modal de notificación */}
+      <Modal
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        contentContainerStyle={styles.modalContainer}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>{modalMessage}</Text>
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+            <Text style={styles.modalButtonText}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  iconButton: {
-    marginLeft: 10,
-    padding: 5,
-  },
   safeArea: {
     flex: 1,
     backgroundColor: '#F3F7FD',
-  },
-  backButtonContainer: {
-    marginHorizontal: '4.5vw',
-    marginVertical: '1vh',
-  },
-  backButton: {
-    width: '10vw',
-    height: '4.5vh',
   },
   flatListContent: {
     paddingBottom: '1.5vh',
@@ -184,23 +237,26 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
   chipClosed: {
-    backgroundColor: '#60BDFF', // Gris claro
-    borderColor: '#B0BEC5', // Gris oscuro
+    backgroundColor: '#60BDFF', 
+    borderColor: '#B0BEC5', 
   },
   chipActive: {
-    backgroundColor: '#00D0A1', // Verde esmeralda
-    borderColor: '#00D0A1', // Color similar al fondo
+    backgroundColor: '#00D0A1', 
+    borderColor: '#00D0A1', 
   },
   chipDisabled: {
-    backgroundColor: '#C0C0C0', // Gris
-    borderColor: '#8B8B8B', // Gris más oscuro
+    backgroundColor: '#C0C0C0', 
+    borderColor: '#8B8B8B', 
   },
-  chipText: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: '#FFFFFF', // Texto blanco por defecto, puedes ajustar según el fondo
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
-  // Estilos del FAB
+  iconButton: {
+    marginLeft: 10,
+    padding: 5,
+  },
   fab: {
     position: 'absolute',
     right: 20,
@@ -218,13 +274,45 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   fabIcon: {
+    marginBottom: 5,
+  },
+  modalContainer: {
+    flex: 1, // Asegúrate de que el modal ocupe toda la pantalla
+    justifyContent: 'center', // Centra verticalmente
+    alignItems: 'center', // Centra horizontalmente
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
+  },
+  modalContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    maxWidth: 400, // Opcional: para que no ocupe más de cierto tamaño
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 15,
+    textAlign: 'center', // Asegura que el texto esté centrado
+  },
+  modalButton: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#00886E',
+    borderRadius: 5,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fabText: {
-    fontSize: 40,
+  modalButtonText: {
     color: 'white',
-    alignSelf: 'center',
-    
+    fontSize: 16,
+    textAlign: 'center', // Centra el texto
+  },
+  lottie: {
+    width: 100,  // Ajusta el tamaño de la animación
+    height: 100, // Ajusta el tamaño de la animación
   },
 });

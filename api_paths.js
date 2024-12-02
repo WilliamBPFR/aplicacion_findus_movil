@@ -27,6 +27,7 @@ const apiRoutes = {
     publicacionesByUser: (id) => `${API_BASE_URL}/desaparecido/obtenerDesaparecidosByUser`,
     obtenerInfoDesaparecidoByID: (id) => `${API_BASE_URL}/desaparecido/obtenerInfoDesaparecidoByID/${id}`,
     crearComentarioPublicaciones: () => `${API_BASE_URL}/desaparecido/crearComentarioPublicaciones`,
+    cerrarPublicacion: (id) => `${API_BASE_URL}/desaparecido/cerrarPublicacion/${id}`,
     
     //Rutas de Avistamientos
     crearAvistamiento: () => `${API_BASE_URL}/avistamiento/crearAvistamiento`,
