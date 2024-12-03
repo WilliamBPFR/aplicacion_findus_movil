@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Text, View, Image, Dimensions, StatusBar, ScrollView, view, Touchable, TouchableOpacity} from "react-native";
+import { Text, View, Image, Dimensions, StatusBar, ScrollView, view, Touchable, TouchableOpacity, Alert} from "react-native";
 import TopBar from "../../../components/topbar.jsx";
 import { Dialog, Portal, PaperProvider,Button } from 'react-native-paper';
 import OptionsButtons from "../../../components/optionButtons.jsx";
 import { User2, BookA, BookCheck, LogOut} from "lucide-react-native";
 import { useRouter } from "expo-router";
-import { obtenerFotoPerfil, obtenerNombreUsuario } from "../../../services/userServices.js";
+import { obtenerFotoPerfil, obtenerNombreUsuario, eliminarToken } from "../../../services/userServices.js";
 
 
 
@@ -16,6 +16,29 @@ export default function Page() {
   const showDialog = () => setVisible(true);
 
   const hideDialog = () => setVisible(false);
+
+  const handleCerrarSesion = () => {
+    // Mostrar Alerta de confirmación con difuminado atras
+    Alert.alert(
+      "Cerrar Sesión",
+      "¿Estás seguro de cerrar sesión?",
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Aceptar", 
+          onPress: () => {
+              eliminarToken();
+              router.push("/");
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+
+  }
 
   return (
     <PaperProvider>
@@ -61,7 +84,7 @@ export default function Page() {
               <OptionsButtons
                 label={"Cerrar Sesión"}
                 icon={<LogOut size={25} color="#254E70" source={"log-out"} allowFontScaling={true}/>}
-                onPress={() => console.log("Cerrar Sesión")}
+                onPress={handleCerrarSesion}
                 rojo={true}
               />
           </View>

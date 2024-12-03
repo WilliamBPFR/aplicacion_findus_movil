@@ -59,12 +59,44 @@ export default function Page() {
             <Text style={{fontSize: width*0.045}} className="text-[#F2F2F2] text-center mt-[2vw] px-[3vw]">Tu colaboración puede salvar vidas y reunir a familias. Únete a nuestra misión.</Text>
           </View>
 
-          <View className="flex mx-auto">
-          <Button labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  className="bg-[#3E86B9] flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[125vw] justify-center align-middle" contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex"}} mode="contained"  onPress={() => router.push('../login')}><Text>Empezar</Text></Button>
+          <View className="flex-co mx-auto">
+            <Button 
+              labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  
+              className="bg-[#3E86B9] flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[125vw] justify-center align-middle" 
+              contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex"}} 
+              mode="contained"  
+              onPress={() => router.push('../sign_up')}
+            >
+              <Text>
+                Empezar
+              </Text>
+            </Button>
+            <Button 
+              labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  
+              className="border-[#3E86B9] border- bg-transparent flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[7vw] justify-center align-middle" 
+              contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex", borderColor:"#3E86B9", borderWidth:2, borderRadius:8}} 
+              mode="contained"  
+              onPress={() => router.push('../login')}
+            >
+              <Text>
+                Ya soy miembro
+              </Text>
+            </Button>
           </View>
 
-          <View className="flex mx-auto">
-          </View>
+          {/* <View className="flex mx-auto">
+          <Button 
+              labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  
+              className="bg-[#3E86B9] flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[130vw] justify-center align-middle" 
+              contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex"}} 
+              mode="contained"  
+              onPress={() => router.push('../login')}
+            >
+              <Text>
+                Empezar
+              </Text>
+            </Button>
+          </View> */}
         </View>
     //   </SafeAreaView>
     // </SafeAreaProvider>

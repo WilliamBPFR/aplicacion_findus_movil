@@ -3,8 +3,8 @@ import { Forward } from "lucide-react-native";
 import { Divider } from "react-native-paper";
 import { useEffect,useState } from "react";
 import * as FileSystem from 'expo-file-system';
-import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
+// import * as Notifications from 'expo-notifications';
+// import * as Permissions from 'expo-permissions';
 
 export default function CardMaterialesEducativos({nombreTipoMaterial, idTipoMaterial, nombreMaterial, urlAMaterial}) {
     const downloadFile = async (urlmaterial) => {

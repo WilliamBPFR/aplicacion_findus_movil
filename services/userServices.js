@@ -58,6 +58,18 @@ export const obtenerToken = () => {
     }
 }
 
+export const eliminarToken = async () => {
+    try {
+        await SecureStore.deleteItemAsync('token');
+        console.log("Token eliminado");
+        return true;
+    } catch (error) {
+        console.log("Error al eliminar token: ",error);
+        return false;
+    }
+}
+
+
 export const guardarFotoPerfil = async (urlFoto) => {
     try {
         await SecureStore.setItemAsync('fotoPerfil', urlFoto);
@@ -221,6 +233,31 @@ export const cambiarFotoPerfilBD = async (data, token) => {
     }
 }
 
+export const actualizarUbicacionUsuarioBD = async (data, token) => {
+    try {
+        const response = await axios.put(apiRoutes.actualizarUbicacionUsuario(), data,{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const validarUsuarioLogueado = async (token) => {
+    try {
+        const response = await axios.get(apiRoutes.verificarUsuarioLogueado(),{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
 
 
 export const obtenerInfoBasicaUserBD = async (token) => {
@@ -308,6 +345,21 @@ export const eliminarPublicacion = async (id, token) => {
     }
 }
 
+export const  guardarTokenNotificaciones = async (token, token_notificaciones) => {
+    try {
+        const response = await axios.post(apiRoutes.guardarTokenNotificaciones(), {
+            idNotificacion: token_notificaciones
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
 
 
 

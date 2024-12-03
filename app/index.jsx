@@ -1,52 +1,104 @@
-import { StyleSheet, Text, View } from "react-native";
-import { Link } from 'expo-router';
+import { Text, View, Image, Dimensions, StatusBar} from "react-native";
+import { Button, IconButton} from 'react-native-paper';
+import { useRouter } from "expo-router";
 
-// Crea la configuración de Tamagui
 
-
+const { width, height } = Dimensions.get("window");
 export default function Page() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.main}>
 
-        <Text className="text-red-500 text-5xl">Hello World3</Text>
-        <Text style={styles.subtitle}>This is the first page of your app.</Text>
-      </View>
-      <View>
-        <Link href="/login">Login</Link>
-        <Link href="/bienvenida">Bienvenida</Link>
-        <Link href="/sign_up">Sign Up</Link>
-        <Link href="/FormPublicacion">Form Publicacion</Link>
-        <Link href="/recuperarContrasena">Recuperar Contraseña</Link>
-        <Link href="/home">Pantalla Home</Link>
-        <Link href="/publicacionDentroPublicacion/1">Pantalla Dentro de Publicacion</Link>
-        <Link href="/material-educativo">Pantalla Material Educativo</Link>
-        <Link href="/perfilAdentro">Pantalla Profile Adentro</Link>
-        <Link href="/editarPerfil">Pantalla Editar Perfil</Link>
-        <Link href="/crearReporteAvistamiento/1?nombredesaparecido=Maria Pardo">Pantalla Reporte de Avistamiento</Link>
-      </View>
-    </View>
+  const router = useRouter();
+  return (
+    // <SafeAreaProvider>
+    //   <SafeAreaView style={{ flex: 1, backgroundColor: "#1B434D" }}>
+        <View className="flex-1 bg-[#1B434D]">
+          <StatusBar hidden={false} backgroundColor={"#1B434D"} barStyle={"light-content"} />
+          {/* Circulo screen-52 */}
+          <View className="w-[52vw]-52 h-[36vw] overflow-hidden ml-[3vw]">
+            <View className="w-[52vw] h-[52vw] rounded-full bg-[#EAF2FF] mt-auto -translate-y-1/2"></View>
+          </View>
+
+            {/* Circulo circulo_arriba_izquierdo */}
+          <View className="absolute w-[41vw] h-[36vw] overflow-hidden ml-[57vw]">
+            <View className="w-[41vw] h-[41vw] rounded-full bg-[#C4F0DF] mt-auto -translate-y-1/2"></View>
+          </View>
+
+            {/* Circulo circulo_central */}
+          <View className="absolute ml-[calc(8.4vw)] w-[84vw] h-[82vw] mt-[39vw]">
+            <View className="w-[84vw] h-[82vw] rounded-full bg-[#EAFFF7]"></View>
+          </View>
+
+          {/* Lineas de Atras*/}
+          <View className="absolute w-[135vw] h-[51vh] overflow-hidden mt-[15vh]">
+            <Image source={require("../assets/home/lineas_fondo.png")} className="-ml-[15vw] rotate-[-17.41] w-[135vw] h-[51vh]"></Image>
+          </View>
+
+          {/* Imagen Mano Derecha */}
+          <View className="absolute w-[89vw] h-[70vw] mt-[3vw] ml-[28vw]">
+            <Image source={require("../assets/home/mano_derecha.png")} className="-ml-[6vw] rotate-[22.56] w-[97vw] h-[125vw]"></Image>
+          </View>
+
+          {/* Imagen Mano Izquierda */}
+          <View className="absolute w-[78vw] h-[82vw]  mt-[61vw]">
+            <Image source={require("../assets/home/mano_izquierda.png")} className="-ml-[17vw] rotate-[22.56] w-[97vw] h-[103vw]"></Image>
+          </View>
+
+            {/* Cuadrado Arriba */}
+          <View className="absolute w-[7vw] h-[7vw] ml-[65vw] mt-[18vw]">
+            <View className="w-[7vw] h-[7vw] rotate-[50deg] bg-[#60BDFF]"></View>
+          </View>
+
+            {/* Cuadrado Abajo */}
+          <View className="absolute w-[7vw] h-[7vw] ml-[10vw] mt-[39vw]">
+            <View className="w-[7vw] h-[7vw] rotate-[50deg] bg-[#4ECCAF]"></View>
+          </View>
+
+
+          {/*Texto*/}
+          <View className="absolute mt-[112vw] w-full px-auto">
+            <Text style={{fontSize: width*0.08}} className="text-[#F2F2F2] text-center mt-[21vw]">Encuentra y Ayuda</Text>
+            <Text style={{fontSize: width*0.045}} className="text-[#F2F2F2] text-center mt-[2vw] px-[3vw]">Tu colaboración puede salvar vidas y reunir a familias. Únete a nuestra misión.</Text>
+          </View>
+
+          <View className="flex-co mx-auto">
+            <Button 
+              labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  
+              className="bg-[#3E86B9] flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[125vw] justify-center align-middle" 
+              contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex"}} 
+              mode="contained"  
+              onPress={() => router.push('../sign_up')}
+            >
+              <Text>
+                Empezar
+              </Text>
+            </Button>
+            <Button 
+              labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  
+              className="border-[#3E86B9] border- bg-transparent flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[7vw] justify-center align-middle" 
+              contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex", borderColor:"#3E86B9", borderWidth:2, borderRadius:8}} 
+              mode="contained"  
+              onPress={() => router.push('../login')}
+            >
+              <Text>
+                Ya soy miembro
+              </Text>
+            </Button>
+          </View>
+
+          {/* <View className="flex mx-auto">
+          <Button 
+              labelStyle={{height:"100%", marginTop: 48,alignContent:"center", fontSize: 20}}  
+              className="bg-[#3E86B9] flex mx-auto w-[82vw] h-[14vw] rounded-md mt-[130vw] justify-center align-middle" 
+              contentStyle={{height:"100%", flexDirection:"row-reverse", display:"flex"}} 
+              mode="contained"  
+              onPress={() => router.push('../login')}
+            >
+              <Text>
+                Empezar
+              </Text>
+            </Button>
+          </View> */}
+        </View>
+    //   </SafeAreaView>
+    // </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 24,
-  },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
-  },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
-  },
-});

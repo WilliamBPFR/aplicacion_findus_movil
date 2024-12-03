@@ -3,11 +3,13 @@ import { Link, useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
 import InputSignUp from "../../components/input_sign_up.jsx";
 import { useFormik } from "formik";
-import { login, guardarToken, limpiarAsyncStorage } from "../../services/userServices.js";
+import { login, guardarToken, limpiarAsyncStorage, guardarTokenNotificaciones, obtenerToken } from "../../services/userServices.js";
+import { obtenerTokenNotificaciones } from "../../scripts/notifications_logic.jsx";
 import LottieView from 'lottie-react-native'; // Para animaciones
 import { Portal, PaperProvider } from 'react-native-paper'; // Para modal de tipo portal
 import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
 import * as Yup from "yup";
+import { actuaizar_ubicacion_manual } from "../../scripts/location_logic.js";
 
 
 export default function Page() {
@@ -42,28 +44,46 @@ export default function Page() {
           // Guardar el token
           await limpiarAsyncStorage(); // Limpiar el storage antes de guardar el nuevo token
           const tokenGuardado = await guardarToken(response.data.token);
-          setLoading(false); // Ocultar modal de carga
 
           if (tokenGuardado) {
-            setModalMessage("Inicio de sesión exitoso");
-            setModalVisible(true); // Mostrar modal de éxito
+            const token_notificaciones = await obtenerTokenNotificaciones();
+            if (token_notificaciones)  {
+              console.log("Token de notificaciones guardado correctamente: ", token_notificaciones);
+              const tokenGuardadoNotificaciones = await guardarTokenNotificaciones(obtenerToken(), token_notificaciones);
+              console.log("Token de notificaciones guardado en BD: ", tokenGuardadoNotificaciones.data);
+              if(tokenGuardadoNotificaciones.status === 200) {
+                console.log("Token de notificaciones guardado correctamente en BD");
+              } else {
+                console.log("Error al guardar el token de notificaciones en BD");
+              }
+            } else {
+              console.log("Error al guardar el token de notificaciones");
+            }
+
+            const actualizarUbicacion = await actuaizar_ubicacion_manual();
+            // setModalMessage("Inicio de sesión exitoso");
+            // setModalVisible(true); // Mostrar modal de éxito
             setTimeout(() => {
               setModalVisible(false);
+              setLoading(false); // Ocultar modal de carga
               router.push("../home");  // Navegar a home después de 2 segundos
-            }, 2000);
+            }, 1000);
           } else {
             setModalMessage("Error al guardar el token");
             setModalVisible(true);
+            console.log("Error al guardar el token");
           }
         } else {
           setLoading(false); // Ocultar modal de carga
-          setModalMessage("Login fallido: " + response.data.message);
-          setModalVisible(true); // Mostrar modal de error
+          // setModalMessage("Login fallido: " + response.data.message);
+          setModalVisible(true); // Mostrar modal de error\
+          console.log("Login fallido: ", response.data.message);
         }
       } catch (error) {
         setLoading(false); // Ocultar modal de carga
         setModalMessage("Ocurrió un error: " + error.message);
         setModalVisible(true); // Mostrar modal de error
+        console.error("Error en la petición: ", error);
       }
     },
   });
@@ -133,7 +153,7 @@ export default function Page() {
             </View>
           </Modal>
 
-          {/* Modal de éxito o error */}
+          {/* Modal de éxito o error
           <Modal
             visible={modalVisible}
             transparent={true} // Hacer el fondo del modal transparente
@@ -168,7 +188,7 @@ export default function Page() {
                 </TouchableOpacity>
               </View>
             </View>
-          </Modal>
+          </Modal> */}
         </Portal>
       </View>
     </PaperProvider>

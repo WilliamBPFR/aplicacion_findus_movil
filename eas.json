@@ -3,14 +3,27 @@
     "version": ">= 10.2.2"
   },
   "build": {
+    "android":{
+      "env": {
+        "GOOGLE_SERVICES_JSON": "@GOOGLE_SERVICES_JSON"
+      }
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal"
     },
     "preview": {
+      "android": {
+        "buildType": "apk"
+      },
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "distribution": "internal"
+    }
   },
   "submit": {
     "production": {}

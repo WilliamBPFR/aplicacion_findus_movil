@@ -11,3 +11,6 @@
 
 ### Por si acaso
 - npm install expo-development-client
+
+## Para hacer build al proyecto
+- 
