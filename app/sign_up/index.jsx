@@ -169,11 +169,12 @@ export default function Page() {
     }, []);
 
   return (
+    
     <PaperProvider>
         <View className="flex-1 gap-0 bg-[#F3F7FD]">
             <StatusBar hidden={false} backgroundColor={"#F3F7FD"} barStyle={"light-content"} />
             {/* Boton back */}
-            <BarraVolverAtras/>
+            <BarraVolverAtras accionAtras={router.back}/>
 
             {/* Label Crear Cuenta */}
             <View className="flex">

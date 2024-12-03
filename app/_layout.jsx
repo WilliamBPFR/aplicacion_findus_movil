@@ -1,3 +1,50 @@
+import { Slot } from 'expo-router';
+import React, { useEffect } from 'react';
+import { startLocationUpdates } from '../scripts/location_logic';
+import { startNotifications } from '../scripts/notifications_logic';
+import { SafeAreaView, StatusBar,} from 'react-native';
+
+export default function Layout() {
+  useEffect(() => {
+    (async () => {
+        try {
+          await startLocationUpdates();
+          console.log('Actualizaciones de ubicación iniciadas');
+          const derechoNotificaciones = await startNotifications();
+
+          if (!derechoNotificaciones) {
+            return
+          }
+          console.log('Permisos de notificaciones concedidos');
+
+        } catch (error) {
+            console.error('Error al iniciar la actualización de ubicación:', error);
+        }
+        // }
+    })();
+  }, []);
+
+  // setInterval(() => {
+  //   const appState = AppState.currentState;
+  //   console.log('Estado de la app:', appState);
+  //   const isAppActive = appState === 'active'; // Verifica si está en foreground
+    
+  //   // if (isAppActive) {
+  //     console.log('La app está activa:', isAppActive);
+  // }
+  // , 5000);  
+  return (
+    <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" />
+      <Slot/>
+    </SafeAreaView>
+
+  );
+}
+
+
+
+
 // import React, { useEffect, useState } from "react";
 // import { Text } from "react-native";
 // import { Slot, useRouter, useSegments } from "expo-router";  // Importa los hooks necesarios
