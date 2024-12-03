@@ -120,6 +120,18 @@ export const publicacionesByUser = async (token) => {
     }
 }
 
+// cerrar publicacion, pasando el id de la publicacion sin token
+export const cerrarPublicacion = async (id) => {
+    try {
+        const response = await axios.put(apiRoutes.cerrarPublicacion(id));
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+
+
 // export {
 //     obtenerPublicaciones,
 //     obtenerPublicacion,
