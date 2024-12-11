@@ -1,4 +1,6 @@
-import {API_BASE_URL} from "@env"
+// import {API_BASE_URL} from "@env"
+
+const API_BASE_URL = process.env.API_BASE_URL;
 
 const apiRoutes = {
     // Rutas de usuario
@@ -13,6 +15,9 @@ const apiRoutes = {
     obtenerInfoEditarUsuario: () => `${API_BASE_URL}/obtener_info_editar_usuario`,
     editarUsuario: () => `${API_BASE_URL}/user/editar_usuario`,
     cambiarFotoPerfil: () => `${API_BASE_URL}/user/cambiar_foto_perfil`,
+    actualizarUbicacionUsuario: () => `${API_BASE_URL}/user/actualizar_ubicacion_usuario`,
+    verificarUsuarioLogueado: () => `${API_BASE_URL}/user/verificar_token_valido/`,
+    guardarTokenNotificaciones: () => `${API_BASE_URL}/user/guardar_id_notificacion`,
 
     //Rutas Tipo de Documento
     obtenerTiposDocumentos: () => `${API_BASE_URL}/tipo_documento/obtenerTipoDocumento`,

@@ -1,10 +1,15 @@
 import {Text, View,Dimensions, Image, TouchableOpacity } from "react-native";
 import {Icon} from "react-native-paper";
+import { StatusBar } from "expo-status-bar";
 import { obtenerFotoPerfil, obtenerInfoBasicaUserBD,guardarFotoPerfil,obtenerToken, guardarNombreUsuario} from "../services/userServices";
 import { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { ro } from "date-fns/locale";
 
 
 export default function TopBar({actualizar=undefined, setActualizar=undefined}) {
+    const router = useRouter();
     const [fotoPerfil, setFotoPerfil] = useState(obtenerFotoPerfil());
 
     const tomarFotoPerfil = async () => {
@@ -12,7 +17,7 @@ export default function TopBar({actualizar=undefined, setActualizar=undefined}) 
         console.log("Foto de perfil no encontrada");
         await obtenerInfoBasicaUserBD(obtenerToken()).then((response) => {
             if (response.status === 200) {
-                console.log("Foto de perfil encontrada en BD: ", response.data);
+                // console.log("Foto de perfil encontrada en BD: ", response.data);
                 guardarFotoPerfil(response.data.urlFotoPerfil);
                 guardarNombreUsuario(response.data.nombreUsuario);
                 setFotoPerfil(response.data.urlFotoPerfil);
@@ -28,7 +33,7 @@ export default function TopBar({actualizar=undefined, setActualizar=undefined}) 
             tomarFotoPerfil();
         }else
         {
-            console.log("Foto de perfil encontrada en memoria: ", fotoPerfil);
+            // console.log("Foto de perfil encontrada en memoria: ", fotoPerfil);
         }
     }
     , [fotoPerfil]);
@@ -43,11 +48,12 @@ export default function TopBar({actualizar=undefined, setActualizar=undefined}) 
 
     return(
         <View className="w-full flex-row h-[8vh] items-center justify-between px-[5vw] border-b-2 border-b-[#C6DAEB]">
+            <StatusBar hidden={false} backgroundColor="transparent"/>
             <TouchableOpacity>
                 <Image
                     source={{ uri: fotoPerfil ? fotoPerfil : "https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/logo_findus.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvbG9nb19maW5kdXMucG5nIiwiaWF0IjoxNzI1NTAzODk5LCJleHAiOjMzMjYxNTAzODk5fQ.DK_-tbuq-B9GxEPDkKQbT08OZ_ojjDoZ3-0nz3bTJ4s&t=2024-09-05T02%3A38%3A19.638Z" }}
                     // style={{ width: 50, height: 50, borderRadius: 25 }}
-                    className="bg-yellow-100 w-[45px] h-[45px] rounded-full"
+                    className="w-[45px] h-[45px] rounded-full"
                     resizeMode="cover"  // Puedes usar "cover", "contain", o "stretch"
                 />
             </TouchableOpacity>
@@ -64,7 +70,7 @@ export default function TopBar({actualizar=undefined, setActualizar=undefined}) 
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => console.log("Chat")}
+                    onPress={() => router.push("/ver_todas_paginas")}
                     className="ml-[calc(3.5vw)]"
                 >
                     <Icon
