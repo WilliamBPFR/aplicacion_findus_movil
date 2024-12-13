@@ -88,9 +88,9 @@ export default function Page() {
                     .matches(/\d/, 3)
                     .matches(/[!@#$%^&*(),.?":{}|<>]/, 4),
         confirmar_contrasena: Yup.string().required("Este campo es obligatorio").oneOf([Yup.ref("contrasena"), null], "Las contraseñas deben coincidir"),
-        numeroTelefono: Yup.string().required("Este campo es obligatorio"),
+        numeroTelefono: Yup.string().required("Este campo es obligatorio").max(11,"Este campo solo admite 11 dígitos.").matches(/\d/, "Este campo solo adminte numeros"),
         IdTipoDocumento: Yup.string().required("Este campo es obligatorio").matches(/\d/, "Este campo es obligatorio"),
-        numero_documento: Yup.string().required("Este campo es obligatorio"),
+        numero_documento: Yup.string().required("Este campo es obligatorio").max(11,"Este campo solo admite 11 dígitos."),
         fechaNacimiento: Yup.date().required("Este campo es obligatorio").max(new Date(), "La fecha de nacimiento no puede ser mayor a la fecha actual"),
     });
 
@@ -254,6 +254,7 @@ export default function Page() {
                         pressed={pressed.contrasena}
                         handlePressed={()=> setPressed({...pressed, contrasena: true})}
                         error={formik.errors.contrasena}
+                        showErrors={false}
                     />
 
                     {/* Texto de validación de contraseña */}
@@ -306,6 +307,7 @@ export default function Page() {
                         pressed={pressed.numeroTelefono}
                         handlePressed={()=> setPressed({...pressed, numeroTelefono: true})}
                         error={formik.errors.numeroTelefono}
+                        maxLength={11}
                     />
                     
                     {/* Input Tipo de Documento */}
@@ -335,6 +337,7 @@ export default function Page() {
                         pressed={pressed.numero_documento}
                         handlePressed={()=> setPressed({...pressed, numero_documento: true})}
                         error={formik.errors.numero_documento}
+                        maxLength={11}
                     />    
                 </View>
             </ScrollView>

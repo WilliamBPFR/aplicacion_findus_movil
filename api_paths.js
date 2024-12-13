@@ -18,6 +18,7 @@ const apiRoutes = {
     actualizarUbicacionUsuario: () => `${API_BASE_URL}/user/actualizar_ubicacion_usuario`,
     verificarUsuarioLogueado: () => `${API_BASE_URL}/user/verificar_token_valido/`,
     guardarTokenNotificaciones: () => `${API_BASE_URL}/user/guardar_id_notificacion`,
+    obtenerPublicacionesFiltros: (page,limit, nombre) => `${API_BASE_URL}/user/obtener_publicacion_filtros_movil/${page}/${limit}?nombre=${nombre}`,
 
     //Rutas Tipo de Documento
     obtenerTiposDocumentos: () => `${API_BASE_URL}/tipo_documento/obtenerTipoDocumento`,

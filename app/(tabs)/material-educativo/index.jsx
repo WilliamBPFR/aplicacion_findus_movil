@@ -4,6 +4,7 @@ import CardMaterialesEducativos from "../../../components/card_materiales_educat
 import { obtenerRecursosEducativosActivos } from "../../../services/recursosEducativos.js";
 import { useEffect,useState,useCallback } from "react";
 import { ActivityIndicator } from 'react-native-paper';
+import { RefreshControl } from 'react-native';
 
 const { width, height } = Dimensions.get("window");
 
@@ -14,6 +15,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false); // Para indicar carga adicional
+  const [loadingMoreTop, setLoadingMoreTop] = useState(false); // Para indicar carga adicional
 
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -38,7 +40,12 @@ export default function Page() {
       console.log(response.data);
       const nuevaosRecursos = response.data;
       if (nuevaosRecursos.length > 0) {
-        setRecursosEducativos((prev) => [...prev, ...nuevaosRecursos]);
+        if (pageNumber === 1) {
+          setRecursosEducativos(nuevaosRecursos);
+        } else {
+          setRecursosEducativos((prev) => [...prev, ...nuevaosRecursos]);
+        
+        }
         setHasMore(nuevaosRecursos.length === limit); // Si no hay más publicaciones, setea `hasMore` a false
       } else {
         setHasMore(false);
@@ -46,6 +53,7 @@ export default function Page() {
     }
     setLoading(false);
     setLoadingMore(false);
+    setLoadingMoreTop(false);
   }, [limit]);
 
   useEffect(() => {
@@ -63,6 +71,14 @@ export default function Page() {
     }
   };  
 
+  useEffect(() => {
+    if (loadingMoreTop) {
+      setPage(1);
+      cargarDatos(1);
+    }
+  }
+  , [loadingMoreTop]);
+
   if (loading && page === 1) {
     return (
       <View className="flex-1 bg-[#F#F7FD]">
@@ -77,7 +93,18 @@ export default function Page() {
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
       <TopBar/>
-      <ScrollView className="flex-col" contentContainerStyle={{alignItems: "center", justifyContent: "center"}} onScroll={handleScroll}>
+      <ScrollView className="flex-col" contentContainerStyle={{alignItems: "center", justifyContent: "center"}} onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={() => {
+              setLoadingMoreTop(true);
+            }}
+            colors={["#1DE9B6"]}
+            progressBackgroundColor={"#C6DAEB"}
+          />
+        }
+      >
           <View className="w-full mt-[3vh]">
             <Text className="ml-[7%] text-2xl font-bold text-[#233E58]">
               Material Educativo

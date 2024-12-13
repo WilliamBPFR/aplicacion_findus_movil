@@ -36,7 +36,7 @@ export default function Page() {
           });
         }
       };
-0
+
       // Cargar los datos al entrar en la pantalla
       cargarDatos();
 
