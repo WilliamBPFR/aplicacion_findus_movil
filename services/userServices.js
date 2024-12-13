@@ -345,6 +345,19 @@ export const eliminarPublicacion = async (id, token) => {
     }
 }
 
+export const obtenerPublicacionesFiltros = (page, limit, nombre, token) => {
+    try {
+        const response = axios.get(apiRoutes.obtenerPublicacionesFiltros(page, limit, nombre),{
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
 export const  guardarTokenNotificaciones = async (token, token_notificaciones) => {
     try {
         const response = await axios.post(apiRoutes.guardarTokenNotificaciones(), {
