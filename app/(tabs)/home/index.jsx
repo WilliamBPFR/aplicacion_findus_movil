@@ -1,10 +1,11 @@
-import { Text, View, Image, Dimensions, StatusBar, ScrollView, view} from "react-native";
+import { Text, View, Image, Dimensions, StatusBar, ScrollView, RefreshControl} from "react-native";
 import TopBar from "../../../components/topbar.jsx";
 import CardPublicacionesGrande from "../../../components/card_publicacion_grande_home.jsx";
 import SliderPublicacionesRecientes from "../../../components/slider_arriba_publicaciones_recientes.jsx";
 import { Divider, ActivityIndicator } from "react-native-paper";
 import { obtenerPublicacionesScrollGrande } from "../../../services/publicacionServices.js";
 import { useEffect, useState, useCallback } from "react";
+import { use } from "react";
 
 
 const { width, height } = Dimensions.get("window");
@@ -16,7 +17,8 @@ export default function Page() {
   const [publicaciones, setPublicaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false); // Para indicar carga adicional
+  const [loadingMoreBottom, setLoadingMoreBottom] = useState(false); // Para indicar carga adicional
+  const [loadingMoreTop, setLoadingMoreTop] = useState(false); // Para indicar carga adicional
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -47,27 +49,53 @@ export default function Page() {
     if (response.status === 200) {
       const nuevasPublicaciones = response.data;
       if (nuevasPublicaciones.length > 0) {
-        setPublicaciones((prev) => [...prev, ...nuevasPublicaciones]);
+        console.log("KLKKKK");
+        console.log(loading);
+        console.log(loadingMoreTop)
+        if (pageNumber === 1) { 
+          console.log("ENTRE A ASIUGNASR");
+          setPublicaciones(nuevasPublicaciones)
+        } else {
+          setPublicaciones((prev) => [...prev, ...nuevasPublicaciones]);
+        }
         setHasMore(nuevasPublicaciones.length === limit); // Si no hay más publicaciones, setea `hasMore` a false
       } else {
         setHasMore(false);
       }
     }
     setLoading(false);
-    setLoadingMore(false);
+    setLoadingMoreBottom(false);
+    setLoadingMoreTop(false);
   }, [limit]);
 
   useEffect(() => {
     cargarDatos(page);
   }, [page]);
 
+  useEffect(() => {
+    if (loadingMoreTop) {
+      setLoading(true);
+      setPage(1); 
+      cargarDatos(1);
+    }
+  }, [loadingMoreTop]); 
+
   const handleScroll = ({ nativeEvent }) => {
+    // PAra cargar mas abajo
     const isAtBottom = 
       nativeEvent.layoutMeasurement.height + nativeEvent.contentOffset.y >= 
       nativeEvent.contentSize.height - 20;
 
-    if (isAtBottom && hasMore && !loadingMore) {
-      setLoadingMore(true);
+    // Si esta arriba y le da ma arribva, recarga las publicaciones
+      // const isAtTop = nativeEvent.contentOffset.y <= 20;
+
+      // if (isAtTop && !loadingMoreTop) {
+      //   setLoadingMoreTop(true);
+      //   console.log("Cargando más arriba...");
+      //   cargarDatos(1);
+      // }
+    if (isAtBottom && hasMore && !loadingMoreBottom) {
+      setLoadingMoreBottom(true);
       setPage((prev) => prev + 1);
     }
   };
@@ -85,8 +113,20 @@ export default function Page() {
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
       <TopBar/>
-      <ScrollView className="flex-col" contentContainerStyle={{alignItems: "center", justifyContent: "center"}} onScroll={handleScroll}>
+      <ScrollView className="flex-col" contentContainerStyle={{alignItems: "center", justifyContent: "center"}} onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl
+            refreshing={loadingMoreBottom}
+            onRefresh={() => setLoadingMoreTop(true)}
+            colors={["#1DE9B6"]}
+            progressBackgroundColor={"#C6DAEB"}
+
+          />
+        }
+      >
           {/*Componente Slider de Arriba*/}
+
+          {/* {loadingMoreTop && <ActivityIndicator className="mt-[2vh]" animating={true} color="#1DE9B6" size="small" />} */}
           
           <SliderPublicacionesRecientes/>
 
@@ -110,7 +150,7 @@ export default function Page() {
             </>
           ))}
 
-          {loadingMore && <ActivityIndicator className="mb-[2vh]" animating={true} color="#1DE9B6" size="small" />}
+          {loadingMoreBottom && <ActivityIndicator className="mb-[2vh]" animating={true} color="#1DE9B6" size="small" />}
           {!hasMore && <Text className="mb-[2vh]">No hay más publicaciones.</Text>}
 
           {/* <Divider className="w-[100vh] mx-[5vw] bg-[#C6DAEB] h-[2px] mb-[2vh]"/>

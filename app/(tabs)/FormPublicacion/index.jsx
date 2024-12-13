@@ -11,10 +11,12 @@ import { obtenerToken } from "../../../services/userServices.js";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Modal } from 'react-native-paper';  // Usamos el modal de react-native-paper
+import { ActivityIndicator } from 'react-native'; // Importamos el ActivityIndicator
 import LottieView from 'lottie-react-native'; // Importamos Lottie
 
 export default function Page() {
   const router = useRouter(); 
+  const [loading, setLoading] = useState(true);
   const [desaparecidos, setDesaparecidos] = useState([]);
   const [modalVisible, setModalVisible] = useState(false); // Estado para el modal
   const [modalMessage, setModalMessage] = useState(""); // Mensaje para el modal
@@ -37,6 +39,7 @@ export default function Page() {
         } catch (error) {
           console.log("Error al obtener las publicaciones: ", error);
         }
+        setLoading(false);
       };
       obtenerPublicaciones();
     }, [])
@@ -127,18 +130,35 @@ export default function Page() {
     </View>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.safeArea}>
+        <StatusBar hidden={false} backgroundColor={"#F3F7FD"} barStyle={"dark-content"} />
+        <TopBar/>
+        <ActivityIndicator className="mt-[5vh]" animating={true} color={"#1DE9B6"} size={"large"} />
+      </View>
+    );
+  }
   return (
     <View style={styles.safeArea}>
       <StatusBar hidden={false} backgroundColor={"#F3F7FD"} barStyle={"dark-content"} />
       <TopBar/>
       
       {/* FlatList para renderizar la lista */}
+      {desaparecidos.length > 0 ? (
       <FlatList
         data={desaparecidos}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.flatListContent}
       />
+      ) : (
+        <Text
+          className="text-center text-[#69cfbd] text-2xl font-bold mt-[5vh]"
+        >
+          No hay publicaciones
+        </Text>
+      )}
 
       {/* FAB - Botón flotante */}
       <TouchableOpacity 

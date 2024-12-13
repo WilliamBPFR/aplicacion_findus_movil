@@ -5,7 +5,7 @@ import { useState } from "react";
 const { width, height } = Dimensions.get("window");
 
 
-export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena, pressed, handlePressed, error, showLabel=true,keyboardType="default", multiline=false}){
+export default function InputSignUp({text, label, placeholder, separation,id_name,handleChange, tipo_contrasena, pressed, handlePressed, error, showLabel=true,keyboardType="default", multiline=false, showErrors = true, maxLength=10000}){
     const [showPassword, setShowPassword] = useState(tipo_contrasena);
     const borderColor = (pressed && error) ? "#F26D6F" : "#C6DAEB";
     return(
@@ -25,17 +25,28 @@ export default function InputSignUp({text, label, placeholder, separation,id_nam
                 multiline={multiline}
                 numberOfLines={multiline ? 6 : 1}
                 id={id_name}
+                maxLength={maxLength}
                 mode="outlined"
                 className={"font-medium"}
                 placeholder={placeholder}
                 placeholderTextColor="#B7CBDB"
                 contentStyle={{padding: 0, margin: 0, textAlignVertical: "center"}}
                 outlineStyle={{borderColor: borderColor, borderWidth: 1, borderRadius: 6}}
-                style={{fontSize: 14, borderColor: "transparent", borderWidth: 0, borderRadius: 0, marginBottom: separation*height}}
+                style={{fontSize: 14, borderColor: "transparent", borderWidth: 0, borderRadius: 0}}
                 right={ tipo_contrasena ? <TextInput.Icon icon={showPassword ? "eye" : "eye-off"} forceTextInputFocus={false} onPress={()=> setShowPassword(!showPassword)}/> : <></>}
                 secureTextEntry={showPassword}
                 keyboardType={keyboardType}
             />
+
+            {pressed && error && showErrors ?
+                <Text className="mt-[calc(1vh)] text-[#F26D6F] text-[14px] font-medium">
+                    {error}
+                </Text>
+            : 
+                <></>
+            }
+            <View className="h-[calc(1.4vh)]"></View>
+
         </View>
     )
 }
