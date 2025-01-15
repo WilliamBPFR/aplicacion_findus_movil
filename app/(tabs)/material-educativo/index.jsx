@@ -32,25 +32,30 @@ export default function Page() {
 
   const cargarDatos = useCallback(async (pageNumber = 1) => {
     setLoading(true);
-    await delay(500); // Simula una carga
-    const response = await obtenerRecursosEducativosActivos(pageNumber, limit);
-
-    if (response.status === 200) {
-      console.log("LLEGUE DE LA PETICION")
-      console.log(response.data);
-      const nuevaosRecursos = response.data;
-      if (nuevaosRecursos.length > 0) {
-        if (pageNumber === 1) {
-          setRecursosEducativos(nuevaosRecursos);
+    // await delay(500); // Simula una carga
+    obtenerRecursosEducativosActivos(pageNumber, limit).then((response) => {
+      
+      console.log("ENTRE A MATERIAL EDUCATIVO: ", response.status)
+      if (response.status === 200) {
+        console.log("LLEGUE DE LA PETICION")
+        console.log(response.data);
+        const nuevaosRecursos = response.data;
+        if (nuevaosRecursos.length > 0) {
+          if (pageNumber === 1) {
+            setRecursosEducativos(nuevaosRecursos);
+          } else {
+            setRecursosEducativos((prev) => [...prev, ...nuevaosRecursos]);
+          
+          }
+          setHasMore(nuevaosRecursos.length === limit); // Si no hay más publicaciones, setea `hasMore` a false
         } else {
-          setRecursosEducativos((prev) => [...prev, ...nuevaosRecursos]);
-        
+          setHasMore(false);
         }
-        setHasMore(nuevaosRecursos.length === limit); // Si no hay más publicaciones, setea `hasMore` a false
-      } else {
-        setHasMore(false);
       }
+    }).catch((error) => {
+      console.log("FALLO PETICION: ",error);
     }
+    );
     setLoading(false);
     setLoadingMore(false);
     setLoadingMoreTop(false);
@@ -120,6 +125,7 @@ export default function Page() {
                 recursosEducativos.map((recurso) => (
                   <CardMaterialesEducativos
                     key={recurso.id}
+                    idMaterialEducativo={recurso.id}
                     nombreMaterial={recurso.nombre}
                     urlAMaterial={recurso.urlmaterial}
                     nombreTipoMaterial={recurso.categoriamaterial.nombrecategoriamaterial}

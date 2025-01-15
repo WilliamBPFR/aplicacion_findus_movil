@@ -1,9 +1,17 @@
-import {Text, TouchableOpacity, View,Image} from "react-native";
+import {Text, View,Image} from "react-native";
+import React, {useEffect} from "react";
 import { Divider } from "react-native-paper";
+import {formatearFechaComentario} from "../services/publicacionServices";
 
 
 export default function CardComentarioPublicacion({nombrePersona, fechaComentario, contenidoComentario, urlfotoPerfil}) {
-    return(
+  useEffect(() => {
+    console.log("Nombre de la persona: ", nombrePersona);
+    console.log("Fecha del comentario: ", fechaComentario);
+    console.log("Contenido del comentario: ", contenidoComentario);
+    console.log("URL de la foto de perfil: ", urlfotoPerfil);
+  }, []);  
+  return(
       <View className="flex  w-[95%] mb-[2vh]">
         <View className="flex flex-row w-[90%] mb-[calc(1.2vh)]">
             <Image
@@ -15,7 +23,7 @@ export default function CardComentarioPublicacion({nombrePersona, fechaComentari
 
             <View className="flex flex-col ml-[5%] justify-center">
                 <Text className="text-[#233E58] text-lg font-bold">{nombrePersona}</Text>
-                <Text className="text-[#233E58] text-[10px] font-semibold">Publicado el 12 de septiembre del 2024</Text>
+                <Text className="text-[#233E58] text-[10px] font-semibold">{formatearFechaComentario(fechaComentario)}</Text>
             </View>
         </View>
 

@@ -1,5 +1,6 @@
 import {Text, TouchableOpacity, View,Image} from "react-native";
 import { useRouter } from "expo-router";
+import { formatearFechaComentario } from "../services/publicacionServices";
 
 export default function CardPublicacionesGrande({idPublicacion=1,fotoPerfil="https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/persona4.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvcGVyc29uYTQucG5nIiwiaWF0IjoxNzI2MTEwNTcxLCJleHAiOjMxNTUyOTQ1NzQ1NzF9.kS3sLNvPe8gVi9ZdfOWTTNdwPpWDsn8Nvwc0b-kr1CU&t=2024-09-12T03%3A09%3A31.630Z",fotoDesaparecido="https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/persona2.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvcGVyc29uYTIucG5nIiwiaWF0IjoxNzI2MTA5MjE1LCJleHAiOjMxNTUyOTQ1NzMyMTV9.7XG2tuhw2kQA595EJlG7a0JC35lSVFq9_wXFTqO03VQ&t=2024-09-12T02%3A46%3A55.517Z",nombreUsuario="Nombre de usuario",fechaCreacion,descripcion = "Este es un mensaje urgente para informarles que mi hermano, Hugo Desangles Dietsch, ha desaparecido en Ágora Mall. La última vez que fue visto fue alrededor de las 09:00 A.M. Agradezco cualquier información o ayuda para encontrarlo.",nombreDesaparecido="Nombre de Persona Desaparecida"}) {
 
@@ -17,7 +18,7 @@ export default function CardPublicacionesGrande({idPublicacion=1,fotoPerfil="htt
 
             <View className="flex flex-col ml-[5%] ">
                 <Text className="text-[#233E58] text-lg font-bold">{nombreUsuario}</Text>
-                <Text className="text-[#233E58] text ml-[7%]">Hace 2 horas</Text>
+                <Text className="text-[#233E58] text ml-[3%]">{formatearFechaComentario(fechaCreacion)}</Text>
             </View>
         </View>
 

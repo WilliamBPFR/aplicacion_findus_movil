@@ -3,8 +3,12 @@ import React, { useEffect } from 'react';
 import { startLocationUpdates } from '../scripts/location_logic';
 import { startNotifications } from '../scripts/notifications_logic';
 import { SafeAreaView, StatusBar,} from 'react-native';
+import * as Notifications from 'expo-notifications';
+import { useRouter } from "expo-router";
 
 export default function Layout() {
+  const router = useRouter();
+  
   useEffect(() => {
     (async () => {
         try {
@@ -23,6 +27,30 @@ export default function Layout() {
         // }
     })();
   }, []);
+
+  useEffect(() => {
+    console.log("useEffect iniciado");
+
+    // Listener para manejar las respuestas a notificaciones
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+        const idPublicacion = response?.notification?.request?.content?.data?.idPublicacion;
+        console.log('Notificación recibida:', idPublicacion);
+
+        if (idPublicacion) {
+            // Redirigir a la ruta correspondiente
+            router.push(`/publicacionDentroPublicacion/${idPublicacion}`);
+        } else {
+            console.log("La notificación no contiene un idPublicacion válido.");
+        }
+    });
+
+    // Limpieza de listeners al desmontar el componente
+    return () => {
+        console.log("Limpiando listeners de notificaciones");
+        Notifications.removeNotificationSubscription(responseListener);
+    };
+}, []);
+
 
   // setInterval(() => {
   //   const appState = AppState.currentState;

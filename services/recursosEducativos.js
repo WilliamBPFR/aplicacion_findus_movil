@@ -9,3 +9,13 @@ export const obtenerRecursosEducativosActivos = async (page,limit) => {
         return error.response;
     }
 }
+
+
+export const anadir_vista_a_recurso_educativo = async (idMaterialEducativo) => {
+    try {
+        const response = await axios.put(`${apiRoutes.anadirVistaMaterialEducativo(idMaterialEducativo)}`);
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}

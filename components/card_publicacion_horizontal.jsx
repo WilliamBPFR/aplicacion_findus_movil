@@ -7,8 +7,8 @@ export default function CardPublicacionesHorizontal({idPublicacion,nombre, edad,
       <View className="flex flex-col items-center justify-center rounded-lg overflow-hiddenz  bg-[#DCECFA] border-2 border-[#C6DAEB] w-[60vw] h-[45vh] mb-[calc(1.5vh)] mr-[5vw]">
             <Image
                 source={{uri: imagen}}
+                alt="Foto de la publicación"
                 className="w-[85%] h-[45%] rounded-lg"
-                resizeMode="cover"
             />
 
             <Text className="text-[#233E58] font-bold text-lg mt-[calc(1.5vh)]">{nombre}</Text>

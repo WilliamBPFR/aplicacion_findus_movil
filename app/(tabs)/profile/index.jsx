@@ -75,11 +75,11 @@ export default function Page() {
                 icon={<BookCheck size={25} color="#254E70" source={"book"} allowFontScaling={true}/>}
                 onPress={() => console.log("Mis Publicaciones")}
               /> */}
-              <OptionsButtons 
+              {/* <OptionsButtons 
                 label={"Idioma"}
                 icon={<BookA size={25} color="#254E70" source={"book"} allowFontScaling={true}/>}
                 onPress={() => console.log("Idioma")}
-              />
+              /> */}
 
               <OptionsButtons
                 label={"Cerrar Sesión"}

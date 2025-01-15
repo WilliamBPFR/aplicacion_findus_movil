@@ -31,9 +31,9 @@ const apiRoutes = {
     actualizarPublicacion: (id) => `${API_BASE_URL}/desaparecido/updateDesaparecido/${id}`,
     eliminarPublicacion: (id) => `${API_BASE_URL}/desaparecido/deleteDesaparecido/${id}`,
     publicacionesByUser: (id) => `${API_BASE_URL}/desaparecido/obtenerDesaparecidosByUser`,
-    obtenerInfoDesaparecidoByID: (id) => `${API_BASE_URL}/desaparecido/obtenerInfoDesaparecidoByID/${id}`,
+    obtenerInfoDesaparecidoByID: (id) => `${API_BASE_URL}/desaparecido/obtenerInfoDesaparecidoByID_Movil/${id}`,
     crearComentarioPublicaciones: () => `${API_BASE_URL}/desaparecido/crearComentarioPublicaciones`,
-    cerrarPublicacion: (id) => `${API_BASE_URL}/desaparecido/cerrarPublicacion/${id}`,
+    cerrarPublicacion: (id,tipoCierre) => `${API_BASE_URL}/desaparecido/cerrarPublicacion/${id}/${tipoCierre}`,
     
     //Rutas de Avistamientos
     crearAvistamiento: () => `${API_BASE_URL}/avistamiento/crearAvistamiento`,
@@ -45,6 +45,7 @@ const apiRoutes = {
 
     //Material Educativo
     obtenerMaterialEducativoActivo: () => `${API_BASE_URL}/recursos_educativos/get_recursos_educativos_activos`,
+    anadirVistaMaterialEducativo: (idMaterialEducativo) => `${API_BASE_URL}/recursos_educativos/anadir_vista_a_material/${idMaterialEducativo}`,
     // Otras rutas
     // ...
 };

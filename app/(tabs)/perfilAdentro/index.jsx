@@ -273,7 +273,7 @@ export default function Page() {
 
                         <View className="bg-[#8dc4d6] w-[40vw] p-1 rounded-lg">
                             <Text className="text-lg font-bold text-center text-[#233E58]">Publicaciones Cerradas</Text>
-                            <Text className="text-4xl font-extrabold text-center mt-[1vh] text-[#172b3d]">40</Text>
+                            <Text className="text-4xl font-extrabold text-center mt-[1vh] text-[#172b3d]">{userStatistics?.totalPublicacionesCerradas}</Text>
                         </View>
 
                         <View className="bg-[#8dc4d6] w-[40vw] p-1 rounded-lg">
