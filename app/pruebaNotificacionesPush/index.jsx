@@ -18,7 +18,7 @@ async function sendPushNotification(expoPushToken) {
     sound: 'default',
     title: 'Original Title',
     body: 'And here is the body!',
-    data: { idPublicacion: 69 },
+    data: { idpublicacion: 69 },
     image: {uri: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png'},
   };
 

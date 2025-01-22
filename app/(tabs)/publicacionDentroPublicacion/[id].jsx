@@ -114,10 +114,10 @@ export default function Page() {
               <View className="flex-row w-[85%] mx-auto items-center justify-between align-middle">
                     <Image 
                       source={{uri: publicacion?.fotospublicacion[0]?.urlarchivo}} 
-                      className="w-[50%] h-[20vh] my-[2vh] rounded-lg"
+                      className="w-[100%] h-[20vh] my-[2vh] rounded-lg"
                       resizeMode="cover"
                     />
-                    <View className="flex-col">
+                    {/* <View className="flex-col">
                       <Text className="text-xs font-bold text-[#254E70] w-full text-center mb-[5%]">QR Publicación</Text>
                         <QRCode
                             value="https://youtube.com"
@@ -136,7 +136,7 @@ export default function Page() {
                             <Forward size={25}  color="#000000" source={"download-outline"} allowFontScaling={true}/>
                         </TouchableOpacity>
                       </View>
-                    </View>
+                    </View> */}
 
               </View>
 

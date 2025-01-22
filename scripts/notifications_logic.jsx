@@ -15,6 +15,7 @@ export const startNotifications = async () => {
           );
           return False
     }
+    
     return true
 }
 

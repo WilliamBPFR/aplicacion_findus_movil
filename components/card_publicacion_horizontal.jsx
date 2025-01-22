@@ -8,7 +8,7 @@ export default function CardPublicacionesHorizontal({idPublicacion,nombre, edad,
             <Image
                 source={{uri: imagen}}
                 alt="Foto de la publicación"
-                className="w-[85%] h-[45%] rounded-lg"
+                className="w-[50vw] h-[20vh] rounded-lg "
             />
 
             <Text className="text-[#233E58] font-bold text-lg mt-[calc(1.5vh)]">{nombre}</Text>

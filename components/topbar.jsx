@@ -49,7 +49,7 @@ export default function TopBar({actualizar=undefined, setActualizar=undefined}) 
     return(
         <View className="w-full flex-row h-[8vh] items-center justify-between px-[5vw] border-b-2 border-b-[#C6DAEB]">
             <StatusBar hidden={false} backgroundColor="transparent"/>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("../profile")}>
                 <Image
                     source={{ uri: fotoPerfil ? fotoPerfil : "https://rmmjqtigwdgygmsibvuh.supabase.co/storage/v1/object/sign/assets/logo_findus.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhc3NldHMvbG9nb19maW5kdXMucG5nIiwiaWF0IjoxNzI1NTAzODk5LCJleHAiOjMzMjYxNTAzODk5fQ.DK_-tbuq-B9GxEPDkKQbT08OZ_ojjDoZ3-0nz3bTJ4s&t=2024-09-05T02%3A38%3A19.638Z" }}
                     // style={{ width: 50, height: 50, borderRadius: 25 }}
@@ -65,7 +65,7 @@ export default function TopBar({actualizar=undefined, setActualizar=undefined}) 
                     <Icon
                         source="message-reply-outline"
                         size={36}
-                        color="#233E58"
+                        color="transparent" //#233E58
                     />
                 </TouchableOpacity>
 
@@ -76,7 +76,7 @@ export default function TopBar({actualizar=undefined, setActualizar=undefined}) 
                     <Icon
                         source="chat-outline"
                         size={36}
-                        color="#233E58"
+                        color="transparent" //#233E58
                     />
                 </TouchableOpacity>
                 </View>

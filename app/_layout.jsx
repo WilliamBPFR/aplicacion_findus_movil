@@ -5,10 +5,16 @@ import { startNotifications } from '../scripts/notifications_logic';
 import { SafeAreaView, StatusBar,} from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from "expo-router";
+import { checkUserState } from "../scripts/authentication_logic";
+import { useState } from 'react';
+import { guardarRecibiendoNotificaciones, obtenerFotoPerfil } from '../services/userServices';
+import { View } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+
 
 export default function Layout() {
   const router = useRouter();
-  
+  const [notificaciones, setNotificaciones] = useState(false);
   useEffect(() => {
     (async () => {
         try {
@@ -26,30 +32,12 @@ export default function Layout() {
         }
         // }
     })();
+
+
   }, []);
 
-  useEffect(() => {
-    console.log("useEffect iniciado");
 
-    // Listener para manejar las respuestas a notificaciones
-    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
-        const idPublicacion = response?.notification?.request?.content?.data?.idPublicacion;
-        console.log('Notificación recibida:', idPublicacion);
 
-        if (idPublicacion) {
-            // Redirigir a la ruta correspondiente
-            router.push(`/publicacionDentroPublicacion/${idPublicacion}`);
-        } else {
-            console.log("La notificación no contiene un idPublicacion válido.");
-        }
-    });
-
-    // Limpieza de listeners al desmontar el componente
-    return () => {
-        console.log("Limpiando listeners de notificaciones");
-        Notifications.removeNotificationSubscription(responseListener);
-    };
-}, []);
 
 
   // setInterval(() => {
@@ -61,10 +49,20 @@ export default function Layout() {
   //     console.log('La app está activa:', isAppActive);
   // }
   // , 5000);  
+
+  // if (notificaciones) {
+  //   return(
+  //     <View className="flex-1 bg-[#F#F7FD]">
+  //     <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
+  //    <ActivityIndicator className="mt-[5vh]" animating={true} color={"#1DE9B6"} size={"large"} />
+  //  </View>
+  //   )
+  // }
+
   return (
     <SafeAreaView style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" />
-      <Slot/>
+      <Slot />
     </SafeAreaView>
 
   );

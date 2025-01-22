@@ -69,6 +69,31 @@ export const eliminarToken = async () => {
     }
 }
 
+export const guardarRecibiendoNotificaciones = async (recibiendoNotificaciones) => {
+    try {
+        await SecureStore.setItemAsync('recibiendoNotificaciones', recibiendoNotificaciones);
+        console.log("Recibiendo notificaciones guardado");
+        return true;
+    } catch (error) {
+        console.log("Error al guardar recibiendo notificaciones: ",error);
+        return false;
+    }
+}
+
+export const obtenerRecibiendoNotificaciones = () => {
+    try {
+        const recibiendoNotificaciones = SecureStore.getItem('recibiendoNotificaciones');
+        if(recibiendoNotificaciones == null){
+                console.log("Recibiendo notificaciones no encontrado");
+                return false;
+            }
+        return recibiendoNotificaciones;
+    } catch (error) {
+        console.log("Error al obtener recibiendo notificaciones: ",error);
+        return null;
+    }
+}
+
 
 export const guardarFotoPerfil = async (urlFoto) => {
     try {
