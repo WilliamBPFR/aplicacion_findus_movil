@@ -88,29 +88,30 @@ import {
 
         setLoading(true);
         try{
-          const response = await crearAvistamiento(values);
+          const dataFoto = {
+            // idavistamiento: response.data.idAvistamiento,
+            base64File: values?.imageData?.base64,
+            fileName: values?.imageData?.fileName,
+            mimeType: values?.imageData?.mimeType
+          }
+          const response = await crearAvistamiento({dataAvistamiento: values, dataFoto: dataFoto}, obtenerToken());
           setApiResponse(response);
 
           if (response.status === 200) {
             console.log("Avistamiento creado correctamente: ", response.data);
             console.log("ID DEL AVISTAMIENTO: ", response.data.idAvistamiento);
 
-            const dataFoto = {
-              idavistamiento: response.data.idAvistamiento,
-              base64File: values?.imageData?.base64,
-              fileName: values?.imageData?.fileName,
-              mimeType: values?.imageData?.mimeType
-            }
 
-            const responseFoto = await subirFotoAvistamiento(dataFoto);
-            if (responseFoto.status === 200) {
+
+            // const responseFoto = await subirFotoAvistamiento(dataFoto);
+            // if (responseFoto.status === 200) {
               setLoading(false);  
               setModalVisible(true);
               setTimeout(() => {
                 setModalVisible(false);
                 router.push(`/publicacionDentroPublicacion/${id}`);
               }, 2000);
-            }
+            // }
           }else{
               console.log("Error al crear la publicación: ", response.data.message);
               setModalVisible(true);

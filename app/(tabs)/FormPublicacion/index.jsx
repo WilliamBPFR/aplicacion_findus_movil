@@ -8,21 +8,31 @@ import { useFocusEffect } from "@react-navigation/native";
 import TopBar from "../../../components/topbar.jsx";
 import { publicacionesByUser, cerrarPublicacion } from "../../../services/publicacionServices.js";
 import { obtenerToken } from "../../../services/userServices.js";
-import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDistanceToNow, set } from 'date-fns';
+import { es, id } from 'date-fns/locale';
 import { Modal } from 'react-native-paper';  // Usamos el modal de react-native-paper
 import { ActivityIndicator } from 'react-native'; // Importamos el ActivityIndicator
 import LottieView from 'lottie-react-native'; // Importamos Lottie
+import DropdownComponent from "../../../components/dropdown.jsx";
 
 export default function Page() {
-  const router = useRouter(); 
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [desaparecidos, setDesaparecidos] = useState([]);
   const [modalVisible, setModalVisible] = useState(false); // Estado para el modal
   const [modalMessage, setModalMessage] = useState(""); // Mensaje para el modal
   const [modalConfirmVisible, setModalConfirmVisible] = useState(false); // Modal de confirmación
   const [publicacionIdToClose, setPublicacionIdToClose] = useState(null); // ID de la publicación a cerrar
-
+  const [estadoCierre, setEstadoCierre] = useState(null); // Estado de cierre de la publicación
+  const [pressedEstadoCierre, setPressedEstadoCierre] = useState(false); // Estado de cierre de la publicación
+  const [modalEstadoCierre, setModalEstadoCierre] = useState(false); // Estado de cierre de la publicación
+  const [sendingEstado, setSendingEstado] = useState(false); // Estado de cierre de la publicación
+  const handleSeleccionEstadoCierre = () => {
+    console.log("Estado de cierre seleccionado: ", estadoCierre);
+    if (estadoCierre === null) return;
+    setModalEstadoCierre(false); // Cierra el modal de selección de estado de cierre
+    setModalConfirmVisible(true); // Muestra el modal de confirmación
+  }
   useFocusEffect(
     useCallback(() => {
       const obtenerPublicaciones = async () => {
@@ -48,21 +58,22 @@ export default function Page() {
   // Función para abrir el modal de confirmación
   const handleConfirmClose = (id) => {
     setPublicacionIdToClose(id);
-    setModalConfirmVisible(true); // Muestra el modal de confirmación
+    setModalEstadoCierre(true); // Muestra el modal de confirmación
   };
 
   // Función para cerrar la publicación
   const handleCerrarPublicacion = async () => {
     if (publicacionIdToClose === null) return;
-    
+
     try {
-      const response = await cerrarPublicacion(publicacionIdToClose);
+      setSendingEstado(true);
+      const response = await cerrarPublicacion(publicacionIdToClose, estadoCierre);
       if (response.status === 200) {
         // Actualiza el estado de la publicación a "cerrada" (no elimina la publicación)
-        setDesaparecidos(prevState => 
+        setDesaparecidos(prevState =>
           prevState.map(item =>
             item.id === publicacionIdToClose
-              ? { ...item, estado: { id: 2, nombreestado: "Cerrada" } } // Estado "cerrada"
+              ? { ...item, estado: { id: estadoCierre == 1 ? 4 : 5, nombreestado: estadoCierre == 1 ? "Cerrado - Resuelto": "Cerrado - No Resuelto" } } // Estado "cerrada"
               : item
           )
         );
@@ -75,6 +86,8 @@ export default function Page() {
     } catch (error) {
       setModalMessage("Error al cerrar la publicación");
       setModalVisible(true);
+    } finally {
+      setSendingEstado(false);
     }
 
     // Cierra el modal de confirmación
@@ -93,11 +106,11 @@ export default function Page() {
         <Text style={styles.name}>{item.nombredesaparecido}</Text>
         <Text>{formatDistanceToNow(new Date(item.fechadesaparicion), { addSuffix: true, locale: es })}</Text>
         <Chip
-          style={[ 
-            styles.chip, 
+          style={[
+            styles.chip,
             item.estado.id === 1 ? styles.chipActive :
-            item.estado.id === 2 ? styles.chipClosed :
-            styles.chipDisabled 
+            (item.estado.id === 2 || item.estado.id === 4 || item.estado.id === 5) ? styles.chipClosed :
+            styles.chipDisabled
           ]}
           textStyle={styles.chipText}
         >
@@ -110,6 +123,7 @@ export default function Page() {
           {item.verificado ? "Verificado" : "No verificado"}
         </Chip>
       </View>
+      {item.estado.id === 1 && ( // Si la publicación está activa}
       <View style={styles.iconContainer}>
         <TouchableOpacity
           style={styles.iconButton}
@@ -127,6 +141,7 @@ export default function Page() {
           <AntDesign name="delete" size={24} color="#00886E" />
         </TouchableOpacity>
       </View>
+      )}
     </View>
   );
 
@@ -143,7 +158,7 @@ export default function Page() {
     <View style={styles.safeArea}>
       <StatusBar hidden={false} backgroundColor={"#F3F7FD"} barStyle={"dark-content"} />
       <TopBar/>
-      
+
       {/* FlatList para renderizar la lista */}
       {desaparecidos.length > 0 ? (
       <FlatList
@@ -161,12 +176,57 @@ export default function Page() {
       )}
 
       {/* FAB - Botón flotante */}
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.push("../../crearForm")} 
+        onPress={() => router.push("../../crearForm")}
       >
         <AntDesign name="plus" size={32} color="#F3F7FD" style={styles.fabIcon} />
       </TouchableOpacity>
+
+      <Modal
+        visible={modalEstadoCierre}
+        onDismiss={() => setModalEstadoCierre(false)}
+        contentContainerStyle={styles.modalContainer}
+      >
+        <View style={styles.modalContent}>
+          <LottieView
+            source={require('../../../assets/closed.json')}  // Ajusta la ruta a tu archivo Lottie
+            className="w-[150px] h-[150px]"
+            autoPlay
+            loop={true}
+                // style={styles.lottie}
+          />
+          <Text style={styles.modalText}>¿Con qué estado quiere cerrar la publicación?</Text>
+          <View className="flex w-[60vw] ">
+            <DropdownComponent
+                separation={0.028}
+                label={"Estado de Cierre"}
+                placeholder={"Seleccione el estado de cierre"}
+                id_name={"estadocierre"}
+                data={[{nombre: "Caso Resuelto", id:1}, {nombre:"Caso No Resuelto", id:2}]}
+                handleChange={setEstadoCierre}
+                value={parseInt(estadoCierre)}
+                pressed={pressedEstadoCierre}
+                handlePressed={()=> setPressedEstadoCierre(true)}
+                valueField={"id"}
+                labelField={"nombre"}
+            />
+            {(estadoCierre === null && pressedEstadoCierre) && <Text style={{color: "red"}} className="mb-[1vh]">Seleccione un estado de cierre</Text>}
+          </View>
+
+           <TouchableOpacity
+              onPress={handleSeleccionEstadoCierre}
+              className=" w-[90%] h-[10%] rounded-md justify-center mb-[calc(1vh)]"
+              disabled={estadoCierre === null}
+              style={{backgroundColor: estadoCierre === null ? "#C6DAEB" : "#3E86B9"}}
+            >
+            <Text style={styles.modalButtonText} >Aceptar</Text>
+          </TouchableOpacity>
+          {/*<TouchableOpacity onPress={handleCancelarCerrar} style={styles.modalButton}>
+            <Text style={styles.modalButtonText}>Cancelar</Text>
+          </TouchableOpacity> */}
+        </View>
+      </Modal>
 
       {/* Modal de confirmación */}
       <Modal
@@ -182,11 +242,11 @@ export default function Page() {
             loop
             style={styles.lottie}
           />
-          <Text style={styles.modalText}>¿Está seguro que desea cerrar esta publicación?</Text>
-          <TouchableOpacity onPress={handleCerrarPublicacion} style={styles.modalButton}>
+          <Text style={styles.modalText}>¿Está seguro que desea cerrar esta publicación con estado <Text className="font-bold">{estadoCierre == 1 ? "Caso Resuelto": "Caso No Resuelto"}</Text>?</Text>
+          <TouchableOpacity onPress={handleCerrarPublicacion} className="w-[100%] py-[10px] px-[20px] rounded-md justify-center mb-[calc(1vh)]" style={{backgroundColor: sendingEstado ? "#b0c5ac" : "#00886E"}} disabled={sendingEstado}>
             <Text style={styles.modalButtonText}>Aceptar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleCancelarCerrar} style={styles.modalButton}>
+          <TouchableOpacity onPress={handleCancelarCerrar} className="w-[100%] py-[10px] px-[20px] rounded-md justify-center mb-[calc(1vh)]" style={{backgroundColor: sendingEstado ? "#b0c5ac" : "#00886E"}} disabled={sendingEstado}>
             <Text style={styles.modalButtonText}>Cancelar</Text>
           </TouchableOpacity>
         </View>
@@ -257,16 +317,16 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
   chipClosed: {
-    backgroundColor: '#60BDFF', 
-    borderColor: '#B0BEC5', 
+    backgroundColor: '#60BDFF',
+    borderColor: '#B0BEC5',
   },
   chipActive: {
-    backgroundColor: '#00D0A1', 
-    borderColor: '#00D0A1', 
+    backgroundColor: '#00D0A1',
+    borderColor: '#00D0A1',
   },
   chipDisabled: {
-    backgroundColor: '#C0C0C0', 
-    borderColor: '#8B8B8B', 
+    backgroundColor: '#C0C0C0',
+    borderColor: '#8B8B8B',
   },
   iconContainer: {
     flexDirection: 'row',
@@ -297,10 +357,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   modalContainer: {
-    flex: 1, // Asegúrate de que el modal ocupe toda la pantalla
+    // flex: 1, // Asegúrate de que el modal ocupe toda la pantalla
     justifyContent: 'center', // Centra verticalmente
     alignItems: 'center', // Centra horizontalmente
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semi-transparente
   },
   modalContent: {
     justifyContent: 'center',
@@ -330,6 +390,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center', // Centra el texto
+
   },
   lottie: {
     width: 100,  // Ajusta el tamaño de la animación

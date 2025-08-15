@@ -49,11 +49,12 @@ export default function Page() {
     if (response.status === 200) {
       const nuevasPublicaciones = response.data;
       if (nuevasPublicaciones.length > 0) {
-        console.log("KLKKKK");
-        console.log(loading);
-        console.log(loadingMoreTop)
+        // console.log("KLKKKK");
+        // console.log(loading);
+        // console.log(loadingMoreTop)
         if (pageNumber === 1) { 
           console.log("ENTRE A ASIUGNASR");
+          console.log(nuevasPublicaciones);
           setPublicaciones(nuevasPublicaciones)
         } else {
           setPublicaciones((prev) => [...prev, ...nuevasPublicaciones]);

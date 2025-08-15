@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
@@ -91,6 +91,7 @@ export default function MapInput ({ onLocationSelect, separation, pressed, error
               style={styles.map}
               region={region}
               onPress={handleMapPress}
+              provider={PROVIDER_GOOGLE}
             >
               {marker && <Marker coordinate={marker} />}
             </MapView>

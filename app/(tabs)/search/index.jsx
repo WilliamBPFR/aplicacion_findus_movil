@@ -28,9 +28,9 @@ export default function Page () {
           setData(response.data);
           setLoading(false);
         }
-        console.log(response);
+        console.log("Respuesta BUSQUEDA",response.data.fotospublicacion);
       }).catch((error) => {
-        console.log(error);
+        console.log("FALLO BUSQUEDA: ",error);
         setLoading(false); 
       });
     }else{
@@ -65,7 +65,7 @@ export default function Page () {
                       key={index} 
                       nombredesaparecido={item.nombredesaparecido} 
                       fechadesaparecido={formatearFecha(item.fechadesaparicion)} 
-                      urlfoto={item.fotospublicacion[0].urlarchivo} 
+                      urlfoto={item.fotospublicacion[0]?.urlarchivo} 
                       idpublicacion={item.id}
                     />
                   ))}

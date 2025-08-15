@@ -19,7 +19,7 @@ export default function CardPublicacionesBusqueda({
                         <Image
                             source={{ uri: urlfoto }}
                             // style={{ width: 50, height: 50, borderRadius: 25 }}
-                            className="bg-yellow-100 w-[65px] h-[65px] rounded-full"
+                            className="bg-white w-[65px] h-[65px] rounded-full"
                             resizeMode="cover"  // Puedes usar "cover", "contain", o "stretch"
                         />
                         <View className="flex flex-col ml-[5%]">

@@ -8,6 +8,7 @@ import LottieView from "lottie-react-native";
 import BotonEnvioFormularios from "../../components/boton_envio_formularios.jsx";
 import * as Yup from "yup";
 import {solicitarCambioContrasena, verificarCodigoCambioContrasena, cambiarContrasena} from "../../services/userServices.js";
+import { router } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
@@ -365,6 +366,7 @@ export default function Page() {
                                 handlePressed={()=> setPressed({...pressed, contrasena: true})}
                                 error={formikContrasena.errors.contrasena}
                                 showLabel={false}
+                                showErrors={false}
                             />
 
                             {/* Texto de validación de contraseña */}
@@ -432,7 +434,7 @@ export default function Page() {
                             <TouchableOpacity 
                                 activeOpacity={0.7}  
                                 className=" bg-[#3E86B9] w-[100%] h-[6vh] rounded-md justify-center mb-[calc(1vh)]" 
-                                onPress={() => console.log('Pressed')}
+                                onPress={() => router.push("/login")}
                             >
                                 <Text className="text-[#F3F7FD] font-bold text-lg text-center w-full flex">
                                     Iniciar Sesión

@@ -60,14 +60,14 @@ export default function Page() {
               console.log("Error al guardar el token de notificaciones");
             }
 
-            const actualizarUbicacion = await actuaizar_ubicacion_manual();
+            await actuaizar_ubicacion_manual();
             // setModalMessage("Inicio de sesión exitoso");
             // setModalVisible(true); // Mostrar modal de éxito
             setTimeout(() => {
-              setModalVisible(false);
+              // setModalVisible(true);
               setLoading(false); // Ocultar modal de carga
               router.push("../home");  // Navegar a home después de 2 segundos
-            }, 1000);
+            }, 100);
           } else {
             setModalMessage("Error al guardar el token");
             setModalVisible(true);
@@ -153,7 +153,7 @@ export default function Page() {
             </View>
           </Modal>
 
-          {/* Modal de éxito o error
+          {/* Modal de éxito o error */}
           <Modal
             visible={modalVisible}
             transparent={true} // Hacer el fondo del modal transparente
@@ -188,7 +188,7 @@ export default function Page() {
                 </TouchableOpacity>
               </View>
             </View>
-          </Modal> */}
+          </Modal>
         </Portal>
       </View>
     </PaperProvider>

@@ -3,10 +3,12 @@ import { Forward } from "lucide-react-native";
 import { Divider } from "react-native-paper";
 import { useEffect,useState } from "react";
 import * as FileSystem from 'expo-file-system';
+import { anadir_vista_a_recurso_educativo } from "../services/recursosEducativos";
+
 // import * as Notifications from 'expo-notifications';
 // import * as Permissions from 'expo-permissions';
 
-export default function CardMaterialesEducativos({nombreTipoMaterial, idTipoMaterial, nombreMaterial, urlAMaterial}) {
+export default function CardMaterialesEducativos({nombreTipoMaterial, idTipoMaterial, nombreMaterial, urlAMaterial, idMaterialEducativo}) {
     const downloadFile = async (urlmaterial) => {
 
         try {
@@ -46,6 +48,7 @@ export default function CardMaterialesEducativos({nombreTipoMaterial, idTipoMate
     };
     
         const openLink = async (urlmaterial) => {
+            await anadir_vista_a_recurso_educativo(idMaterialEducativo)
             const supported = await Linking.canOpenURL(urlmaterial);
             if (supported) {
                 await Linking.openURL(urlmaterial);
@@ -76,7 +79,7 @@ export default function CardMaterialesEducativos({nombreTipoMaterial, idTipoMate
 
     }, [])
     return(
-      <View className="flex flex-col w-[100%] h-[50vh] bg-[#a7a8a947] rounded-lg px-[5%] py-[4%] mb-[2vh]">
+      <View className="flex flex-col w-[100%] h-[55vh] bg-[#a7a8a947] rounded-lg px-[5%] py-[4%] mb-[2vh]">
             <Text className="text-[#233E58] text-xl font-bold">
                 {nombreTipoMaterial} - {nombreMaterial}
             </Text>
@@ -87,18 +90,18 @@ export default function CardMaterialesEducativos({nombreTipoMaterial, idTipoMate
                 resizeMode="cover"
             />
 
-            <View className="flex-1 flex-row justify-between items-center">
-                <TouchableOpacity activeOpacity={0.7} className="flex-row bg-[#00d0a08a] rounded-lg w-[45%] h-[8vh]  ml-[2%] mt-[3%] justify-center items-center">
+            <View className="flex-1 flex-row justify-center items-center">
+                {/* <TouchableOpacity activeOpacity={0.7} className="flex-row bg-[#00d0a08a] rounded-lg w-[45%] h-[8vh]  ml-[2%] mt-[3%] justify-center items-center">
                     <Text className="text-white font-bold text-lg mr-[5%]">
                         Compartir
                     </Text>
 
                     <Forward size={30} className="text-white"/>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity 
                     activeOpacity={0.7} 
-                    className="bg-[#3E86B9] rounded-lg px-[3%] w-[45%] h-[8vh] py-[1%] mr-[2%] mt-[3%] justify-center items-center"
+                    className="bg-[#3E86B9] rounded-lg  w-[95%] h-[8vh] py-[1%] mt-[5%] justify-center items-center"
                     onPress={() => openLink(urlAMaterial)}
                 >
                     <Text className="text-white font-bold text-lg text-center">

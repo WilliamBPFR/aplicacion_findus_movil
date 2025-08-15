@@ -27,11 +27,11 @@ export default function Page() {
         <Link href="/editarPerfil">Pantalla Editar Perfil</Link>
         <Link href="/crearReporteAvistamiento/1?nombredesaparecido=Maria Pardo">Pantalla Reporte de Avistamiento</Link>
         <Link href="/pruebaNotificacionesPush">Pantalla de Prueba de Notificaciones</Link>
-        <TouchableOpacity onPress={() => eliminarToken() }><Text>Borrar Token</Text></TouchableOpacity>
+        {/* <TouchableOpacity onPress={() => eliminarToken() }><Text>Borrar Token</Text></TouchableOpacity>
         <TouchableOpacity onPress={() => {
             const token = obtenerToken()
             console.log(token)
-            } }><Text>Obtener Token</Text></TouchableOpacity>
+            } }><Text>Obtener Token</Text></TouchableOpacity> */}
       </View>
     </View>
   );

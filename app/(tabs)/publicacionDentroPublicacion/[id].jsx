@@ -1,4 +1,4 @@
-import { Text, View, Image, Dimensions, StatusBar, ScrollView, TouchableOpacity,BackHandler} from "react-native";
+import { Text, View, Image, Dimensions, StatusBar, ScrollView, TouchableOpacity,RefreshControl} from "react-native";
 import TopBar from "../../../components/topbar.jsx";
 import QRCode from "react-native-qrcode-svg";
 import { Download,Forward } from "lucide-react-native";
@@ -10,6 +10,7 @@ import { obtenerInfoDesaparecidoByID, formatearFecha } from "../../../services/p
 import { useRouter, useLocalSearchParams,  useFocusEffect} from "expo-router";
 import { useEffect,useState, useCallback } from "react";
 import { ActivityIndicator } from 'react-native-paper';
+import { set } from "date-fns";
 
 
 const { width, height } = Dimensions.get("window");
@@ -22,6 +23,7 @@ export default function Page() {
   const [publicacion, setPublicacion] = useState({});
   const [loadingData, setLoadingData] = useState(true);
   const [actualizar, setActualizar] = useState({params: useLocalSearchParams("id"), actualizar: false});
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -32,6 +34,7 @@ export default function Page() {
             if (response.status === 200) {
               setPublicacion(response.data);
               setLoadingData(false);
+              setRefreshing(false);
             }
           });
         }
@@ -44,8 +47,9 @@ export default function Page() {
         // Limpiar los datos al salir de la pantalla
         setPublicacion({});
         setLoadingData(true);
+        setRefreshing(false);
       };
-    }, [id])
+    }, [id, refreshing])
   );
 
   // useEffect(() => {
@@ -87,7 +91,18 @@ export default function Page() {
     <View className="flex-1 bg-[#F3F7FD]">
       <StatusBar hidden={false} backgroundColor={"#C6DAEB"} barStyle={"light-content"} />
       <TopBar/>
-      <ScrollView className="flex flex-col mt-[2vh]" contentContainerStyle={{alignItems: "center", justifyContent: "center"}}>
+      <ScrollView 
+        className="flex flex-col mt-[2vh]" 
+        contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => setRefreshing(true)}
+            colors={["#1DE9B6"]}
+            progressBackgroundColor={"#C6DAEB"}
+          />
+        }
+      >
           <Text className="text-2xl font-bold mb-[calc(2.5%)]">Persona Desaparecida</Text>
 
           <View className="flex-row w-[90%] items-center justify-center">
@@ -99,10 +114,10 @@ export default function Page() {
               <View className="flex-row w-[85%] mx-auto items-center justify-between align-middle">
                     <Image 
                       source={{uri: publicacion?.fotospublicacion[0]?.urlarchivo}} 
-                      className="w-[50%] h-[20vh] my-[2vh] rounded-lg"
+                      className="w-[100%] h-[20vh] my-[2vh] rounded-lg"
                       resizeMode="cover"
                     />
-                    <View className="flex-col">
+                    {/* <View className="flex-col">
                       <Text className="text-xs font-bold text-[#254E70] w-full text-center mb-[5%]">QR Publicación</Text>
                         <QRCode
                             value="https://youtube.com"
@@ -121,7 +136,7 @@ export default function Page() {
                             <Forward size={25}  color="#000000" source={"download-outline"} allowFontScaling={true}/>
                         </TouchableOpacity>
                       </View>
-                    </View>
+                    </View> */}
 
               </View>
 
@@ -150,7 +165,8 @@ export default function Page() {
                     descripcion={avistamiento.detalles}
                     urlfotoAvistamiento={avistamiento.fotosavistamiento[0].urlarchivo}
                     cantItems={publicacion?.avistamiento.length}
-                    numItem={index}
+                    numItem={index}avistamientoverificado={avistamiento?.verificado}
+
                   />
                 ) )) : (
                   <Text className="text-[#233E58] text-center text-[16px] w-[80%] font-bold mt-[0.5%]">No hay avistamientos registrados</Text>

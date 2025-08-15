@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 // import * as Permissions from 'expo-permissions';
 import { useEffect, useState } from "react";
 import { checkUserState } from "../../scripts/authentication_logic";
+import * as Notifications from 'expo-notifications';
 
 
 const _renderIcon = (routeName, focused) => {
@@ -66,7 +67,7 @@ export default function TabsLayout () {
 
   console.log("logueado", logueado);
   console.log("loading", loading);
-  
+
   if(loading) {
     return null
   }
@@ -75,6 +76,8 @@ export default function TabsLayout () {
     router.replace("/");
     return null;
   }
+
+  
   return (
     <>
       <Tabs
